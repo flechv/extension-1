@@ -1,0 +1,55 @@
+html, body{margin:0; padding:0;overflow:hidden}
+body{width:355px;min-height:450px;padding:10px;font-family:"Trebuchet MS",Arial,sans-serif}
+body a, body a:active, body a:visited, body a:focus{text-decoration:none;color:rgb(17, 85, 204)}
+body a:hover{text-decoration:underline}
+body input:focus{outline: none}
+body, table {font-size:13px;font-style:normal;font-variant:normal;font-weight:normal}
+input[type=text], select {margin: 1px 0;padding: 5px;height: 29px;outline: 0;border: 1px solid #aaa;box-shadow: none;color: #666;font-family: sans-serif;line-height: normal;border-radius: 3px;overflow: hidden;vertical-align: middle;cursor: text;font-size: 13px;
+	-webkit-box-sizing: border-box;box-sizing: border-box;background-color: #fff;background-image: -webkit-gradient(linear,50% 0,50% 100%,color-stop(1%,#eee),color-stop(15%,#fff));background-image: -webkit-linear-gradient(#eee 1%,#fff 15%)}
+input[type=text]:focus, select:focus {border: 1px solid #5897fb;-webkit-box-shadow: 0 0 5px rgba(0,0,0,.3);box-shadow: 0 0 5px rgba(0,0,0,.3)}
+.btn {line-height: .7em;border: 1px solid #9c9c9c;padding: 10px;margin: 0;cursor: pointer;text-align: center;display: inline-block;text-transform: uppercase;color: #666;text-shadow: 0 1px 1px #fff;overflow: visible;text-decoration: none;background-color: #efefef;border-radius: 3px;
+	-webkit-box-shadow: inset 0 1px 0 0 rgba(255,255,255,.4);box-shadow: inset 0 1px 0 0 rgba(255,255,255,.4);background-image: -webkit-linear-gradient(top,#f4f4f4 0%,#dbdbdb)}
+.btn:hover {text-decoration: none!important;background-image: -webkit-linear-gradient(top,#f7f7f7 0%,#f4f4f4)}
+.btn:active {color: #bbb;background-color: #e3e3e3;-webkit-box-shadow: inset 0 2px 0 rgba(0,0,0,.2);box-shadow: inset 0 2px 0 rgba(0,0,0,.2);background-image: -webkit-linear-gradient(top,#dbdbdb 0%,#f4f4f4)}
+label {display:inline-block;width:14%;cursor:pointer}
+
+#headerLeft{display:inline-block;width:66px;margin-right:5px;float:left;font-size:11px}
+#headerRight{display:inline-block;width:281px;float:left}
+#results {width:100%;margin:0;display:inline-block;padding:0;overflow-y:scroll;overflow-x:hidden}
+#results li {width:100%;border-top:1px dashed #ccc;margin-top:10px;padding-top:5px;list-style:none;display:inline-block}
+#results table{width:100%}
+#ui-datepicker-div{margin:5px -18px}
+#loading{display:none;margin-left:90px}
+.template{display:none}
+.headerDiv {width:100%;margin-bottom:6px;}
+.select2-container-multi .select2-choices{border-radius:3px;overflow-y:scroll;max-height:80px}
+.select2-container-multi.select2-container-active .select2-choices{border-radius:3px 3px 0 0}
+#avancada{font-size:10px;width:42px;float:right;margin:8px 5px 0 0;text-decoration:none;color:black}
+#avancada:hover{text-decoration:underline}
+#avancada:focus{color: black}
+#help, #download{float:right;margin:11px 8px 0 0;cursor:help}
+#download{cursor:pointer}
+#divAvancada .select2-container .select2-choice{height:30px;padding:0 0 0 7px;border-radius:3px;line-height:31px}
+#divAvancada .select2-container .select2-choice .select2-arrow{border-radius:0 3px 3px 0}
+#divAvancada .select2-container-multi .select2-choices{max-height:31px}
+.select2-drop {margin-top:-2px;}
+.select2-results{max-height:140px}
+#btnBuscar{float:right;margin-right:4px;color:black;outline:none;}
+.tipsy {font-size:12px}
+.tipsy-inner {background-color:#000;max-width:220px;text-align:left}
+.showResults{float:right;font-size:12px;margin-right:12px}
+.tableResultsByDates{font-size:12px;text-align:right}
+#doacao{margin-top:29px}
+#doacao span{margin-left:7px}
+#sugestao{margin:17px 0 0 -5px}
+#sugestao span{line-height:16px;vertical-align:top}
+#results table{font-family:"Lucida Sans Unicode", "Lucida Grande", Sans-Serif;font-size:11px;margin:0;width:350px;text-align:left;border-collapse:collapse}
+#results table th{font-size:12px;font-weight:normal;padding:3px 0px;color:#171A20}
+#results table td{padding:2px 3px;color:rgba(51, 51, 51, 0.9)}
+#results table .odd, #results .divResultsExpanded table tbody tr:nth-child(even) { background: #F5F5F5; }
+/* begin: jQuery UI Datepicker moving pixels fix */
+	table.ui-datepicker-calendar {border-collapse: separate;}
+	.ui-datepicker-calendar td {border: 1px solid transparent;}
+/* end: jQuery UI Datepicker moving pixels fix */
+
+#ui-datepicker-div {z-index:100 !important;}
