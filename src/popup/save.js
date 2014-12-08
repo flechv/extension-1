@@ -1,7 +1,7 @@
-function saveTextAsFile() {
-	var textToWrite = getResultsTextToSaveAsFile();
-	var textFileAsBlob = new Blob([textToWrite], { type: 'text/plain' });
-	var fileNameToSaveAs = "genghis";
+function saveTextAsFile(results) {
+	var textToWrite = getResultsTextToSaveAsFile(results);
+	var textFileAsBlob = new Blob([textToWrite], { type: 'text/csv' });
+	var fileNameToSaveAs = "genghis.csv";
 	var downloadLink = document.createElement("a");
 	downloadLink.download = fileNameToSaveAs;
 	downloadLink.innerHTML = "Download File";
@@ -9,70 +9,41 @@ function saveTextAsFile() {
 	downloadLink.click();
 }
 
-function getResultsTextToSaveAsFile() {
-	var response = "";
-	var breakline = "\n";
+function getResultsTextToSaveAsFile(results) {
+	var m = [];
 
-	$("#results li").each(function() {
-//main header
-		response += $(this).find('.locals').text();
-		response += $(this).find('.bestResultsMsg').text();
-		response += breakline + breakline;
+	for (var i in results) {
+		var result = results[i];
+		m.push([ result.key + " - Melhores Resultados" ]);
 
-//main body
-		for (var i in [0, 1, 2]) {
-			response += $(this).find('.stop' + i + ' .type').text().completeColumn();
-			response += $(this).find('.stop' + i + ' .date').text().completeColumn();
-			response += $(this).find('.stop' + i + ' .bestPrice').text() + breakline;	
-		}
+		var types = [ "Direto", "1 parada", "2+ paradas" ];
+		for (var j in types)
+			m.push([types[j], result.best[j].date, result.best[j].price]);
 		
-		response += breakline;
-		
-//table results if visible
-		if($(this).find('.tableResultsByDates').is(':visible')) {
-			//header
-			for (var i in [0, 1, 2, 3])
-				response += $(this).find('.tableResultsByDates th:eq(' + i + ')').text().completeColumn();
-			response += breakline;
-
-			//body obs:slice will skip the first result (header)
-			$(this).find('.tableResultsByDates tr').slice(1).each(function () {
-				response += $(this).find('.resultsDate').text().completeColumn();
-				for (var i in [0, 1, 2])
-					response += $(this).find('.resultsStop' + i).text().completeColumn();
-				response += breakline;
-			});
+		m.push([], [ "Dias", "Direto", "1 parada", "2+ paradas" ]);
+		for (var j in result.all) {
+			var row = [ result.all[j].date ];
 			
-			response += breakline;
+			for (var k in [0, 1, 2])
+				row.push(result.all[j].prices[k] == undefined ? "-" : result.all[j].prices[k].toString());
+			
+			m.push(row);
 		}
 
-//table results by companies if visible
-		if($(this).find('.tableResultsByCompanies').is(':visible')) {
-			//header
-			for (var i in [0, 1, 2, 3])
-				response += $(this).find('.tableResultsByCompanies th:eq(' + i + ')').text().completeColumn();
-			response += breakline;
-
-			//body obs:slice will skip the first result (header)
-			$(this).find('.tableResultsByCompanies tr').slice(1).each(function () {
-				response += $(this).find('.resultsCompany').text().completeColumn();
-				for (var i in [0, 1, 2])
-					response += $(this).find('.resultsStop' + i).text().completeColumn();
-				response += breakline;
-			});
+		m.push([], [ "Companhias", "Direto", "1 parada", "2+ paradas" ]);
+		for (var j in result.bestByCompany) {
+			var row = [ j ];
 			
-			response += breakline;
+			for (var k in [0, 1, 2])
+				row.push(result.bestByCompany[j][k].price);
+			
+			m.push(row);
 		}
 		
-		response += breakline;
-	});
+		m.push([]);
+	}
 
-	return response;
-}
-
-//complete string with tabs the prefixed column length (7 tabs)
-String.prototype.completeColumn = function () {
-	var tabLength = 4, delta = 7 * tabLength - this.length, resp = this;
-	for(var i = 1; i < parseInt(delta / tabLength) + (delta % tabLength ? 1 : 0); i++) resp += "\t";
-	return resp;
+	return m.reduce(function (prev, row) {
+        return prev + row.join(",") + "\n";
+    }, "");
 }

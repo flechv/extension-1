@@ -2,56 +2,70 @@
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
   		<title>Busca de passagens - melhores preços!</title>
+  		<base target="_blank">
+
 		<link rel="stylesheet" href="../../css/jquery.ui.theme.min.css" />
 		<link rel="stylesheet" href="../../css/jquery.ui.datepicker.min.css" />
 		<link rel="stylesheet" href="../../css/jquery.ui.core.min.css" />
 		<link rel="stylesheet" href="../../css/select2.css" />
 		<link rel="stylesheet" href="../../css/tipsy.css" />
+		<link rel="stylesheet" href="../../css/angular-csp.css" />
 		<link rel="stylesheet" href="popup.css" />
 		
   		<script src="../../js/jquery-2.0.3.min.js"></script>
-		<script src="../../js/jquery.ui.core.min.js"></script>
+		<script src="../../js/jquery-ui.min.js"></script>
   		<script src="../../js/jquery-ui.multidatespicker.js"></script>
   		<script src="../../js/jquery.tipsy.js"></script>
   		<script src="../../js/select2.min.js"></script>
   		<script src="../../js/select2_locale_pt-BR.js"></script>
-  		<script src="../../js/variables.js"></script>
+  		<script src="../../js/airlinesCompanies.js"></script>
+  		<script src="../../js/allAirports.js"></script>
+  		<script src="../../js/angular.min.js"></script>
+  		<script src="../../js/angular-select2.js"></script>
   		<script src="save.js"></script>
-  		<script src="render.js"></script>
   		<script src="popup.js"></script>
 	</head>
-	<body>
+	<body ng-app="app" ng-controller="AngularController">
 		<div id="header" style="display:block">
+			<form name="form">
 				<div class="headerDiv">
-					<label for="originsSelect" class="help" title="De quais cidades você pode partir?">De</label>
-					<input type="hidden" multiple="true" class="select2" id="originsSelect" data-placeholder="Selecione o(s) aeroporto(s) de origem" style="width:84%" tabindex="2" />
+					<label class="help" title="{{ help.origins }}">De</label>
+					<div ui-select2="select2AirportsOptions" ng-model="origins" name="origins" data-placeholder="De onde você prefere sair?" tabindex="2" ng-class="{ 'has-error': form.origins.$dirty && form.origins.$invalid }" required>
+					</div>
 				</div>
 
 				<div class="headerDiv">
-	  				<label for="destinationsSelect" class="help" title="Para quais cidades você quer pesquisar?">Para</label>
-					<input type="hidden" multiple="true" class="select2" id="destinationsSelect" data-placeholder="Selecione o(s) aeroporto(s) de destino" style="width:84%" tabindex="3">
+	  				<label class="help" title="{{ help.destinations }}">Para</label>
+					<div ui-select2="select2AirportsOptions" ng-model="destinations" name="destinations" data-placeholder="Para onde você quer ir?" tabindex="3" ng-class="{ 'has-error': form.destinations.$dirty && form.destinations.$invalid || (origins.length == 1 && destinations.length == 1 && origins[0].id == destinations[0].id) }" required>
+					</div>
 				</div>
 
 				<div class="headerDiv">
-					<label for="departureDatesInput" style="height:20px;margin:0" class="help" title="Quais dias você pode partir? Escolha mais de 1 e ache o melhor pra você">Ida(s)</label>
-					<input type="text" id="departureDatesInput" style="width:84%" placeholder="Selecione os dias de partida. dd/mm/aaaa" tabindex="4" />
-					<input type="text" id="departureDatesInputFake" class="datepicker" style="width:84%;height:0px;outline:none;margin:0 0 0 14%;padding:0;border:none;float:left" placeholder="Selecione os dias de partida. dd/mm/aaaa" tabindex="4" />
+					<label class="help" title="{{ help.days }}">Duração</label>
+					<select ui-select2 multiple ng-model="qtyDays" name="qtyDays" data-placeholder="Quantos dias de viagem?" tabindex="4" ng-class="{ 'has-error': form.qtyDays.$dirty && form.qtyDays.$invalid }" required>
+						<option value="0">Somente vôos de ida</option>
+						<option value="1">1 dia</option>
+						<option ng-repeat="day in days" value="{{ day.id }}">{{ day.text }}</option>
+					</select>
 				</div>
 
 				<div class="headerDiv">
-					<label for="qtyDaysSelect" style="height:20px;margin:0" class="help" title="Quantos dias você quer ficar? Escolha mais de 1 opção e ache a melhor">Duração</label>
-					<input type="text" id="qtyDaysSelect" class="" style="width:84%" data-placeholder="Selecione em quantos dias pretende voltar" tabindex="5" />
+					<label class="help" title="{{ help.departure }}">Ida(s)</label>
+					<div multipick ng-model="departureDates" name="departureDates" style="display:inline-block" tabindex="5">
+					</div>
 				</div>
 
-				<div id="divAvancada" class="headerDiv" style="display:none;">
+				<div id="divAvancada" class="headerDiv" ng-show="showAdvancedOptions">
 					<div class="headerDiv">
-						<label for="companiesSelect" style="height:20px;width:20%;margin:0" class="help" title="Pesquise vôos apenas das companhias aéreas desejadas">Companhias</label>
-						<input type="hidden" id="companiesSelect" style="width:78%;" data-placeholder="Selecione as companhias desejadas" />
+						<label class="help" title="{{ help.company }}">Companhias</label>
+						<select ui-select2 multiple ng-model="companies" data-placeholder="Selecione as companhias">
+							<option ng-repeat="company in airlinesCompanies" value="{{ company.id }}">{{ company.text }}</option>
+						</select>
 					</div>
 
 					<div class="headerDiv">
-						<label for="adultsSelect">Adultos</label>
-						<select id="adultsSelect" style="width:13%;">
+						<label>Adultos</label>
+						<select ui-select2 ng-model="adults" style="width:13%;">
 							<option value="0">0</option>
 							<option value="1" selected="selected">1</option>
 							<option value="2">2</option>
@@ -60,8 +74,8 @@
 							<option value="5">5</option>
 						</select>
 						
-						<label for="childrenSelect" style="width:16%;margin-left:2%;">Crianças</label>
-						<select id="childrenSelect" style="width:13%">
+						<label style="width:16%;margin-left:4%">Crianças</label>
+						<select ui-select2 ng-model="children" style="width:13%">
 							<option value="0" selected="selected">0</option>
 							<option value="1">1</option>
 							<option value="2">2</option>
@@ -70,8 +84,8 @@
 							<option value="5">5</option>
 						</select>
 
-						<label for="babiesSelect" style="width:11%;margin-left:2%;">Bebês</label>
-						<select id="babiesSelect" style="width:13%;">
+						<label style="width:11%;margin-left:4%">Bebês</label>
+						<select ui-select2 ng-model="babies" style="width:13%;">
 							<option value="0" selected="selected">0</option>
 							<option value="1">1</option>
 							<option value="2">2</option>
@@ -80,134 +94,158 @@
 							<option value="5">5</option>
 						</select>
 					</div>
-				</div>
-
-				<div class="headerDiv" style="height:33px;">
-					<a id="btnBuscar" href="#" style="outline:none;" class="btn" tabindex="1">Buscar melhores preços</a>
 					
-					<a id="avancada" href="#" style="outline:none;" tabindex="7">Busca avançada</a>
+					<div class="headerDiv">
+						<input type="radio" ng-model="store" value="0" id="store0" />
+						<label for="store0" style="width: auto;">ITA by Google</label>
+						<input type="radio" ng-model="store" value="1" id="store1" />
+						<label for="store1" style="width: auto;">Submarino Viagens</label>
+						<input type="radio" ng-model="store" value="2" id="store2" />
+						<label for="store2" style="width: auto;">Decolar</label>
+					</div>
 					
-					<a id="help" class="help" href="#" style="outline:none;" title="Você pode selecionar:<br/><br/>&nbsp&nbsp 1. Uma ou mais cidades de origem <br/>&nbsp&nbsp 2. Uma ou mais cidades de destino <br/>&nbsp&nbsp 3. Um ou mais dias de ida <br/>&nbsp&nbsp 4. Nenhum ou vários dias de volta <br/>&nbsp&nbsp 5. As companhias aéreas desejadas <br/>&nbsp&nbsp 6. O nº de adultos, crianças e bebês <br/><br/>Sugetões? genghislabs@gmail.com" tabindex="-1">
-						<img src="../../images/help.png" />
-					</a>
+					<div class="headerDiv">
+						<label style="width: auto;">Enviar email para {{ email ? email : '...' }} se achar preço menor que {{ priceEmail ? priceEmail : '...' }} reais:</label>
+					</div>
+					<div class="headerDiv">
+						<input type="email" ng-model="email" name="email" placeholder="Email" ngMinlength="10" ngMaxlength="100" ng-class="{ 'has-error': form.email.$dirty && form.email.$invalid }" />
+						<input type="number" ng-model="priceEmail" name="priceEmail" placeholder="Preço" min="1" max="9999" ngMaxlength="4" ng-class="{ 'has-error': form.priceEmail.$dirty && form.priceEmail.$invalid }" />
+					</div>
+				</div>
+			</form>
 
-					<a id="download" href="#" style="outline:none;" title="Salvar os resultados abaixo <br/><br/>Sugetões? genghislabs@gmail.com" tabindex="6">
-						<img src="../../images/download.png" />
-					</a>
-				</div>
-				
-				<div class="headerDiv" style="margin:0;text-align:right;">
-					<a id="msgLoading" href="#" style="display:none;width: 100%;margin-right:4px;font-size:13px;text-decoration:none;float:right;">
-						Coletando voos <span style="width:20px;float:right">&nbsp;&nbsp;&nbsp;</span>
-					</a>
-					<a id="msgError" href="#" style="display:none;width:100%;margin-right:4px;font-size:13px;text-decoration:none;color:red">
-						Favor corrigir campos incorretos
-					</a>
-				</div>
+			<div class="headerDiv" style="height:33px">
+				<span ng-click="search()" id="btnBuscar" class="btn" tabindex="1" ng-disabled="form.$invalid">Buscar melhores preços</span>
+				<span ng-click="showAdvancedOptions = !showAdvancedOptions" id="avancada" tabindex="7">Busca avançada</span>
+				<span title="{{ help.main }}" id="help" class="help" tabindex="-1">
+					<img src="../../images/help.png" />
+				</span>
+				<span ng-click="saveAsFile(results)" ng-show="numberOfFligths > 0" title="{{ help.download }}" id="download" tabindex="6">
+					<img src="../../images/download.png" />
+				</span>
+			</div>
+			
+			<div class="headerDiv" style="margin:0;text-align:right">
+				<span ng-show="numberOfFligths > 0">
+					{{ numberOfFligths == 1 ? "1 vôo encontrado" : numberOfFligths + " vôos encontrados" }}
+				</span>
+				<span ng-show="showMessageError">
+					Favor corrigir campos incorretos
+				</span>
+			</div>
 		</div>
-		
-		<ul class="template" style="display:none">
-			<li>
+
+		<ul id="results" ng-show="numberOfFligths > 0">
+			<li ng-repeat="result in results">
 				<table>
 					<tr>
 						<th colspan="3">
-							<span class="locals"></span>
-							<span class="bestResultsMsg"> - Melhores Resultados</span>
+							{{ result.key }} - Melhores Resultados
 						</th>
 					</tr>
-					<tr class="stop0 odd">
-						<td class="type">Direto</td>
-						<td class="date">-</td>
+					<tr class="odd">
+						<td>Direto</td>
+						<td>{{ result.best[0].price > 0 ? result.best[0].date : "-" }}</td>
 						<td>
-							<a class="flightUrl" target="_blank" style="display:none">
-								<span class="currency">R$ </span> <span class="bestPrice"></span>
+							<a ng-href="{{ result.best[0].url }}">
+								{{ result.best[0].price > 0 ? currency + " " + result.best[0].price.to2Digits() : "-" }}
 							</a>
 						</td>
 					</tr>
-					<tr class="stop1">
-						<td class="type">1 parada</td>
-						<td class="date">-</td>
+					<tr>
+						<td>1 parada</td>
+						<td>{{ result.best[1].price > 0 ? result.best[1].date : "-" }}</td>
 						<td>
-							<a class="flightUrl" target="_blank" style="display:none">
-								<span class="currency">R$ </span> <span class="bestPrice"></span>
+							<a ng-href="{{ result.best[1].url }}">
+								{{ result.best[1].price > 0 ? currency + " " + result.best[1].price.to2Digits() : "-" }}
 							</a>
 						</td>
 					</tr>
-					<tr class="stop2 odd">
-						<td class="type">2+ paradas</td>
-						<td class="date">-</td>
+					<tr class="odd">
+						<td>2+ paradas</td>
+						<td>{{ result.best[2].price > 0 ? result.best[2].date : "-" }}</td>
 						<td>
-							<a class="flightUrl" target="_blank" style="display:none">
-								<span class="currency">R$ </span> <span class="bestPrice"></span>
+							<a ng-href="{{ result.best[2].url }}">
+								{{ result.best[2].price > 0 ? currency + " " + result.best[2].price.to2Digits() : "-" }}
 							</a>
 						</td>
 					</tr>
 					<tr>
 						<td colspan="3" style="padding:0;">
-							<a class="showResults" href="#" style="display:none">Ampliar Resultados</a>
-							<div class="divResultsExpanded" style="display:none">
-							<table class="tableResultsByDates">
-								<tbody>
-									<tr>
-										<th>Dias</th>
-										<th>Direto</th>
-										<th>1 parada</th>
-										<th>2+ paradas</th>
-									</tr>
-								</tbody>
-							</table>
+							<span ng-click="openResults[result.key] = !openResults[result.key]" class="showResults">
+								{{ openResults[result.key] ? "Resumir Resultados" : "Ampliar Resultados" }}
+							</span>
+							<div class="divResultsExpanded" ng-show="openResults[result.key]">
+								<table class="tableResultsByDates">
+									<thead>
+										<tr>
+											<th>Dias</th>
+											<th>Direto</th>
+											<th>1 parada</th>
+											<th>2+ paradas</th>
+										</tr>
+									</thead>
+									<tbody>
+										<tr ng-repeat="byDates in result.all">
+											<td>{{ byDates.date }}</td>
+											<td>
+												<a ng-href="{{ byDates.url }}">
+													{{ byDates.prices[0] > 0 ? byDates.prices[0].to2Digits() : "-" }}
+												</a>
+											</td>
+											<td>
+												<a ng-href="{{ byDates.url }}">
+													{{ byDates.prices[1] > 0 ? byDates.prices[1].to2Digits() : "-" }}
+												</a>
+											</td>
+											<td>
+												<a ng-href="{{ byDates.url }}">
+													{{ byDates.prices[2] > 0 ? byDates.prices[2].to2Digits() : "-" }}
+												</a>
+											</td>
+										</tr>
+									</tbody>
+								</table>
 
-							<table class="tableResultsByCompanies" style="margin-top:5px">
-								<tbody>
-									<tr>
-										<th>Companhias</th>
-										<th>Direto</th>
-										<th>1 parada</th>
-										<th>2+ paradas</th>
-									</tr>
-								</tbody>
-							</table>
+								<table class="tableResultsByCompanies" style="margin-top:5px">
+									<thead>
+										<tr>
+											<th>Companhias</th>
+											<th ng-if="store == 0">Melhor preço no mês da pesquisa</th>
+											<th ng-if="store > 0">Direto</th>
+											<th ng-if="store > 0">1 parada</th>
+											<th ng-if="store > 0">2+ paradas</th>
+										</tr>
+									</thead>
+									<tbody>
+										<tr ng-repeat="byCompanies in result.bestByCompany | toArray | orderBy: orderCompaniesByPrices"
+											bestPrice="{{ byCompanies[0].bestPrice }}" code="{{ byCompanies[0].code }}">
+											<td>{{ byCompanies.$key }}</td>
+											<td>
+												<a ng-href="{{ byCompanies[0].url }}">
+													{{ byCompanies[0].price > 0 ? byCompanies[0].price.to2Digits() : "-" }}
+												</a>
+											</td>
+											<td ng-if="store > 0">
+												<a ng-href="{{ byCompanies[1].url }}">
+													{{ byCompanies[1].price > 0 ? byCompanies[1].price.to2Digits() : "-" }}
+												</a>
+											</td>
+											<td ng-if="store > 0">
+												<a ng-href="{{ byCompanies[2].url }}">
+													{{ byCompanies[2].price > 0 ? byCompanies[2].price.to2Digits() : "-" }}
+												</a>
+											</td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
 						</td>
 					</tr>
 				</table>
 			</li>
 		</ul>
 
-		<table style="display:none">
-			<tbody class="resultsByDatesTemplate">
-				<tr>
-					<td class="resultsDate"></td>
-					<td>
-						<a class="resultsStop0" target="_blank"></a>
-					</td>
-					<td>
-						<a class="resultsStop1" target="_blank"></a>
-					</td>
-					<td>
-						<a class="resultsStop2" target="_blank"></a>
-					</td>
-				</tr>
-			</tbody>
-		</table>
-		
-		<table style="display:none">
-			<tbody class="resultsByCompaniesTemplate">
-				<tr>
-					<td class="resultsCompany"></td>
-					<td>
-						<a class="resultsStop0" target="_blank"></a>
-					</td>
-					<td>
-						<a class="resultsStop1" target="_blank"></a>
-					</td>
-					<td>
-						<a class="resultsStop2" target="_blank"></a>
-					</td>
-				</tr>
-			</tbody>
-		</table>
-
-		<ul id="results"></ul>
-		<img id="loading" src="../../images/loading.gif">
+		<img id="loading" ng-show="showLoading" src="../../images/loading.gif">
 	</body>
 </html>

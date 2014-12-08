@@ -1,215 +1,267 @@
-//Methods to validate form
-function checkValidForm(form) {
-	if  ((form.origins == null || form.destinations == null || form.qtyDays == null || form.departureDates == null) ||
-		(form.origins.length == 1 && form.destinations.length == 1 && form.origins[0] == form.destinations[0]) ||
-		(form.departureDates.length == 1 && form.departureDates[0] == "") ||
-		(form.adults == 0 && form.children == 0 && form.babies == 0))
-		return false;
-	
-	return true;
-}
-
-function informInvalidForm() {
-	$("#msgError").show();
-}
-
-var loading;
-function showMsgLoading() {
-	$("#msgError").hide();
-	$("#msgLoading").show();
-	loading = setInterval(function () {
-		switch($("#msgLoading span").text().trim()) {
-			case "...": $("#msgLoading span").html("&nbsp;&nbsp;&nbsp;"); break;
-			case "..":  $("#msgLoading span").html("..."); break;
-			case ".":   $("#msgLoading span").html("..&nbsp;"); break;
-			default:    $("#msgLoading span").html(".&nbsp;&nbsp;"); break;
-		}
-	}, 1000);
-}
-
-function finalLoading() {
-	$("#msgLoading").hide();
-	clearInterval(loading);
-}
-
-/****************************************************************************************************************************/
-//Methods to initialize page
-function setUpSelects() {
-	var format = function (item, max_length) {
-		return item.text.length < max_length ? item.text : item.text.substr(0, max_length) + "...";
+var app = angular.module('app', ['ui.select2']);
+app.controller("AngularController", function ($scope) {
+	$scope.showMessageError = false;
+	$scope.showLoading = false;
+	$scope.showAdvancedOptions = false;
+	$scope.numberOfFligths = 0;
+	$scope.currency = "R$";
+	$scope.help = {
+		origins: "De quais cidades você pode partir?",
+		destinations: "Para quais cidades você quer pesquisar?",
+		days: "Quantos dias você quer ficar? Escolha mais de 1 opção e ache a melhor",
+		departure: "Quais dias você pode partir? Escolha mais de 1 e ache o melhor pra você",
+		main: "Você pode selecionar:<br/>&nbsp&nbsp 1. Uma ou mais cidades de origem <br/>&nbsp&nbsp 2. Uma ou mais cidades de destino <br/>&nbsp&nbsp 3. Quantos dias de estadia <br/>&nbsp&nbsp 4. Um ou mais dias de partida <br/>&nbsp&nbsp 5. As companhias aéreas desejadas <br/>&nbsp&nbsp 6. O nº de adultos, crianças e bebês <br/><br/>Sugetões? genghislabs@gmail.com",
+		company: "Pesquise vôos apenas das companhias aéreas desejadas",
+		download: "Salvar os resultados abaixo <br/><br/>Sugetões? genghislabs@gmail.com"
 	};
 
-	$(".select2").select2({
-		multiple: true,
-	    data: popularAirports,
-	    formatSelection: function (i) { return format(i, 34); },
-		formatResult: function (i) { return format(i, 45); },
-	    closeOnSelect: false
-	});
+	$scope.store = "0";
+	$scope.adults = 1;
+	$scope.children = 0;
+	$scope.babies = 0;
+	$scope.companies = [];	
+	$scope.airlinesCompanies = airlinesCompanies;
+	$scope.days = [];
+	for (var i = 2; i <= 120; i++)
+		$scope.days.push({ id: i, text: i + ' dias' });
 
-	$("#companiesSelect").select2({
+	$scope.select2AirportsOptions = {
 		multiple: true,
-	    data: airlinesCompanies,
-	    formatSelection: function (i) { return format(i, 11); },
-	    closeOnSelect: false
-	});
-
-	$("#departureDatesInput").select2({
-		multiple: true,
-	    data: [],
 	    closeOnSelect: true,
-	    openOnEnter: false
-	})
-	.on("select2-opening", function (event) {
-		//prevent to open dropdownlist
-	 	event.preventDefault();
-	})
-	.on("select2-focus", function(event) {
-		if (!$("#departureDatesInputFake").hasClass("hasDatepicker"))
-			$("#departureDatesInputFake").multiDatesPicker({
-				minDate: 0,
-				maxDate: '+11M',
-				showButtonPanel: true,
-				onSelect: function(date) {
-					var dates = $("#departureDatesInput").select2("data").map(function (a) { return a.id; });
-					var i = dates.indexOf(date);
-					if (i > -1) dates.splice(i, 1);
-					else dates.push(date);
+	    formatSelection: function (i) { return i.text.split(",")[0] + " (" + i.id + ")" },
+		initSelection: function(element, callback) {
+			var selection = _.find(data, function(metric){ 
+			  return metric.id === element.val();
+			})
+			callback(selection);
+		},
+		query: function(options){
+			var pageSize = 50;
+			var startIndex  = (options.page - 1) * pageSize;
+			var filteredData = allAirports;
+    		var stripDiacritics = window.Select2.util.stripDiacritics;
 
-					$("#departureDatesInput").select2("data", dates.sort(function (a, b) {
-						return a.split("/").reverse().join("/") < b.split("/").reverse().join("/") ? -1 : 1;
-					}).map(function (a) {
-						return { id: a, text: a.substr(0, 5) }
-					}));
+			if (options.term && options.term.length > 0) {
+				if (!options.context) {
+        			var term = stripDiacritics(options.term.toLowerCase());
+					options.context = allAirports.filter(function (metric) {
+						if (!metric.stripped_text)
+							metric.stripped_text = stripDiacritics(metric.text.toLowerCase());
+						
+						if (!metric.stripped_country)
+							metric.stripped_country = stripDiacritics(metric.country.toLowerCase());
+
+						return (metric.stripped_text.indexOf(term) !== -1 ||
+							metric.stripped_country.indexOf(term) !== -1);
+					});
 				}
-			});
 
-		$("#departureDatesInputFake").focus();
-	 })
-	.on("select2-removing", function (event) {
-		$("#departureDatesInputFake").multiDatesPicker("removeDates", event.val);
-	 });
-	 
-	var days = [{ id: 0, text: 'Somente vôos de ida' }, { id: 1, text: '1 dia' }];
-	for(var i = 2; i <= 30; i++)
-		days.push({ id: i, text: i + ' dias' });
-
-	$("#qtyDaysSelect").select2({
-		multiple: true,
-	    data: days,
-	    closeOnSelect: false
-	});
-
-	$("#adultsSelect, #childrenSelect, #babiesSelect").select2();
-}
-
-function setUpAuxiliaryEvents(dom) {
-	dom.on("click", "#avancada", function () { $("#divAvancada").toggle(); });
-	dom.on("click", "#download", function () { saveTextAsFile(); });
-	dom.on("click", ".showResults", function () {
-		//align the table results and table results by companies
-		$($(this).parent().find(".tableResultsByCompanies td")[0]).width($($(this).parent().find(".tableResultsByDates td")[0]).width());
-		$(this).parent().find(".divResultsExpanded").toggle();
-		$(this).text($(this).text() == "Ampliar Resultados" ? "Resumir Resultados" : "Ampliar Resultados");		
-	});
-
-	$(".help, #download").tipsy({ gravity: 'nw', html: true, fade: true, opacity: 0.9 });
-}
-
-function loadSavedForm(bg) {
-	var request = bg.getRequest();
-	if (request.origins != undefined)
-		$("#originsSelect").select2("val", request.origins);
-
-	if (request.destinations != undefined)
-		$("#destinationsSelect").select2("val", request.destinations);
-			
-	if (request.departureDates != undefined) {
-		$("#departureDatesInput").select2("data", request.departureDates.map(function (a) {
-				return { id: a, text: a.substr(0, 5) }
-			}));
-
-		$("#departureDatesInputFake").multiDatesPicker({
-			minDate: 0,
-			maxDate: '+11M',
-			showButtonPanel: true,
-			addDates: request.departureDates,
-			defaultDate: request.departureDates.sort()[0],
-			onSelect: function (date) {
-				var dates = $("#departureDatesInput").select2("data").map(function (a) { return a.id; });
-				var i = dates.indexOf(date);
-				if (i > -1) dates.splice(i, 1);
-				else dates.push(date);
-
-				$("#departureDatesInput").select2("data", dates.sort(function (a, b) {
-					return a.split("/").reverse().join("/") < b.split("/").reverse().join("/") ? -1 : 1;
-				}).map(function (a) {
-					return { id: a, text: a.substr(0, 5) }
-				}));
+				filteredData = options.context;
 			}
-		});
-	}
-		
-	if (request.qtyDays != undefined)
-		$("#qtyDaysSelect").select2("val", request.qtyDays);
-}
 
-function loadSavedResults(bg) {
-	var results = bg.getResultsList();
-	if (results != undefined && results != null && results.length > 0)
-		for (var i in results) {
-			if (!(results[i].best))
-				continue;
-
-			addNewCitiesPair(results[i].key,
-				results[i].best.map(function (a) { return a.date; }),
-				results[i].best.map(function (a) { return a.url; }),
-				results[i].best.map(function (a) { return a.price; })
-			);
-
-			addCompaniesToResults(results[i].key, results[i].bestByCompany);
-			for (var j in results[i].all)
-				addDateToResults(results[i].key, results[i].all[j].date, results[i].all[j].url, results[i].all[j].prices);
+			options.callback({
+				context: filteredData,
+			  	results: filteredData.slice(startIndex, startIndex + pageSize),
+			  	more: (startIndex + pageSize) < filteredData.length
+			});
 		}
+	}
+	
+	$scope.results = [];
+	$scope.openResults = {};
+	$scope.updateResults = function (resultsJson) {
+		var results = angular.fromJson(resultsJson);
+		if (results == undefined || results == null || results.length == 0) return;
 
-	if (bg.IsOver())
-		finalLoading();
-	else
-		showMsgLoading();
-}
+		$scope.showLoading = false;
+		$scope.numberOfFligths = results.reduce(function (prev, item) {
+			if (item.all.length == 1)
+				$scope.openResults[item.key] = false;
 
-$(document).ready(function () {
-	var dom = $(document);
+			return prev + item.all.length;
+		}, 0);
+	
+		$scope.results = results;
+	}
+
 	var bg = chrome.extension.getBackgroundPage().BG;
 	bg.hideBadge();
 
-	setUpSelects();
-	setUpAuxiliaryEvents(dom);
+	var request = bg.getRequest();
+	$scope.origins = request.origins == undefined ? [] : request.origins;
+	$scope.destinations = request.destinations == undefined ? [] :request.destinations;
+	$scope.departureDates = request.departureDates == undefined ? [] : request.departureDates;
+	$scope.qtyDays = request.qtyDays == undefined ? [] : request.qtyDays;
+	$scope.store = request.store == undefined ? "0" : request.store;
 
-	dom.on("click", "#btnBuscar", function () {
-		var request = {
-			origins: 		$("#originsSelect").select2("val"),
-			destinations: 	$("#destinationsSelect").select2("val"),
-			departureDates: $("#departureDatesInput").select2("val"),
-			qtyDays: 		$("#qtyDaysSelect").select2("val"),
-			companies: 		$("#companiesSelect").select2("val"),
-			adults: 		$("#adultsSelect").val(),
-			children: 		$("#childrenSelect").val(),
-			babies: 		$("#babiesSelect").val()
-		};
-		console.log(request);
-			
-		if (!checkValidForm(request))
-			informInvalidForm();
+	var resultsJson = bg.getResultsList();
+	$scope.updateResults(resultsJson);
+	$scope.saveAsFile = saveTextAsFile;
+
+	var checkInvalidForm = function () {
+		return	($scope.origins == null || $scope.origins.length == 0 || $scope.destinations == null || $scope.destinations.length == 0) ||
+				($scope.qtyDays == null || $scope.qtyDays.length == 0 || $scope.departureDates == null || $scope.departureDates.length == 0) ||
+				($scope.origins.length == 1 && $scope.destinations.length == 1 && $scope.origins[0].id == $scope.destinations[0].id) ||
+				($scope.adults == 0 && $scope.children == 0 && $scope.babies == 0);
+	}
+
+	$scope.search = function () {
+		if (checkInvalidForm())
+			$scope.showMessageError = true;
 		else {
-			showMsgLoading();
-			$("#results").html("");
-			$("#loading").show();
-			
-			bg.init(request);
-		}
-	});
+			$scope.showMessageError = false;
+			$scope.showLoading = true;
+			$scope.numberOfFligths = 0;
+			$scope.results = [];
 
-	loadSavedForm(bg);
-	loadSavedResults(bg);
+			var departures = angular.copy($scope.departureDates).sort();
+			chrome.extension.getBackgroundPage().BG.init({
+				origins: $scope.origins,
+				destinations: $scope.destinations,
+				qtyDays: $scope.qtyDays,
+				departureDates: departures,
+				companies: $scope.companies,
+				adults: $scope.adults,
+				children: $scope.children,
+				babies: $scope.babies,
+				store: $scope.store,
+				email: $scope.email,
+				priceEmail: $scope.priceEmail
+			});
+		}
+	}
+
+	$scope.stopSearching = function () {
+		chrome.extension.getBackgroundPage().PQ.stopServer();
+	}
+
+	$scope.orderCompaniesByPrices = function (company) {
+		return company == undefined ? Number.MAX_SAFE_INTEGER : parseFloat(company[0].bestPrice);
+	}
+
+	$(".help, #download").tipsy({ gravity: 'nw', html: true, fade: true, opacity: 0.9 });
 });
+
+app.filter('toArray', function () {
+    'use strict';
+
+    return function (obj) {
+    	return Object.keys(obj).map(function (key) {
+            return Object.defineProperty(obj[key], '$key', {__proto__: null, value: key});
+        });
+    }
+});
+
+
+app.directive('multipick', function () {
+	return {
+		link: function(scope, elm, attrs) {
+			var addCustomButtons = function (year, month) {
+			    setTimeout(function() {
+			        $("<button>", {
+			            text: "Limpar",
+			    		click: function() {
+			    			elm.multiDatesPicker('resetDates');
+							addCustomButtons(year, month);
+							scope.$apply(function() {
+								scope[attrs.ngModel].splice(0); //removes all days
+							});
+			    		}
+			        })
+			        .appendTo($(".ui-datepicker-buttonpane"))
+			        .addClass("ui-datepicker-clear ui-state-default ui-priority-secondary ui-corner-all");
+			        
+			        $("<button>", {
+			            text: "Mês todo",
+			    		click: function() {
+			    			var days = getValidDaysInMonth(year, month);
+			    			elm.multiDatesPicker('addDates', days);
+							addCustomButtons(year, month);
+							scope.$apply(function() {
+								for (var i in days)
+									if ($.inArray(days[i], scope[attrs.ngModel]) == -1)
+										scope[attrs.ngModel].push(days[i]); //insert all new days
+							});
+			    		}
+			        })
+			        .appendTo($(".ui-datepicker-buttonpane"))
+			        .addClass("ui-datepicker-clear ui-state-default ui-priority-secondary ui-corner-all");
+			    }, 1);
+			};
+			
+			scope.$watch(attrs.ngModel, function(value) {
+				if (typeof value == 'undefined') value = [];
+				var options = {
+					minDate: 0,
+					maxDate: '+11M',
+					showButtonPanel: true,
+					dateFormat: "yy/mm/dd",
+					onSelect: function(date) {
+						var dateIndex = $.inArray(date, value);
+						if (dateIndex !== -1)
+							value.splice(dateIndex, 1);
+						else
+							value.push(date);
+						
+						scope.$apply();
+						addCustomButtons(date.substr(0, 4), date.substr(5, 2));
+					},
+				    onChangeMonthYear: function(year, month) {
+				    	addCustomButtons(year, month);
+				    }
+				};
+				
+				if (value.length !== 0) {
+					var dates = value.sort();
+					options.addDates = dates;
+					options.defaultDate = dates[0];
+				}
+				else {
+					var today = new Date();
+					options.defaultDate = today.getDateString();
+				}
+				
+				elm.multiDatesPicker(options);
+		    	addCustomButtons(options.defaultDate.split("/")[0], options.defaultDate.split("/")[1]);
+			});
+		}
+	};
+});
+
+//month must be between 1 and 12
+function getValidDaysInMonth(year, month) {
+	var date = new Date(year, month - 1, 1);
+	var yesterday = new Date();
+	yesterday.setDate(yesterday.getDate() - 1);
+	var days = [];
+	while (date.getMonth() === month - 1) {
+		if (date > yesterday)
+			days.push(date.getDateString());
+		
+		date.setDate(date.getDate() + 1);
+	}
+
+	return days;
+}
+
+Number.prototype.to2Digits = function () {
+   return this.toFixed(2).toString().replace(".", ",");
+}
+
+String.prototype.to2Digits = function () {
+	return this == "" ? "-" : parseFloat(this).to2Digits();
+}
+
+Date.prototype.getDateString = function () {
+   return this.getFullYear() + '/' + this.getMonth2() + '/' + this.getDate2();
+}
+
+Date.prototype.getDate2 = function () {
+   var date = this.getDate();
+   return (date < 10 ? '0' : '') + date;
+}
+
+Date.prototype.getMonth2 = function () {
+   var month = this.getMonth() + 1;
+   return (month < 10 ? '0' : '') + month;
+}
