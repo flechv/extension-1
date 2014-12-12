@@ -10,7 +10,7 @@ app.controller("AngularController", function ($scope) {
 		destinations: "Para quais cidades você quer pesquisar?",
 		days: "Quantos dias você quer ficar? Escolha mais de 1 opção e ache a melhor",
 		departure: "Quais dias você pode partir? Escolha mais de 1 e ache o melhor pra você",
-		main: "Você pode selecionar:<br/>&nbsp&nbsp 1. Uma ou mais cidades de origem <br/>&nbsp&nbsp 2. Uma ou mais cidades de destino <br/>&nbsp&nbsp 3. Quantos dias de estadia <br/>&nbsp&nbsp 4. Um ou mais dias de partida <br/>&nbsp&nbsp 5. As companhias aéreas desejadas <br/>&nbsp&nbsp 6. O nº de adultos, crianças e bebês <br/><br/>Sugetões? genghislabs@gmail.com",
+		main: "Você pode selecionar:<br/><br/>&nbsp&nbsp 1. Uma ou mais cidades de origem <br/>&nbsp&nbsp 2. Uma ou mais cidades de destino <br/>&nbsp&nbsp 3. Quantos dias de estadia <br/>&nbsp&nbsp 4. Um ou mais dias de partida <br/>&nbsp&nbsp 5. As companhias aéreas desejadas <br/>&nbsp&nbsp 6. O nº de adultos, crianças e bebês <br/>&nbsp&nbsp 7. Site que deseja pesquisar <br/>&nbsp&nbsp 8. Um email para ser avisado <br/><br/>Sugetões? genghislabs@gmail.com",
 		company: "Pesquise vôos apenas das companhias aéreas desejadas",
 		download: "Salvar os resultados abaixo <br/><br/>Sugetões? genghislabs@gmail.com"
 	};
@@ -139,7 +139,7 @@ app.controller("AngularController", function ($scope) {
 		return company == undefined ? Number.MAX_SAFE_INTEGER : parseFloat(company[0].bestPrice);
 	}
 
-	$(".help, #download").tipsy({ gravity: 'nw', html: true, fade: true, opacity: 0.9 });
+	$(".help, #download").tipsy({ gravity: 'w', html: true, fade: true, opacity: 0.9 });
 });
 
 app.filter('toArray', function () {

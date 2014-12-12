@@ -8,7 +8,7 @@ var PRM = (function () {
     }
     
     return my;
-}(ITA, SUBMARINO, DECOLAR));
+}(SUBMARINO, DECOLAR, ITA));
 
 //Priority Queue
 var PQ = (function (PRM) {

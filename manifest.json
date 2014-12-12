@@ -1,10 +1,11 @@
 {
-  "name": "Passagens aéreas melhores preços Genghis Labs",
+  "name": "Passagens aéreas",
   "short_name": "Genghis Labs",
   "author": "Breno Vieira",
-  "version": "1.2",
+  "version": "1.3",
   "manifest_version": 2,
-  "description": "Busque as melhores passagens aéreas para várias cidades e vários dias de uma só vez. Rápido, seguro e o melhor: sem pagar nada!",
+  "homepage_url": "https://github.com/brenovieira/extensao",
+  "description": "Pesquise passagens para várias cidades e vários dias de 1 só vez. Rápido, seguro e o melhor: sem pagar nada!",
   "icons": {
     "16": "images/icon16.png",
     "48": "images/icon48.png",

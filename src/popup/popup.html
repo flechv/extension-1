@@ -96,12 +96,12 @@
 					</div>
 					
 					<div class="headerDiv">
-						<input type="radio" ng-model="store" value="0" id="store0" />
-						<label for="store0" style="width: auto;">ITA by Google</label>
+						<input type="radio" ng-model="store" value="0" id="store0" checked />
+						<label for="store0" style="width: auto;">Submarino Viagens</label>
 						<input type="radio" ng-model="store" value="1" id="store1" />
-						<label for="store1" style="width: auto;">Submarino Viagens</label>
-						<input type="radio" ng-model="store" value="2" id="store2" />
 						<label for="store2" style="width: auto;">Decolar</label>
+						<input type="radio" ng-model="store" value="2" id="store2" />
+						<label for="store2" style="width: auto;">ITA by Google</label>
 					</div>
 					
 					<div class="headerDiv">
@@ -211,10 +211,10 @@
 									<thead>
 										<tr>
 											<th>Companhias</th>
-											<th ng-if="store == 0">Melhor preço no mês da pesquisa</th>
-											<th ng-if="store > 0">Direto</th>
-											<th ng-if="store > 0">1 parada</th>
-											<th ng-if="store > 0">2+ paradas</th>
+											<th ng-if="store == 2">Melhor preço no mês da pesquisa</th>
+											<th ng-if="store < 2">Direto</th>
+											<th ng-if="store < 2">1 parada</th>
+											<th ng-if="store < 2">2+ paradas</th>
 										</tr>
 									</thead>
 									<tbody>
@@ -226,12 +226,12 @@
 													{{ byCompanies[0].price > 0 ? byCompanies[0].price.to2Digits() : "-" }}
 												</a>
 											</td>
-											<td ng-if="store > 0">
+											<td ng-if="store < 2">
 												<a ng-href="{{ byCompanies[1].url }}">
 													{{ byCompanies[1].price > 0 ? byCompanies[1].price.to2Digits() : "-" }}
 												</a>
 											</td>
-											<td ng-if="store > 0">
+											<td ng-if="store < 2">
 												<a ng-href="{{ byCompanies[2].url }}">
 													{{ byCompanies[2].price > 0 ? byCompanies[2].price.to2Digits() : "-" }}
 												</a>
