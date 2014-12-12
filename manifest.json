@@ -1,0 +1,44 @@
+{
+  "name": "Passagens aéreas melhores preços Genghis Labs",
+  "short_name": "Genghis Labs",
+  "author": "Breno Vieira",
+  "version": "1.2",
+  "manifest_version": 2,
+  "description": "Busque as melhores passagens aéreas para várias cidades e vários dias de uma só vez. Rápido, seguro e o melhor: sem pagar nada!",
+  "icons": {
+    "16": "images/icon16.png",
+    "48": "images/icon48.png",
+    "128": "images/icon128.png"
+  },
+  "background": {
+    "scripts": [
+      "js/jquery-2.0.3.min.js",
+      "js/airlinesCompanies.js",
+      "js/allAirports.js",
+      "src/bg/decolar.js",
+      "src/bg/submarinoViagens.js",
+      "src/bg/itaSoftware.js",
+      "src/bg/priorityQueue.js",
+      "src/bg/storeManager.js",
+      "src/bg/background.js"
+    ],
+    "persistent": true
+  },
+  "browser_action": {
+    "default_icon": "images/icon19.png",
+    "default_title": "Buscar Passagens",
+    "default_popup": "src/popup/popup.html"
+  },
+  "permissions": [
+    "*://*/*",
+    "tabs"
+  ],
+  "content_scripts": [
+    {
+      "matches": ["http://www.decolar.com/*iframe"],
+      "js": ["src/content scripts/decolar.js"],
+      "all_frames": true
+    }
+  ],
+  "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'"
+}
