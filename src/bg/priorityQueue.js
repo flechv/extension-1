@@ -18,10 +18,14 @@ var PQ = (function (PRM) {
         list = new Array(), time, callback;
 
 //public methods
-    my.queue = function (item) {
+    my.enqueue = function (item) {
         list.push(item);
         list.sort(function (a, b) { return a.times[0] - b.times[0]; });
     };
+    
+    my.isEmpty = function() {
+        return list.length == 0;
+    }
 
     my.initServer = function (request, backgroundCallback) {
         SM.put("request", JSON.stringify(request));
@@ -90,7 +94,7 @@ var PQ = (function (PRM) {
 
     var receiveData = function (data) {
         data.times.splice(0, 0, estimatedTimeToBeReady(data.times[0]));
-        my.queue(data);
+        my.enqueue(data);
     };
 
     var estimatedTimeToBeReady = function (time) {

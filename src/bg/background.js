@@ -21,7 +21,7 @@ var BG = (function (SM, PQ) {
                         var returnDate = req.qtyDays[w] == 0 ? null : addDaystoDate(req.departureDates[k], req.qtyDays[w]);
                         var url = getUrl(req.store, origin, destination, req.departureDates[k], returnDate, req.adults, req.children, req.babies);
                         
-                        PQ.queue({
+                        PQ.enqueue({
                             url: url,
                             origin: origin,
                             destination: destination,
@@ -44,6 +44,10 @@ var BG = (function (SM, PQ) {
         setTimeout(function () {
             PQ.initServer(req, getResponse);
         }, 1);
+    }
+    
+    my.showLoading = function() {
+        return !PQ.isEmpty() && my.getResultsList().length == 0;
     }
 
     my.hideBadge = function () {
