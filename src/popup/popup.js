@@ -1,7 +1,9 @@
 var app = angular.module('app', ['ui.select2']);
 app.controller("AngularController", function ($scope) {
+	var bg = chrome.extension.getBackgroundPage().BG;
+    
 	$scope.showMessageError = false;
-	$scope.showLoading = false;
+	$scope.showLoading = bg.showLoading();
 	$scope.showAdvancedOptions = false;
 	$scope.numberOfFligths = 0;
 	$scope.currency = "R$";
@@ -83,8 +85,7 @@ app.controller("AngularController", function ($scope) {
 	
 		$scope.results = results;
 	}
-
-	var bg = chrome.extension.getBackgroundPage().BG;
+    
 	bg.hideBadge();
 
 	var request = bg.getRequest();
