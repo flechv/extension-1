@@ -1,6 +1,6 @@
 //Request Manager for "Decolar"
 var DECOLAR = (function () {
-    var my = {};
+    var self = {};
 
     const SITE_BASE_URL = "http://www.decolar.com/shop/flights/results/",
         GAP_TIME_SERVER = 2000,
@@ -14,15 +14,15 @@ var DECOLAR = (function () {
     });
         
 //public methods
-    my.getGapTimeServer = function () {
+    self.getGapTimeServer = function () {
         return GAP_TIME_SERVER;
     };
 
-    my.getMaxWaiting = function () {
+    self.getMaxWaiting = function () {
         return MAX_WAITING;
     };
 
-    my.sendRequest = function (data, successCallback, failCallback, time) {
+    self.sendRequest = function (data, successCallback, failCallback, time) {
         callbackSuccess = successCallback;
 
         try {
@@ -41,7 +41,7 @@ var DECOLAR = (function () {
                 "else document.getElementById('" + id + "').src = '" + url + "';";
 
             chrome.tabs.query({ url: "http://www.decolar.com/*" }, function (tabs) {
-                if (tabs == undefined || tabs == null || tabs.length == 0 || tabs[0].id == undefined)
+                if (tabs === undefined || tabs === null || tabs.length === 0 || tabs[0].id === undefined)
                     chrome.tabs.create({ url: "http://www.decolar.com/",  active: false }, function (tab) {
                         chrome.tabs.executeScript(tab.id, { code: code }, function () {});
                     });
@@ -53,18 +53,18 @@ var DECOLAR = (function () {
             console.log(error);
             failCallback(data);
         }
-    }
+    };
 
 //private methods
     //http://www.decolar.com/shop/flights/results/oneway/RIO/GRU/2014-12-31/1/0/0
     //dates must be in format yyyy/mm/dd
     var getSiteUrl = function (page) {
-        var params = new Array();
-        params.push(page.returnDate == null ? "oneway" : "roundtrip");
+        var params = [];
+        params.push(page.returnDate === null ? "oneway" : "roundtrip");
         params.push(page.origin.toLowerCase());
         params.push(page.destination.toLowerCase());
         params.push(page.departureDate.split('/').join('-'));
-        if (page.returnDate != null)
+        if (page.returnDate !== null)
             params.push(page.returnDate.split('/').join('-'));
 
         params.push(page.adults);
@@ -86,7 +86,7 @@ var DECOLAR = (function () {
             text = text.replace(new RegExp('&'+entities[i][0]+';', 'g'), entities[i][1]);
 
         return text;
-    }
+    };
 
     var mapAjaxResponse = function (response, sender, sendResponse) {
         var url = sender.url.replace("iframe", "utm_source=genghis");
@@ -162,7 +162,7 @@ var DECOLAR = (function () {
 
         callbackSuccess(pages[sender.url], info);
         */
-    }
+    };
 
-    return my;
+    return self;
 }());

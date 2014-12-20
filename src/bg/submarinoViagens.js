@@ -1,12 +1,12 @@
 /*
 //Request Manager for "Submarino Viagens"
 var SUBMARINO_MOBILE = (function () {
-    var my = {};
+    var self = {};
 
     const SERVICE_BASE_URL = "http://m.submarinoviagens.com.br/b2wviagens/passagens";
     
 //public methods
-    my.sendRequest = function (data, successCallback, failCallback, time) {
+    self.sendRequest = function (data, successCallback, failCallback, time) {
         var xhr = new XMLHttpRequest();
         xhr.open("GET", SERVICE_BASE_URL + "?" getQueryString(data), true);
         xhr.setRequestHeader('Content-type', 'application/json');
@@ -74,13 +74,13 @@ var SUBMARINO_MOBILE = (function () {
         callback(data, info);
     }
 
-    return my;
+    return self;
 }());
 */
 
 //Request Manager for "Submarino Viagens"
 var SUBMARINO = (function () {
-    var my = {};
+    var self = {};
 
     const SERVICE_BASE_URL = "http://www.submarinoviagens.com.br/passagens/UIService/Service.svc/",
         SEARCH_PRIORITY_URL = "SearchGroupedFlightsPagingResultJSONMinimum",
@@ -91,35 +91,35 @@ var SUBMARINO = (function () {
         MAX_WAITING = 8;
 
 //public methods
-    my.getGapTimeServer = function () {
+    self.getGapTimeServer = function () {
         return GAP_TIME_SERVER;
     };
 
-    my.getMaxWaiting = function () {
+    self.getMaxWaiting = function () {
         return MAX_WAITING;
     };
 
-    my.sendRequest = function (data, successCallback, failCallback, time) {
+    self.sendRequest = function (data, successCallback, failCallback, time) {
         var xhr = new XMLHttpRequest();
         xhr.open("POST", SERVICE_BASE_URL + (data.isPriority ? SEARCH_PRIORITY_URL : SEARCH_SECONDARY_URL), true);
         xhr.setRequestHeader('Content-type', 'application/json');
 
         var dateInit = new Date();
-        xhr.onreadystatechange = function() {
-            if (xhr.readyState == 4 && xhr.status == 200) {
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === 4 && xhr.status === 200) {
                 try {
                     var dateFinal = new Date();
                     data.times.splice(0, 0, time + (dateFinal - dateInit));
                     
                     var response = JSON.parse(xhr.responseText);
-                    if (typeof response == "string")
+                    if (typeof response === "string")
                         response = deserializer(JSON.parse(response));
 
                     //over 5 attempts, give up
                     if (data.times.length > 10)
                         mapAjaxResponse(data, { PriceMatrix: { AirCompanies: [] }, AirFiltersData: { NumberOfStops: [] } }, successCallback);
 
-                    else if (response.SearchId.replace(/-/g, '').replace(/0/g, '') == '')
+                    else if (response.SearchId.replace(/-/g, '').replace(/0/g, '') === '')
                         throw "SearchId empty";
                     
                     else if (response.Status == 0 || response.PriceMatrix == null ||
@@ -141,7 +141,7 @@ var SUBMARINO = (function () {
                     failCallback(data);
                 }
             }
-        }
+        };
 
         try
         {
@@ -150,12 +150,12 @@ var SUBMARINO = (function () {
         catch(error) {
             failCallback(data);
         }
-    }
+    };
 
 //private methods
     //dates must be in format yyyy/mm/dd
     var getPriorityRequestData = function (data) {
-        var companies = data.companies == undefined ? [] : data.companies.map(function (a) { return a.code; });
+        var companies = data.companies === undefined ? [] : data.companies.map(function (a) { return a.code; });
 
         return JSON.stringify({
             filter: null,
@@ -167,7 +167,7 @@ var SUBMARINO = (function () {
                 SearchData: {
                     AirSearchData: {
                         CabinFilter: null,
-                        CityPairsRequest: data.returnDate == null ? 
+                        CityPairsRequest: data.returnDate === null ? 
                             [{
                                 CiaCodeList:        companies,
                                 NonStop:            false,
@@ -267,5 +267,5 @@ var SUBMARINO = (function () {
         callback(data, info);
     }
 
-    return my;
+    return self;
 }());

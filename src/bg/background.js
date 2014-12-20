@@ -1,24 +1,24 @@
 var BG = (function (SM, PQ) {
-    var my = {};
+    var self = {};
 
     const APP_NAME = "genghis", GAP_TIME = 300;
 
     var sendEmailTimeout;
 
 //public methods
-    my.init = function (req) {
+    self.init = function (req) {
         var time = 0;
         PQ.stopServer();
 
-        var companies = req.companies.map(function (a) { return airlinesCompaniesById[a]; });
-        for (var i in req.origins)
-            for (var j in req.destinations) {
+        var i, j, k, w, companies = req.companies.map(function (a) { return airlinesCompaniesById[a]; });
+        for (i in req.origins) {
+            for (j in req.destinations) {
                 var origin = req.origins[i].id, destination = req.destinations[j].id;
-                if (origin == destination) continue;
+                if (origin === destination) continue;
                 
-                for (var k in req.departureDates)
-                    for (var w in req.qtyDays) {
-                        var returnDate = req.qtyDays[w] == 0 ? null : addDaystoDate(req.departureDates[k], req.qtyDays[w]);
+                for (k in req.departureDates) {
+                    for (w in req.qtyDays) {
+                        var returnDate = req.qtyDays[w] === 0 ? null : addDaystoDate(req.departureDates[k], req.qtyDays[w]);
                         var url = getUrl(req.store, origin, destination, req.departureDates[k], returnDate, req.adults, req.children, req.babies);
                         
                         PQ.enqueue({
@@ -39,41 +39,43 @@ var BG = (function (SM, PQ) {
 
                         time += GAP_TIME;
                     }
+                }
             }
+        }
         
         setTimeout(function () {
             PQ.initServer(req, getResponse);
         }, 1);
-    }
+    };
     
-    my.showLoading = function() {
-        return !PQ.isEmpty() && my.getResultsList().length == 0;
-    }
+    self.showLoading = function() {
+        return !PQ.isEmpty() && self.getResultsList().length === 0;
+    };
 
-    my.hideBadge = function () {
+    self.hideBadge = function () {
         chrome.browserAction.setBadgeText({ "text": "" });
-    }
+    };
 
-    my.getRequest = function () {
+    self.getRequest = function () {
         return !SM.get("request") ? {} : JSON.parse(SM.get("request"));
-    }
+    };
 
-    my.getResultsList = function () {
+    self.getResultsList = function () {
         return !SM.get("resultsList") ? [] : JSON.parse(SM.get("resultsList"));
-    }
+    };
 
 //private methods
     //date must be in format yyyy/mm/dd
     var addDaystoDate = function (strDate, days) {
         var dateSplited = strDate.split("/");
         var date = new Date(dateSplited[0], (dateSplited[1] - 1), parseInt(dateSplited[2]) + parseInt(days));
-        return date.getFullYear() + '/' + date.getMonth2() + '/'+ date.getDate2();
-    }
+        return date.getFullYear() + '/' + date.getMonth2() + '/' + date.getDate2();
+    };
 
     var getUrl = function (siteToSearch, origin, destination, departureDate, returnDate, adults, children, babies) {
         switch(siteToSearch) {
             case "2":
-                return returnDate == null ?
+                return returnDate === null ?
                     "http://www.decolar.com/shop/flights/results/oneway/" + origin + "/" + destination + "/" + 
                     departureDate.split('/').join('-') + "/" + adults + "/" + children + "/" + babies + "?utm_source=" + APP_NAME :
                 
@@ -82,7 +84,7 @@ var BG = (function (SM, PQ) {
                     adults + "/" + children + "/" + babies + "?utm_source=" + APP_NAME;
 
             case "0": case "1": default:
-                return returnDate == null ?
+                return returnDate === null ?
                     "http://www.submarinoviagens.com.br/Passagens/selecionarvoo?SomenteIda=true" +
                     "&Origem=" + origin + "&Destino=" + destination + "&Data=" + departureDate.split('/').reverse().join('/') +
                     "&NumADT=" + adults + "&NumCHD=" + children + "&NumINF=" + babies + "&utm_source=" + APP_NAME :
@@ -92,17 +94,17 @@ var BG = (function (SM, PQ) {
                     "&Origem=" + destination + "&Destino=" + origin + "&Data=" + returnDate.split('/').reverse().join('/') + 
                     "&NumADT=" + adults + "&NumCHD=" + children + "&NumINF=" + babies + "&utm_source=" + APP_NAME;            
         }
-    }
+    };
 
     var getResponse = function (page, response) {
         PQ.decreaseWaiting();
 
-        var info = filterInfoWithValidCompanies(page, response);
-        var results = savePricesReceived(page, info);
+        var info = filterInfoWithValidCompanies(page, response),
+            results = savePricesReceived(page, info);
 
         var popup = chrome.extension.getViews({ type: 'popup' })[0];
-        if (popup != undefined) {
-            my.hideBadge();
+        if (popup !== undefined) {
+            self.hideBadge();
             var scope = popup.angular
                 .element(popup.document.getElementsByTagName('body'))
                 .scope();
@@ -120,7 +122,7 @@ var BG = (function (SM, PQ) {
 
         if (page.email !== undefined && page.priceEmail !== undefined)
             sendEmailIfLowFare(page, results);
-    }
+    };
 
     var filterInfoWithValidCompanies = function (page, response) {
         if (page.companies == undefined || page.companies == null || page.companies.length == 0)
@@ -148,13 +150,13 @@ var BG = (function (SM, PQ) {
                 info.prices[i] = 0;
 
         return info;
-    }
+    };
 
     var getMinimumFloat = function (p1, p2) {
         var f1 = isNaN(parseFloat(p1)) || p1 == 0 ? Number.MAX_VALUE : parseFloat(p1);
         var f2 = isNaN(parseFloat(p2)) || p2 == 0 ? Number.MAX_VALUE : parseFloat(p2);
         return Math.min(f1, f2);
-    }
+    };
 
     var getMinPrice = function (prices) {
         var minPrice = Number.MAX_SAFE_INTEGER;
@@ -163,11 +165,11 @@ var BG = (function (SM, PQ) {
                 minPrice = prices[k];
 
         return minPrice;
-    }
+    };
 
     //save to SM prices received from page (origin, destination, url, dates) and info (prices)
     var savePricesReceived = function (page, info) {
-        var results = my.getResultsList(), key = getKey(page), date = getDateFormatted(page), url = page.url;
+        var results = self.getResultsList(), key = getKey(page), date = getDateFormatted(page), url = page.url;
         var index = getIndexResultForKey(results, key), minPrice = getMinPrice(info.prices);
             
         if (index == undefined) {
@@ -211,7 +213,7 @@ var BG = (function (SM, PQ) {
         SM.put("receivedPages", !SM.get("receivedPages") ? 1 : parseInt(SM.get("receivedPages")) + 1);
 
         return results;
-    }
+    };
 
     var getIndexResultForKey = function (results, key) {
         for (var i = results.length - 1; i >= 0; i--)
@@ -219,16 +221,16 @@ var BG = (function (SM, PQ) {
                 return i;
 
         return undefined;
-    }
+    };
   
     var updateBadge = function () {
         chrome.browserAction.setBadgeBackgroundColor({"color": [220, 0, 0, 255]});
         chrome.browserAction.setBadgeText({ "text": SM.get("receivedPages") });
-    }
+    };
 
     var getKey = function (page) {
         return page.origin + "-" + page.destination;
-    }
+    };
 
     //dates must be in format yyyy/mm/dd and will be shown in format dd/mm/yyyy
     var getDateFormatted = function (page) {
@@ -238,7 +240,7 @@ var BG = (function (SM, PQ) {
             response += " - " + page.returnDate.split('/').reverse().join('/');
 
         return response;
-    }
+    };
 
     var sendEmailIfLowFare = function (page, results) {
         var datesWithLowFare = "";
@@ -294,7 +296,7 @@ var BG = (function (SM, PQ) {
                 });
             }, 2000 * 60); //wait two minutes, enough time to fetch more results
         }
-    }
+    };
 /*
     var getPages = function () {
         return !SM.get("pages") ? [] : JSON.parse(SM.get("pages"));
@@ -331,7 +333,7 @@ var BG = (function (SM, PQ) {
           }, function() {});
     }
 */
-    return my;
+    return self;
 }(SM, PQ));
 
 Date.prototype.getDate2 = function () {

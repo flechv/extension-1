@@ -1,6 +1,6 @@
 //Request Manager for "ITA Software"
 var ITA = (function () {
-    var my = {};
+    var self = {};
 
     const SERVICE_BASE_URL = "http://matrix.itasoftware.com/xhr/shop/",
         SEARCH_PRIORITY_URL = "search",
@@ -14,15 +14,15 @@ var ITA = (function () {
     var cache = {}, companyCache = {}, cacheTime = new Date(), receivedStops = 0;
 
 //public methods
-    my.getGapTimeServer = function () {
+    self.getGapTimeServer = function () {
         return GAP_TIME_SERVER;
     };
 
-    my.getMaxWaiting = function () {
+    self.getMaxWaiting = function () {
         return MAX_WAITING;
     };
 
-    my.sendRequest = function (data, successCallback, failCallback) {
+    self.sendRequest = function (data, successCallback, failCallback) {
         var now = new Date();
         now.setHours(now.getHours() - CACHE_TIMEOUT_HOURS);
         if (now <= cacheTime && cache[getDataKey(data)] !== undefined) {            
@@ -47,13 +47,12 @@ var ITA = (function () {
         xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest");
 
         xhr.onreadystatechange = function () {
-            if (xhr.readyState == 4 && xhr.status == 200) {
+            if (xhr.readyState === 4 && xhr.status === 200) {
                 try {
                     var response = eval("(" + xhr.responseText + ")");
-                    console.log(response);
                     
-                    if (response.error != undefined)
-                        throw response.error.message != undefined ? response.error.message : "unknown error";
+                    if (response.error !== undefined)
+                        throw response.error.message !== undefined ? response.error.message : "unknown error";
 
                     if (data.isPriority) {
                         data.isPriority = false;
@@ -68,7 +67,7 @@ var ITA = (function () {
                         updateCache(data, response.result, stop);
                         receivedStops++;
 
-                        if (receivedStops == 3) {
+                        if (receivedStops === 3) {
                             cacheTime = new Date();
                             mapAjaxResponse(data, successCallback);
                         }
@@ -77,7 +76,7 @@ var ITA = (function () {
                 catch (error) {
                     console.log(error);
                     
-                    data.failAttemps = data.failAttemps == undefined ? 1 : (data.failAttemps + 1);
+                    data.failAttemps = data.failAttemps === undefined ? 1 : (data.failAttemps + 1);
                     if (data.failAttemps > 5) return;
 
                     setTimeout(function () {
@@ -269,7 +268,7 @@ var ITA = (function () {
         callback(data, info);
     };
 
-    return my;
+    return self;
 }());
 
 Date.prototype.getDateString = function () {
