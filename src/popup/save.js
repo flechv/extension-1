@@ -18,7 +18,8 @@ function getResultsTextToSaveAsFile(results) {
 
 		var types = [ "Direto", "1 parada", "2+ paradas" ];
 		for (var j in types)
-			m.push([types[j], result.best[j].date, result.best[j].price]);
+			if (result.best[j] != undefined)
+                m.push([types[j], result.best[j].date, result.best[j].price]);
 		
 		m.push([], [ "Dias", "Direto", "1 parada", "2+ paradas" ]);
 		for (var j in result.all) {
@@ -44,6 +45,6 @@ function getResultsTextToSaveAsFile(results) {
 	}
 
 	return m.reduce(function (prev, row) {
-        return prev + row.join(",") + "\n";
+        return prev + row.join(";") + "\n";
     }, "");
 }
