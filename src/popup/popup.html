@@ -54,6 +54,16 @@
 					<div multipick ng-model="departureDates" name="departureDates" style="display:inline-block" tabindex="5">
 					</div>
 				</div>
+					
+                <div class="headerDiv">
+                    <label class="help" title="{{ help.departure }}">Site</label>
+                    <input type="radio" ng-model="store" value="0" id="store0" checked />
+                    <label for="store0" style="width: auto;">Submarino Viagens</label>
+                    <input type="radio" ng-model="store" value="1" id="store1" />
+                    <label for="store1" style="width: auto;">Decolar</label>
+                    <input type="radio" ng-model="store" value="2" id="store2" />
+                    <label for="store2" style="width: auto;">ITA by Google</label>
+                </div>
 
 				<div id="divAvancada" class="headerDiv" ng-show="showAdvancedOptions">
 					<div class="headerDiv">
@@ -96,29 +106,25 @@
 					</div>
 					
 					<div class="headerDiv">
-						<input type="radio" ng-model="store" value="0" id="store0" checked />
-						<label for="store0" style="width: auto;">Submarino Viagens</label>
-						<input type="radio" ng-model="store" value="1" id="store1" />
-						<label for="store2" style="width: auto;">Decolar</label>
-						<input type="radio" ng-model="store" value="2" id="store2" />
-						<label for="store2" style="width: auto;">ITA by Google</label>
-					</div>
-					
-					<div class="headerDiv">
 						<label style="width: auto;">Enviar email para {{ email ? email : '...' }} se achar preço menor que {{ priceEmail ? priceEmail : '...' }} reais:</label>
 					</div>
 					<div class="headerDiv">
-						<input type="email" ng-model="email" name="email" placeholder="Email" ngMinlength="10" ngMaxlength="100" ng-class="{ 'has-error': form.email.$dirty && form.email.$invalid }" />
-						<input type="number" ng-model="priceEmail" name="priceEmail" placeholder="Preço" min="1" max="9999" ngMaxlength="4" ng-class="{ 'has-error': form.priceEmail.$dirty && form.priceEmail.$invalid }" />
+						<input type="email" ng-model="email" name="email" placeholder="Email" ngMinlength="10" ngMaxlength="100" ng-class="{ 'has-error': form.email.$dirty && form.email.$invalid }" style="width:250px;" />
+						<input type="number" ng-model="priceEmail" name="priceEmail" placeholder="Preço" min="1" max="9999" ngMaxlength="4" ng-class="{ 'has-error': form.priceEmail.$dirty && form.priceEmail.$invalid }" style="width:100px;" />
 					</div>
 				</div>
 			</form>
 
 			<div class="headerDiv" style="height:33px">
 				<span ng-click="search()" id="btnBuscar" class="btn" tabindex="1" ng-disabled="form.$invalid">Buscar melhores preços</span>
-				<span ng-click="showAdvancedOptions = !showAdvancedOptions" id="avancada" tabindex="7">Busca avançada</span>
+				<span ng-click="showAdvancedOptions = !showAdvancedOptions" id="avancada" tabindex="8">Busca avançada</span>
 				<span title="{{ help.main }}" id="help" class="help" tabindex="-1">
 					<img src="../../images/help.png" />
+				</span>
+				<span title="{{ help.donation }}" id="donation" tabindex="7">
+					<a href="http://novo.vakinha.com.br/vaquinha/passagens-mais-baratas-pra-todos">
+                        <img src="../../images/donation.png" />
+                    </a>
 				</span>
 				<span ng-click="saveAsFile(results)" ng-show="numberOfFligths > 0" title="{{ help.download }}" id="download" tabindex="6">
 					<img src="../../images/download.png" />

@@ -85,10 +85,11 @@ var SUBMARINO = (function () {
     const SERVICE_BASE_URL = "http://www.submarinoviagens.com.br/passagens/UIService/Service.svc/",
         SEARCH_PRIORITY_URL = "SearchGroupedFlightsPagingResultJSONMinimum",
         SEARCH_SECONDARY_URL = "GetSearchStatusPagingResultJSONMinimum",
-        AFFILIATED_ID = 754,
+        AFFILIATED_ID = 655,
+        AFFILIATED_PW = 123456,
         POINT_OF_SALE = "SUBMARINO",
         GAP_TIME_SERVER = 2000,
-        MAX_WAITING = 8;
+        MAX_WAITING = 5;
 
 //public methods
     self.getGapTimeServer = function () {
@@ -165,6 +166,9 @@ var SUBMARINO = (function () {
                 AffiliatedId: AFFILIATED_ID,
                 PointOfSale: POINT_OF_SALE,
                 SearchData: {
+                    AffiliatedId: AFFILIATED_ID,
+                    AffiliatedPw: AFFILIATED_PW,
+                    IsSearch: true,
                     AirSearchData: {
                         CabinFilter: null,
                         CityPairsRequest: data.returnDate === null ? 

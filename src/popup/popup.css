@@ -1,4 +1,4 @@
-html, body { margin:0; padding:0;overflow:hidden }
+html, body { margin:0; padding:0 }
 body { width:380px;min-height:450px;padding:10px;font-family:"Trebuchet MS",Arial,sans-serif }
 body a, body a:active, body a:visited, body a:focus { text-decoration:none;color:rgb(17, 85, 204) }
 body a:hover { text-decoration:underline }
@@ -27,8 +27,8 @@ div, a, button { outline: none }
 #avancada { font-size:10px;width:42px;float:right;margin:8px 5px 0 0;text-decoration:none;color:black;outline: none; }
 #avancada:hover { text-decoration:underline;cursor: pointer; }
 #avancada:focus { color: black }
-#help, #download { float:right;margin:11px 8px 0 0;cursor:help }
-#download { cursor:pointer }
+#help, #download, #donation { float:right;margin:11px 8px 0 0;cursor:help }
+#download, #donation { cursor:pointer }
 #divAvancada { display: block !important }
 #divAvancada.ng-hide { display: none !important }
 #divAvancada .select2-container .select2-choice { height:30px;padding:0 0 0 7px;border-radius:3px;line-height:31px }
@@ -74,3 +74,4 @@ table.ui-datepicker-calendar { border-collapse: collapse;border-spacing: 1px }
 
 .has-error, .has-error ul { border-color: rgba(255, 111, 111, 1) !important;-webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,0.075);box-shadow: inset 0 1px 1px rgba(0,0,0,0.075);}
 .btn.disabled, .btn[disabled], fieldset[disabled] .btn {pointer-events: none;cursor: not-allowed;opacity: .65;filter: alpha(opacity=65);-webkit-box-shadow: none;box-shadow: none;}
+input[type=radio] { margin-right: 0}

@@ -6,7 +6,7 @@ var DECOLAR = (function () {
         GAP_TIME_SERVER = 2000,
         MAX_WAITING = 8;
     
-    var pages = {}, callbackSuccess, idIndex = 0;
+    var pages = {}, callbackSuccess;
 
 //content script methods
     chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
@@ -29,17 +29,10 @@ var DECOLAR = (function () {
             var url = getSiteUrl(data);
             pages[url] = data;
 
-            var id = "genghis" + ((idIndex++) % MAX_WAITING);
-            var code = 
-                "if (document.getElementById('" + id + "') == null) {" +
-                    "var iframe = document.createElement('iframe');" + 
-                    "iframe.style.display = 'none';" +
-                    "iframe.id = '" + id + "';" +
-                    "iframe.src = '" + url + "';" +
-                    "document.body.appendChild(iframe);" +
-                "}" +
-                "else document.getElementById('" + id + "').src = '" + url + "';";
-
+            var code = loadContentScriptFunctions() +
+                "requestPage('" + url + "');";
+            
+            console.log(code);
             chrome.tabs.query({ url: "http://www.decolar.com/*" }, function (tabs) {
                 if (tabs === undefined || tabs === null || tabs.length === 0 || tabs[0].id === undefined)
                     chrome.tabs.create({ url: "http://www.decolar.com/",  active: false }, function (tab) {
@@ -163,6 +156,70 @@ var DECOLAR = (function () {
         callbackSuccess(pages[sender.url], info);
         */
     };
+    
+    var loadContentScriptFunctions = function () {
+        return findRegexKeyValue.toString() +
+            loadHashForData.toString() +
+            doAjax.toString() +
+            requestPage.toString();
+    };
+    
+    function findRegexKeyValue (text, key) {
+        var regexKey = key.replace(/ /g, '\\s*');
+        var initialKeyIndex = text.search(regexKey);
+        var initialValueIndex = text.indexOf("'", initialKeyIndex) + 1;
+        var finalValueIndex = text.indexOf("'", initialValueIndex) - 1;
+        return text.substr(initialValueIndex, finalValueIndex - initialValueIndex + 1);
+    }
 
+    function loadHashForData (bodyHtml) {
+        if (bodyHtml.indexOf('hashForData') == -1)
+            console.log('error');
+
+        var url = findRegexKeyValue(bodyHtml, "search : '");
+        if (url.indexOf('hashForData') == -1 || url == 'gtm.start')
+            console.log('error');
+
+        return url;
+    };
+    
+    function doAjax (url, contentType, callback) {
+        //$.ajax({ url: url, dataType: 'html' })
+        //.done(callback);
+        
+        var xhr = new XMLHttpRequest();
+        xhr.open("GET", url, true);
+        xhr.setRequestHeader('Content-type', contentType);
+
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === 4 && xhr.status === 200)
+                callback(xhr.responseText);
+        };
+
+        try
+        {
+            xhr.send();
+        }
+        catch(error) {
+            failCallback(data);
+        }
+    };
+    
+    function requestPage (url) {
+        doAjax(url, 'text/html;charset=UTF-8', function (data) { 
+            var urlWithHash = loadHashForData(data);
+            console.log(urlWithHash);
+
+            doAjax(urlWithHash, 'application/json', function (data) {
+                console.log(data);
+                //console.log($(data));
+                //console.log($(data).find('pre'));
+
+                //var result = JSON.parse($(data).find('pre')[0].html()).result;
+                //chrome.runtime.sendMessage(result.status.code == "SUCCEEDED" ? result : {}, function() {});
+            });
+        });
+    };
+    
     return self;
 }());

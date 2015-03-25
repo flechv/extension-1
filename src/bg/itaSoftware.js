@@ -2,13 +2,11 @@
 var ITA = (function () {
     var self = {};
 
-    const SERVICE_BASE_URL = "http://matrix.itasoftware.com/xhr/shop/",
-        SEARCH_PRIORITY_URL = "search",
-        SEARCH_SECONDARY_URL = "summarize",
+    const SERVICE_URL = "http://matrix.itasoftware.com/search",
         GAP_TIME_SERVER = 200,
         MAX_WAITING = 1,
         CACHE_TIMEOUT_HOURS = 1,
-        MAX_DIFF_DAYS_ALLOW_BY_SERVICE = 30,
+        MAX_DIFF_DAYS_ALLOW_BY_SERVICE = 31,
         MAX_DIFF_LAYOVER_ALLOW_BY_SERVICE = 7;
     
     var cache = {}, companyCache = {}, cacheTime = new Date(), receivedStops = 0;
@@ -35,29 +33,29 @@ var ITA = (function () {
         companyCache = {};
         receivedStops = 0;
 
-        data.isPriority = true;
         doRequest(data, successCallback, failCallback);
     };
 
 //private methods
     var doRequest = function (data, successCallback, failCallback, stop) {
         var xhr = new XMLHttpRequest();
-        xhr.open("POST", SERVICE_BASE_URL + (data.isPriority ? SEARCH_PRIORITY_URL : SEARCH_SECONDARY_URL), true);
-        xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-        xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest");
-
+        xhr.open("POST", SERVICE_URL, true);
+        xhr.setRequestHeader('Content-type', 'application/javascript; charset=UTF-8');
+        //xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest");
+        xhr.setRequestHeader("X-GWT-Module-Base", "http://matrix.itasoftware.com/gwt/");
+        xhr.setRequestHeader("X-GWT-Permutation", "46F5E3E13C7765F3F74D16C58212BAA2");
+        
         xhr.onreadystatechange = function () {
             if (xhr.readyState === 4 && xhr.status === 200) {
                 try {
                     var response = eval("(" + xhr.responseText + ")");
-                    
+
                     if (response.error !== undefined)
                         throw response.error.message !== undefined ? response.error.message : "unknown error";
 
-                    if (data.isPriority) {
-                        data.isPriority = false;
-                        data.solutionSet = response.result.solutionSet;
-                        data.session = response.result.session;
+                    if (stop === undefined) {
+                        data.solutionSet = response.result[response.result.length - 3]; //response.result.solutionSet;
+                        data.session = response.result[response.result.length - 1]; //response.result.session;
                         
                         doRequest(data, successCallback, failCallback, 0);
                         doRequest(data, successCallback, failCallback, 1);
@@ -122,8 +120,8 @@ var ITA = (function () {
         }
 
         return {
-            min: minLayover,
-            max: maxLayover
+            2: minLayover, //min
+            1: maxLayover  //max
         };
     };
 
@@ -132,6 +130,73 @@ var ITA = (function () {
         var date1 = parseDateString(data.departureDate);
         date1.setDate(date1.getDate() + MAX_DIFF_DAYS_ALLOW_BY_SERVICE);
 
+        var slices = [{
+            3: [data.destination], //destinations
+            5: [data.origin], //origins
+            9: 1, //originPreferCity
+            11: 1 //destinationPreferCity
+        }];
+        
+        if (data.returnDate !== null)
+            slices.push({
+                3: [data.origin], //destinations
+                5: [data.destination], //origins
+                9: 1, //destinationPreferCity
+                11: 1 //originPreferCity
+            });
+
+        var req = {
+            params:
+            {
+                2: [ //summarizers
+                    "calendar",
+                    "overnightFlightsCalendar",
+                    "itineraryStopCountList",
+                    "itineraryCarrierList",
+                    "currencyNotice"
+                ],
+                3: //input
+                {
+                    2: getLayovers(data), //layover
+                    4:
+                    {
+                        2: 30
+                    },
+                    5: //pax
+                    {
+                        1: 1, //adults
+                        //2: 1 //children
+                    },
+                    7: slices,
+                    8: "COACH", //cabin
+                    9: 1, //changeOfAirport
+                    10: 1, //checkAvailability
+                    //12: "BRL", //currency
+                    13: date1.getDateString(), //endDate
+                    15: "MONDAY", //firstDayOfWeek
+                    //17: 2, //stops
+                    //19: "SAO" //salesCity
+                    22: "default",
+                    23: date.getDateString() //startDate
+                }
+            }
+        };
+        
+        
+        if (stop === undefined) {
+            req.method = "search";
+            req.params[4] = "calendar";            
+            req.params[7] = "!6-hCHhKLRclJQcZEdJHKMa0SC1wCAAAAUVIAAAAIKgD-X8ffq7Oykw-j8qoA72DeFjWEX0Ubvgbn0paVm7vHsbJ3NlNiZkBaOsVegTDKvFWdEmroixagpqNoKFPDmiswzulX_u6IS-JYwNNcnmZN51fQfw69Oq5m7tt6_vlYWUnvfOVvuoS6WDSCWiMKfe-9PBt1NpRYuGMtzXgRXSWDlh4ycSYklBL42oGCVnoK63egsTHpXe6cRUFvMdUljYWU1O9VcHxMc7K4AnRLmtt_oyzkjBj83EXjrC9rh_K-XDy99LfVC0NH1V2Gs85cro-7rZu4DKXe2W5aWJBNh3xiLv3A4KWhMxXOTIfuI7XYrsUWWBPCvgwS_JnZz1YCM6o";
+            
+        } else {
+            req.method = "summarize";
+            req.params[3][1] = {2: {1: [stop]}};
+            req.params[4] = data.solutionSet;
+            req.params[5] = data.session;
+        }
+        
+        return JSON.stringify(req);
+        /*
         var slices = [{
             origins: [data.origin],
             originPreferCity: true,
@@ -190,37 +255,47 @@ var ITA = (function () {
             response.push("solutionSet=" + data.solutionSet, "session=" + data.session);
 
         return response.join("&");
+        */
     };
 
     var updateCache = function (data, result, stop) {
         var layover = getLayovers(data);
+        var calendar = result[7];
+        var months = calendar[1];
+        
+        for (var i = 0; i < months.length; i++) {
+            var monthInfo = months[i];
+            var weeks = monthInfo[1], month = monthInfo[2], year = monthInfo[3];
+    
+            for (var j = 0; j < weeks.length; j++) {
+                var weekInfo = weeks[j];
+                var days = weekInfo[1];
 
-        for (var i = 0; i < result.calendar.months.length; i++) {
-            var month = result.calendar.months[i];
+                for (var k = 0; k < days.length; k++) {
+                    var dayInfo = days[k];
+                    var day = dayInfo[1], tripDuration = dayInfo[3], solutionCount = dayInfo[10];
 
-            for (var j = 0; j < month.weeks.length; j++) {
-                var week = month.weeks[j];
+                    if (solutionCount > 0 && tripDuration !== null) {
+                        var options = tripDuration[1];
 
-                for (var k = 0; k < week.days.length; k++) {
-                    var day = week.days[k];
-
-                    if (day.solutionCount > 0 && day.tripDuration !== undefined) {
-                        for (var l = 0; l < day.tripDuration.options.length; l++) {
+                        for (var l = 0; l < options.length; l++) {
+                            var optionsInfo = options[l];
+                            var slices = optionsInfo[1], minPrice = optionsInfo[2];
+                            var dates = slices[3];
                             var key = data.origin + ',' + data.destination + ',' +
-                                day.tripDuration.options[l].solution.slices
-                                .map(function (m) { return m.departure.split("T")[0]; }) //"2014-12-01T18:50-02:00" -> "2014-12-01"
+                                dates.map(function (m) { return m[1].split("T")[0]; }) //"2014-12-01T18:50-02:00" -> "2014-12-01"
                                 .join(",");
 
                             if (cache[key] === undefined) cache[key] = [];
-                            cache[key][stop] = day.tripDuration.options[l].minPrice.replace(/[^\d.,]/g, '');
+                            cache[key][stop] = minPrice.replace(/[^\d.,]/g, '');
                         }
                     }
                     else {
-                        var day0 = new Date(month.year, month.month - 1, day.date);
+                        var day0 = new Date(year, month - 1, day.date);
                         var departureDate = day0.getDateString();
                         
                         for (var l = layover.min; l <= layover.max; l++) {
-                            var day1 = new Date(month.year, month.month - 1, day.date + l);
+                            var day1 = new Date(year, month - 1, day.date + l);
                             var key = data.origin + ',' + data.destination + ',' + departureDate + (l == 0 ? "" : "," + day1.getDateString());
                             
                             if (cache[key] === undefined) cache[key] = [];
@@ -230,17 +305,22 @@ var ITA = (function () {
                 }
             }
         }
-
-        for (var i in result.itineraryCarrierList.groups) {
-            var company = result.itineraryCarrierList.groups[i];
-            var key = airlinesCompaniesByCode[company.label.code] == undefined
-                ? company.label.shortName.trim()
-                : airlinesCompaniesByCode[company.label.code];
+        
+        var itineraryCarrierList = result[22];
+        var groups = itineraryCarrierList[1];
+        for (var i in groups) {
+            var company = groups[i];
+            var label = company[1], minPrice = company[2];
+            var code = label[1], shortName = label[2];
+            
+            var key = airlinesCompaniesByCode[code] == undefined
+                ? shortName.trim()
+                : airlinesCompaniesByCode[code];
             if (companyCache[key] === undefined) companyCache[key] = [];
             
             companyCache[key][stop] = {
-                price: company.minPrice.replace(/[^\d.,]/g, ''),
-                code: company.label.code
+                price: minPrice.replace(/[^\d.,]/g, ''),
+                code: code
             };
         }
     };
