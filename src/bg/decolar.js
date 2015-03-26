@@ -159,37 +159,22 @@ var DECOLAR = (function () {
     
     var loadContentScriptFunctions = function () {
         return findRegexKeyValue.toString() +
-            loadHashForData.toString() +
             doAjax.toString() +
             requestPage.toString();
     };
     
-    function findRegexKeyValue (text, key) {
-        var regexKey = key.replace(/ /g, '\\s*');
-        var initialKeyIndex = text.search(regexKey);
-        var initialValueIndex = text.indexOf("'", initialKeyIndex) + 1;
-        var finalValueIndex = text.indexOf("'", initialValueIndex) - 1;
-        return text.substr(initialValueIndex, finalValueIndex - initialValueIndex + 1);
-    }
-
-    function loadHashForData (bodyHtml) {
-        if (bodyHtml.indexOf('hashForData') == -1)
-            console.log('error');
-
-        var url = findRegexKeyValue(bodyHtml, "search : '");
-        if (url.indexOf('hashForData') == -1 || url == 'gtm.start')
-            console.log('error');
-
-        return url;
-    };
+	function findRegexKeyValue (text, key) {
+		//key[ ]*[:=][ ]*['"]([^'"]*)['"]
+		//starts with key, some spaces, : or =, some spaces, ' or ", something without ' or ", and ' or "
+		var values = text.match(new RegExp(key + '[ ]*[:=][ ]*[\'"]([^\'"]*)[\'"]'));
+		return values == null ? '' : values[0].replace(new RegExp(key + '[ ]*[:=][ ]*|[\'"]', 'g'), '');
+	}
     
-    function doAjax (url, contentType, callback) {
-        //$.ajax({ url: url, dataType: 'html' })
-        //.done(callback);
-        
+    function doAjax (url, headers, callback) {
         var xhr = new XMLHttpRequest();
         xhr.open("GET", url, true);
-        xhr.setRequestHeader('Content-type', contentType);
+		for (var i in headers)
+			xhr.setRequestHeader(i, headers[i]);
 
         xhr.onreadystatechange = function () {
             if (xhr.readyState === 4 && xhr.status === 200)
@@ -201,25 +186,40 @@ var DECOLAR = (function () {
             xhr.send();
         }
         catch(error) {
-            failCallback(data);
+            console.log(error);
         }
-    };
-    
+    }
+	
     function requestPage (url) {
-        doAjax(url, 'text/html;charset=UTF-8', function (data) { 
-            var urlWithHash = loadHashForData(data);
-            console.log(urlWithHash);
+        doAjax(url,
+			{ 'Content-type': 'text/html;charset=UTF-8' },
+			function (data) {
+				var urlWithHash = findRegexKeyValue(data, 'search');
+				var xNewRelicId = findRegexKeyValue(data, 'xpid');
+				var xUow = findRegexKeyValue(data, 'uow');
+				console.log(urlWithHash);
+				console.log(xNewRelicId);
+				console.log(xUow);
 
-            doAjax(urlWithHash, 'application/json', function (data) {
-                console.log(data);
-                //console.log($(data));
-                //console.log($(data).find('pre'));
+				doAjax(urlWithHash,
+					{
+						'Content-type': 'application/json',
+						'X-NewRelic-ID': xNewRelicId,
+						'X-Requested-With': 'XMLHttpRequest',
+						'X-UOW': xUow
+					},
+					function (data) {
+						console.log(data);
+						//console.log($(data));
+						//console.log($(data).find('pre'));
 
-                //var result = JSON.parse($(data).find('pre')[0].html()).result;
-                //chrome.runtime.sendMessage(result.status.code == "SUCCEEDED" ? result : {}, function() {});
-            });
-        });
-    };
+						//var result = JSON.parse($(data).find('pre')[0].html()).result;
+						//chrome.runtime.sendMessage(result.status.code == "SUCCEEDED" ? result : {}, function() {});
+					}
+				);
+			}
+		);
+    }
     
     return self;
 }());

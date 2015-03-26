@@ -23,7 +23,7 @@ div, a, button { outline: none }
 .select2-container-multi .select2-choices { border-radius:3px;overflow-y:scroll;max-height:80px }
 .select2-container-multi.select2-container-active .select2-choices { border-radius:3px 3px 0 0 }
 .select2-hidden-accessible {display: none;}
-#divAvancada .select2-input.select2-default {width: 100% !important}
+#divAvancada .select2-container-multi .select2-choices .select2-search-field {width: 100% !important}
 #avancada { font-size:10px;width:42px;float:right;margin:8px 5px 0 0;text-decoration:none;color:black;outline: none; }
 #avancada:hover { text-decoration:underline;cursor: pointer; }
 #avancada:focus { color: black }
@@ -45,7 +45,7 @@ div, a, button { outline: none }
 #msgError { display:none;width:100%;margin-right:4px;font-size:13px;text-decoration:none;color:red }
 #sugestao { margin:17px 0 0 -5px}
 #sugestao span { line-height:16px;vertical-align:top}
-#results { width:100%;margin:0;display:inline-block;padding:0;overflow-y:scroll;overflow-x:hidden }
+#results { width:100%;margin:0;display:inline-block;padding:0;overflow:hidden }
 #results li { width:100%;border-top:1px dashed #ccc;margin-top:10px;padding-top:5px;list-style:none;display:inline-block }
 #results table { font-family:"Lucida Sans Unicode", "Lucida Grande", Sans-Serif;font-size:11px;margin:0;width:100%;text-align:left;border-collapse:collapse }
 #results table th { font-size:12px;font-weight:normal;padding:3px 0px;color:#171A20 }
@@ -75,3 +75,14 @@ table.ui-datepicker-calendar { border-collapse: collapse;border-spacing: 1px }
 .has-error, .has-error ul { border-color: rgba(255, 111, 111, 1) !important;-webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,0.075);box-shadow: inset 0 1px 1px rgba(0,0,0,0.075);}
 .btn.disabled, .btn[disabled], fieldset[disabled] .btn {pointer-events: none;cursor: not-allowed;opacity: .65;filter: alpha(opacity=65);-webkit-box-shadow: none;box-shadow: none;}
 input[type=radio] { margin-right: 0}
+
+body { font-size: 12px }
+input[type=text], input[type=number], input[type=email], select { height: 27px }
+.headerDiv { margin-bottom: 5px }
+td.ui-datepicker td span, td.ui-datepicker-unselectable span, .ui-datepicker td a { padding: .1em }
+.ui-datepicker .ui-datepicker-buttonpane { margin-top: .4em }
+.ui-datepicker .ui-datepicker-buttonpane button { margin-top: .2em;margin-bottom: .2em }
+
+#email { width: 70% }
+#priceEmail { width: 26% }
+#avancada { margin-top: 6px; line-height: 12px }

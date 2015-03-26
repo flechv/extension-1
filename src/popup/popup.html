@@ -109,8 +109,8 @@
 						<label style="width: auto;">Enviar email para {{ email ? email : '...' }} se achar preço menor que {{ priceEmail ? priceEmail : '...' }} reais:</label>
 					</div>
 					<div class="headerDiv">
-						<input type="email" ng-model="email" name="email" placeholder="Email" ngMinlength="10" ngMaxlength="100" ng-class="{ 'has-error': form.email.$dirty && form.email.$invalid }" style="width:250px;" />
-						<input type="number" ng-model="priceEmail" name="priceEmail" placeholder="Preço" min="1" max="9999" ngMaxlength="4" ng-class="{ 'has-error': form.priceEmail.$dirty && form.priceEmail.$invalid }" style="width:100px;" />
+						<input type="email" ng-model="email" name="email" placeholder="Email" ngMinlength="10" ngMaxlength="100" ng-class="{ 'has-error': form.email.$dirty && form.email.$invalid }" id="email" />
+						<input type="number" ng-model="priceEmail" name="priceEmail" placeholder="Preço" min="1" max="9999" ngMaxlength="4" ng-class="{ 'has-error': form.priceEmail.$dirty && form.priceEmail.$invalid }" id="priceEmail" />
 					</div>
 				</div>
 			</form>
