@@ -45,6 +45,6 @@ var getResultsTextToSaveAsFile = function (results) {
 	}
 
 	return m.reduce(function (prev, row) {
-        return prev + row.join(";") + "\n";
+        return prev + row.join(",") + "\n";
     }, "");
 };

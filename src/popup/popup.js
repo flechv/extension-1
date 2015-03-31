@@ -5,7 +5,8 @@ app.controller("AngularController", function ($scope) {
 	$scope.showMessageError = false;
 	$scope.showLoading = bg.showLoading();
 	$scope.showAdvancedOptions = false;
-	$scope.numberOfFligths = 0;
+	$scope.initialNumberOfFlights = 0;
+    $scope.numberOfFlights = 0;
 	$scope.currency = "R$";
 	$scope.help = {
 		origins: "De quais cidades você pode partir?",
@@ -15,10 +16,11 @@ app.controller("AngularController", function ($scope) {
 		main: "Você pode selecionar:<br/><br/>&nbsp&nbsp 1. Uma ou mais cidades de origem <br/>&nbsp&nbsp 2. Uma ou mais cidades de destino <br/>&nbsp&nbsp 3. Quantos dias de estadia <br/>&nbsp&nbsp 4. Um ou mais dias de partida <br/>&nbsp&nbsp 5. As companhias aéreas desejadas <br/>&nbsp&nbsp 6. O nº de adultos, crianças e bebês <br/>&nbsp&nbsp 7. Site que deseja pesquisar <br/>&nbsp&nbsp 8. Um email para ser avisado <br/><br/>Sugetões? genghislabs@gmail.com",
 		company: "Pesquise vôos apenas das companhias aéreas desejadas",
 		download: "Salvar os resultados abaixo <br/><br/>Sugetões? genghislabs@gmail.com",
-        donation: "Que tal fazer uma doação para continuar melhorando esse app?"
+        donation: "Faça uma doação para continuarmos melhorando esse app!"
 	};
 
-	$scope.store = "0";
+	$scope.searchedStore = "0";
+    $scope.store = "0";
 	$scope.adults = 1;
 	$scope.children = 0;
 	$scope.babies = 0;
@@ -77,7 +79,7 @@ app.controller("AngularController", function ($scope) {
 		if (results == undefined || results == null || results.length == 0) return;
 
 		$scope.showLoading = false;
-		$scope.numberOfFligths = results.reduce(function (prev, item) {
+		$scope.numberOfFlights = results.reduce(function (prev, item) {
 			if (item.all.length == 1)
 				$scope.openResults[item.key] = false;
 
@@ -85,7 +87,7 @@ app.controller("AngularController", function ($scope) {
 		}, 0);
 	
 		$scope.results = results;
-	}
+	};
     
 	bg.hideBadge();
 
@@ -105,7 +107,7 @@ app.controller("AngularController", function ($scope) {
 				($scope.qtyDays == null || $scope.qtyDays.length == 0 || $scope.departureDates == null || $scope.departureDates.length == 0) ||
 				($scope.origins.length == 1 && $scope.destinations.length == 1 && $scope.origins[0].id == $scope.destinations[0].id) ||
 				($scope.adults == 0 && $scope.children == 0 && $scope.babies == 0);
-	}
+	};
 
 	$scope.search = function () {
 		if (checkInvalidForm())
@@ -115,9 +117,10 @@ app.controller("AngularController", function ($scope) {
 			$scope.showLoading = true;
 			$scope.numberOfFligths = 0;
 			$scope.results = [];
+	        $scope.searchedStore = $scope.store;
 
 			var departures = angular.copy($scope.departureDates).sort();
-			chrome.extension.getBackgroundPage().BG.init({
+			$scope.initialNumberOfFlights = chrome.extension.getBackgroundPage().BG.init({
 				origins: $scope.origins,
 				destinations: $scope.destinations,
 				qtyDays: $scope.qtyDays,
@@ -131,16 +134,26 @@ app.controller("AngularController", function ($scope) {
 				priceEmail: $scope.priceEmail
 			});
 		}
-	}
+	};
 
-	$scope.stopSearching = function () {
+	$scope.stop = function () {
 		chrome.extension.getBackgroundPage().PQ.stopServer();
-	}
-
+	};
+    
+    $scope.disableStop = function () {
+        return $scope.initialNumberOfFlights <= $scope.numberOfFlights;
+    };
+    
 	$scope.orderCompaniesByPrices = function (company) {
 		return company == undefined ? Number.MAX_SAFE_INTEGER : parseFloat(company[0].bestPrice);
-	}
+	};
+    
+    $scope.stores = bg.getStores();
 
+    $scope.print = function (price, value) {
+        return price > 0 ? (value ? value : price) : "-";
+    };
+    
 	$(".help, #download, #donation").tipsy({ gravity: 'w', html: true, fade: true, opacity: 0.9 });
 });
 
@@ -153,7 +166,6 @@ app.filter('toArray', function () {
         });
     }
 });
-
 
 app.directive('multipick', function () {
 	return {
@@ -248,22 +260,22 @@ function getValidDaysInMonth(year, month) {
 
 Number.prototype.to2Digits = function () {
    return this.toFixed(2).toString().replace(".", ",");
-}
+};
 
 String.prototype.to2Digits = function () {
 	return this == "" ? "-" : parseFloat(this).to2Digits();
-}
+};
 
 Date.prototype.getDateString = function () {
    return this.getFullYear() + '/' + this.getMonth2() + '/' + this.getDate2();
-}
+};
 
 Date.prototype.getDate2 = function () {
    var date = this.getDate();
    return (date < 10 ? '0' : '') + date;
-}
+};
 
 Date.prototype.getMonth2 = function () {
    var month = this.getMonth() + 1;
    return (month < 10 ? '0' : '') + month;
-}
+};

@@ -57,12 +57,9 @@
 					
                 <div class="headerDiv">
                     <label class="help" title="{{ help.departure }}">Site</label>
-                    <input type="radio" ng-model="store" value="0" id="store0" checked />
-                    <label for="store0" style="width: auto;">Submarino Viagens</label>
-                    <input type="radio" ng-model="store" value="1" id="store1" />
-                    <label for="store1" style="width: auto;">Decolar</label>
-                    <input type="radio" ng-model="store" value="2" id="store2" />
-                    <label for="store2" style="width: auto;">ITA by Google</label>
+                    <select ui-select2 ng-model="store" style="width:298px">
+                        <option ng-repeat="item in stores" value="{{ item.store }}">{{ item.name }}</option>
+                    </select>
                 </div>
 
 				<div id="divAvancada" class="headerDiv" ng-show="showAdvancedOptions">
@@ -116,7 +113,8 @@
 			</form>
 
 			<div class="headerDiv" style="height:33px">
-				<span ng-click="search()" id="btnBuscar" class="btn" tabindex="1" ng-disabled="form.$invalid">Buscar melhores preços</span>
+				<span ng-click="search()" id="btnBuscar" class="btn" tabindex="1" ng-disabled="form.$invalid">Buscar</span>
+				<span ng-click="stop()" id="btnParar" class="btn" ng-disabled="disableStop()">Parar</span>
 				<span ng-click="showAdvancedOptions = !showAdvancedOptions" id="avancada" tabindex="8">Busca avançada</span>
 				<span title="{{ help.main }}" id="help" class="help" tabindex="-1">
 					<img src="../../images/help.png" />
@@ -132,16 +130,16 @@
 			</div>
 			
 			<div class="headerDiv" style="margin:0;text-align:right">
-				<span ng-show="numberOfFligths > 0">
-					{{ numberOfFligths == 1 ? "1 vôo encontrado" : numberOfFligths + " vôos encontrados" }}
+				<span ng-show="numberOfFlights > 0" class="message">
+					{{ numberOfFlights == 1 ? "1 vôo encontrado" : numberOfFlights + " vôos encontrados" }}
 				</span>
-				<span ng-show="showMessageError">
+				<span ng-show="showMessageError" class="message">
 					Favor corrigir campos incorretos
 				</span>
 			</div>
 		</div>
 
-		<ul id="results" ng-show="numberOfFligths > 0">
+		<ul id="results" ng-show="numberOfFlights > 0">
 			<li ng-repeat="result in results">
 				<table>
 					<tr>
@@ -151,28 +149,28 @@
 					</tr>
 					<tr class="odd">
 						<td>Direto</td>
-						<td>{{ result.best[0].price > 0 ? result.best[0].date : "-" }}</td>
+						<td>{{ print(result.best[0].price, result.best[0].date) }}</td>
 						<td>
 							<a ng-href="{{ result.best[0].url }}">
-								{{ result.best[0].price > 0 ? currency + " " + result.best[0].price.to2Digits() : "-" }}
+								{{ print(result.best[0].price) }}
 							</a>
 						</td>
 					</tr>
 					<tr>
 						<td>1 parada</td>
-						<td>{{ result.best[1].price > 0 ? result.best[1].date : "-" }}</td>
+						<td>{{ print(result.best[1].price, result.best[1].date) }}</td>
 						<td>
 							<a ng-href="{{ result.best[1].url }}">
-								{{ result.best[1].price > 0 ? currency + " " + result.best[1].price.to2Digits() : "-" }}
+								{{ print(result.best[1].price) }}
 							</a>
 						</td>
 					</tr>
 					<tr class="odd">
 						<td>2+ paradas</td>
-						<td>{{ result.best[2].price > 0 ? result.best[2].date : "-" }}</td>
+						<td>{{ print(result.best[2].price, result.best[2].date) }}</td>
 						<td>
 							<a ng-href="{{ result.best[2].url }}">
-								{{ result.best[2].price > 0 ? currency + " " + result.best[2].price.to2Digits() : "-" }}
+								{{ print(result.best[2].price) }}
 							</a>
 						</td>
 					</tr>
@@ -196,31 +194,31 @@
 											<td>{{ byDates.date }}</td>
 											<td>
 												<a ng-href="{{ byDates.url }}">
-													{{ byDates.prices[0] > 0 ? byDates.prices[0].to2Digits() : "-" }}
+													{{ print(byDates.prices[0]) }}
 												</a>
 											</td>
 											<td>
 												<a ng-href="{{ byDates.url }}">
-													{{ byDates.prices[1] > 0 ? byDates.prices[1].to2Digits() : "-" }}
+													{{ print(byDates.prices[1]) }}
 												</a>
 											</td>
 											<td>
 												<a ng-href="{{ byDates.url }}">
-													{{ byDates.prices[2] > 0 ? byDates.prices[2].to2Digits() : "-" }}
+													{{ print(byDates.prices[2]) }}
 												</a>
 											</td>
 										</tr>
 									</tbody>
 								</table>
 
-								<table class="tableResultsByCompanies" style="margin-top:5px">
+                                <!-- searchedStore == 4 is ITA Software -->
+								<table ng-if="searchedStore != 4" class="tableResultsByCompanies" style="margin-top:5px">
 									<thead>
 										<tr>
 											<th>Companhias</th>
-											<th ng-if="store == 2">Melhor preço no mês da pesquisa</th>
-											<th ng-if="store < 2">Direto</th>
-											<th ng-if="store < 2">1 parada</th>
-											<th ng-if="store < 2">2+ paradas</th>
+											<th>Direto</th>
+											<th>1 parada</th>
+											<th>2+ paradas</th>
 										</tr>
 									</thead>
 									<tbody>
@@ -229,17 +227,38 @@
 											<td>{{ byCompanies.$key }}</td>
 											<td>
 												<a ng-href="{{ byCompanies[0].url }}">
-													{{ byCompanies[0].price > 0 ? byCompanies[0].price.to2Digits() : "-" }}
+													{{ print(byCompanies[0].price) }}
 												</a>
 											</td>
-											<td ng-if="store < 2">
+											<td>
 												<a ng-href="{{ byCompanies[1].url }}">
-													{{ byCompanies[1].price > 0 ? byCompanies[1].price.to2Digits() : "-" }}
+													{{ print(byCompanies[1].price) }}
 												</a>
 											</td>
-											<td ng-if="store < 2">
+											<td>
 												<a ng-href="{{ byCompanies[2].url }}">
-													{{ byCompanies[2].price > 0 ? byCompanies[2].price.to2Digits() : "-" }}
+													{{ print(byCompanies[2].price) }}
+												</a>
+											</td>
+										</tr>
+									</tbody>
+								</table>
+                                
+                                <!-- searchedStore == 4 is ITA Software -->
+								<table ng-if="searchedStore == 4" class="tableResultsByCompanies" style="margin-top:5px">
+									<thead>
+										<tr>
+											<th>Companhias</th>
+											<th>Melhor preço no mês da pesquisa</th>
+										</tr>
+									</thead>
+									<tbody>
+										<tr ng-repeat="byCompanies in result.bestByCompany | toArray | orderBy: orderCompaniesByPrices"
+											bestPrice="{{ byCompanies[0].bestPrice }}" code="{{ byCompanies[0].code }}">
+											<td>{{ byCompanies.$key }}</td>
+											<td>
+												<a ng-href="{{ byCompanies[0].url }}">
+													{{ print(byCompanies[0].price) }}
 												</a>
 											</td>
 										</tr>

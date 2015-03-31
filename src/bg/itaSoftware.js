@@ -1,10 +1,9 @@
 //Request Manager for "ITA Software"
-var ITA = (function () {
-    var self = {};
+function Ita() {
+    var self = this;
+    self.parent.push.call(self);
 
     const SERVICE_URL = "http://matrix.itasoftware.com/search",
-        GAP_TIME_SERVER = 200,
-        MAX_WAITING = 1,
         CACHE_TIMEOUT_HOURS = 1,
         MAX_DIFF_DAYS_ALLOW_BY_SERVICE = 31,
         MAX_DIFF_LAYOVER_ALLOW_BY_SERVICE = 7;
@@ -12,14 +11,6 @@ var ITA = (function () {
     var cache = {}, companyCache = {}, cacheTime = new Date(), receivedStops = 0;
 
 //public methods
-    self.getGapTimeServer = function () {
-        return GAP_TIME_SERVER;
-    };
-
-    self.getMaxWaiting = function () {
-        return MAX_WAITING;
-    };
-
     self.sendRequest = function (data, successCallback, failCallback) {
         var now = new Date();
         now.setHours(now.getHours() - CACHE_TIMEOUT_HOURS);
@@ -34,6 +25,11 @@ var ITA = (function () {
         receivedStops = 0;
 
         doRequest(data, successCallback, failCallback);
+    };
+    
+    //same as submarino viagens since Ita software doesn't sell flights
+    self.getUrl = function (data) {
+        SUBMARINO.getUrl(data);
     };
 
 //private methods
@@ -349,8 +345,14 @@ var ITA = (function () {
     };
 
     return self;
-}());
+}
+
+Ita.prototype = new RequestManager('Ita Software By Google', 200, 1);
+Ita.prototype.constructor = Ita;
+Ita.prototype.parent = RequestManager.prototype;
+
+var ITA = new Ita();
 
 Date.prototype.getDateString = function () {
    return this.getFullYear() + '-' + this.getMonth2() + '-' + this.getDate2();
-}
+};

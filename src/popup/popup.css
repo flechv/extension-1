@@ -36,7 +36,7 @@ div, a, button { outline: none }
 #divAvancada .select2-container-multi .select2-choices { max-height:31px }
 .select2-drop { margin-top:-2px }
 .select2-results { max-height:140px }
-#btnBuscar { float:right;margin-right:2%;color:black;outline:none }
+#btnBuscar, #btnParar { float:right;margin-right:2%;color:black;outline:none }
 .tipsy { font-size:12px }
 .tipsy-inner { background-color:#000;max-width:220px;text-align:left }
 .showResults { float:right;font-size:12px;margin-right:12px;color:rgb(17, 85, 204) }
@@ -54,7 +54,7 @@ div, a, button { outline: none }
 
 .divResultsExpanded { display: block !important }
 .divResultsExpanded.ng-hide { display: none !important }
-#loading { display: block !important;margin-left: 90px }
+#loading { display: block !important;margin-left: 120px }
 #loading.ng-hide { display: none !important }
 
 .ui-datepicker { width: 100%;padding: 0;border-radius: 3px;border: 1px solid #aaa }
@@ -86,3 +86,4 @@ td.ui-datepicker td span, td.ui-datepicker-unselectable span, .ui-datepicker td 
 #email { width: 70% }
 #priceEmail { width: 26% }
 #avancada { margin-top: 6px; line-height: 12px }
+.message { margin-right: 2% }

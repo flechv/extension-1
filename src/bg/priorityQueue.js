@@ -1,17 +1,5 @@
-//Pool of Request Managers
-var PRM = (function () {
-    var self = {};
-    var pool = arguments;
-
-    self.getRequestManager = function (index) {
-        return pool[index] === undefined ? pool[0] : pool[index];
-    };
-    
-    return self;
-}(SUBMARINO, DECOLAR, ITA));
-
 //Priority Queue
-var PQ = (function (PRM) {
+var PQ = (function () {
     var self = {};
 
     var RM, gapTimeServer = 1500, maxWaiting = 8,
@@ -23,8 +11,8 @@ var PQ = (function (PRM) {
         list.sort(function (a, b) { return a.times[0] - b.times[0]; });
     };
     
-    self.isEmpty = function () {
-        return list.length === 0;
+    self.getLength = function () {
+        return list.length;
     };
 
     self.initServer = function (request, backgroundCallback) {
@@ -33,7 +21,8 @@ var PQ = (function (PRM) {
 
         callback = backgroundCallback;
         time = 0;
-        RM = PRM.getRequestManager(request.store);
+        RM = RequestManager.getInstance(request.store);
+        updateUrls();
 
         if (RM.getGapTimeServer !== undefined && typeof RM.getGapTimeServer === "function")
             gapTimeServer = RM.getGapTimeServer();
@@ -100,6 +89,11 @@ var PQ = (function (PRM) {
     var estimatedTimeToBeReady = function (time) {
         return parseInt(time) + 3000;
     };
+    
+    var updateUrls = function (data) {
+        for (var i = 0; i < list.length; i++)
+            list[i].url = RM.getUrl(list[i]);
+    };
 
     return self;
-}(PRM));
+}());

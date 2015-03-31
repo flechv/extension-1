@@ -1,108 +1,20 @@
-/*
 //Request Manager for "Submarino Viagens"
-var SUBMARINO_MOBILE = (function () {
-    var self = {};
-
-    const SERVICE_BASE_URL = "http://m.submarinoviagens.com.br/b2wviagens/passagens";
-    
-//public methods
-    self.sendRequest = function (data, successCallback, failCallback, time) {
-        var xhr = new XMLHttpRequest();
-        xhr.open("GET", SERVICE_BASE_URL + "?" getQueryString(data), true);
-        xhr.setRequestHeader('Content-type', 'application/json');
-        xhr.onreadystatechange = function() {
-            if (xhr.readyState == 4 && xhr.status == 200) {
-                try {
-                    
-                }
-                catch(error) {
-                    console.log(error);
-                    failCallback(data);
-                }
-            }
-        }
-
-        try
-        {
-            xhr.send(data.searchId == undefined ? searchGroupedFlights(data) : getSearchStatus(data.searchId, data.pullStatusFrom));
-        }
-        catch(error) {
-            console.log(error);
-            failCallback(data);
-        }
-    }
-
-//private methods
-    var getQueryString = function (page) {
-        var departureDate = page.departureDate.split('/');
-        var returnDate = page.returnDate == null ? page.departureDate.split('/') : page.returnDate.split('/');
-        var params = [
-            "trip[adults]", "trip[children]", "trip[infants]", 
-            "trip[departure_date_day]", "trip[departure_date_month]", "trip[departure_date_year]",
-            "trip[return_date_day]", "trip[return_date_month]", "trip[return_date_year]",
-            "trip[origin]", "trip[destination]", "trip[direct_flights_only]", "trip[trip_type]"
-        ];
-        var values = [
-            page.adults, page.children, page.infants,
-            departureDate[0], departureDate[1], departureDate[2],
-            returnDate[0], returnDate[1], returnDate[2],
-            page.origin, page.destination, "0", page.returnDate == null ? "OneWay" : "RoundTrip"
-        ];
-
-        return params.reduce(function(prev, param, i) {
-            return prev + param + "=" + values[i] + "&";
-        }, "");
-    };
-
-    var mapAjaxResponse = function (data, response, callback) {
-        //console.log("mapAjaxResponse. tentativas:" + data.times.length / 2);
-        console.log("tempo desde inicio:" + (data.times[0] - data.times[data.times.length - 2]) / 1000);
-        console.log("tempos:" + data.times.join(", "));
-        console.log(response);
-
-        var info = { 
-            prices: response.AirFiltersData.NumberOfStops.map(function (a) { return a.MinPrice; }),
-            byCompany: {}
-        };
-
-        var companies = response.PriceMatrix.AirCompanies;
-        for (var i in companies)
-            info.byCompany[companies[i].AirCompany.trim()] = companies[i].Cells.map(function (ai) {
-                return { price: ai.Price, url: data.url, code: companies[i].CiaCode, bestPrice: companies[i].BestPriceAirCompany };
-            });
-
-        callback(data, info);
-    }
-
-    return self;
-}());
-*/
-
-//Request Manager for "Submarino Viagens"
-var SUBMARINO = (function () {
-    var self = {};
+function SubmarinoViagens() {
+    var self = this;
+    self.parent.push.call(self);
 
     const SERVICE_BASE_URL = "http://www.submarinoviagens.com.br/passagens/UIService/Service.svc/",
+        PUBLIC_BASE_URL = "http://www.submarinoviagens.com.br/passagens/selecionarvoo",
         SEARCH_PRIORITY_URL = "SearchGroupedFlightsPagingResultJSONMinimum",
         SEARCH_SECONDARY_URL = "GetSearchStatusPagingResultJSONMinimum",
         AFFILIATED_ID = 655,
         AFFILIATED_PW = 123456,
-        POINT_OF_SALE = "SUBMARINO",
-        GAP_TIME_SERVER = 2000,
-        MAX_WAITING = 5;
+        POINT_OF_SALE = "SUBMARINO";
 
 //public methods
-    self.getGapTimeServer = function () {
-        return GAP_TIME_SERVER;
-    };
-
-    self.getMaxWaiting = function () {
-        return MAX_WAITING;
-    };
-
     self.sendRequest = function (data, successCallback, failCallback, time) {
         var xhr = new XMLHttpRequest();
-        xhr.open("POST", SERVICE_BASE_URL + (data.isPriority ? SEARCH_PRIORITY_URL : SEARCH_SECONDARY_URL), true);
+        xhr.open("POST", getServiceUrl(data), true);
         xhr.setRequestHeader('Content-type', 'application/json');
 
         var dateInit = new Date();
@@ -111,14 +23,11 @@ var SUBMARINO = (function () {
                 try {
                     var dateFinal = new Date();
                     data.times.splice(0, 0, time + (dateFinal - dateInit));
-                    
+                    if (self.parent.checkGiveUp.call(self, data, successCallback)) return;
+
                     var response = JSON.parse(xhr.responseText);
                     if (typeof response === "string")
                         response = deserializer(JSON.parse(response));
-
-                    //over 5 attempts, give up
-                    if (data.times.length > 10)
-                        mapAjaxResponse(data, { PriceMatrix: { AirCompanies: [] }, AirFiltersData: { NumberOfStops: [] } }, successCallback);
 
                     else if (response.SearchId.replace(/-/g, '').replace(/0/g, '') === '')
                         throw "SearchId empty";
@@ -139,8 +48,15 @@ var SUBMARINO = (function () {
                         throw "Error";
                 }
                 catch(error) {
+                    if (self.parent.checkGiveUp.call(self, data, successCallback)) return;
                     failCallback(data);
                 }
+            }
+            else if (xhr.readyState === 4) {
+                var dateFinal = new Date();
+                data.times.splice(0, 0, time + (dateFinal - dateInit));
+                if (self.parent.checkGiveUp.call(self, data, successCallback)) return;
+                failCallback(data);
             }
         };
 
@@ -149,11 +65,38 @@ var SUBMARINO = (function () {
             xhr.send(data.isPriority ? getPriorityRequestData(data) : getSecondaryRequestData(data));
         }
         catch(error) {
+            if (self.parent.checkGiveUp.call(self, data, successCallback)) return;
             failCallback(data);
         }
     };
+    
+    self.getUrl = function(data) {
+        var p = [];
+        
+        p.push("SomenteIda=" + (data.returnDate === null));
+        p.push("Origem=" + data.origin);
+        p.push("Destino=" + data.destination);
+        p.push("Data=" + data.departureDate.split('/').reverse().join('/'));
+        
+        if (data.returnDate !== null) {
+            p.push("Origem=" + data.destination);
+            p.push("Destino=" + data.origin);
+            p.push("Data=" + data.returnDate.split('/').reverse().join('/'));
+        }
+        
+        p.push("NumADT=" + data.adults);
+        p.push("NumCHD=" + data.children);
+        p.push("NumINF=" + data.babies);
+        p.push("utm_source=" + APP_NAME);
+
+        return PUBLIC_BASE_URL + "?" + p.join("&");
+    };
 
 //private methods
+    var getServiceUrl = function (data) {
+        return SERVICE_BASE_URL + (data.isPriority ? SEARCH_PRIORITY_URL : SEARCH_SECONDARY_URL)
+    };
+    
     //dates must be in format yyyy/mm/dd
     var getPriorityRequestData = function (data) {
         var companies = data.companies === undefined ? [] : data.companies.map(function (a) { return a.code; });
@@ -215,7 +158,7 @@ var SUBMARINO = (function () {
                 identifier: null
             }
         });
-    }
+    };
 
     var getSecondaryRequestData = function (data) {
         return JSON.stringify({
@@ -231,7 +174,7 @@ var SUBMARINO = (function () {
             },
             pullStatusFrom: data.pullStatusFrom //"http://travelengine24.b2w/TravelEngineWS.svc"
         });
-    }
+    };
 
     var deserializer = function (n) {
         var isArray = Object.prototype.toString.call(n) === '[object Array]';
@@ -254,7 +197,7 @@ var SUBMARINO = (function () {
             return t(n[1], n[0][0], n[0])
         }
         return n
-    }
+    };
 
     var mapAjaxResponse = function (data, response, callback) {
         var info = { 
@@ -269,7 +212,13 @@ var SUBMARINO = (function () {
             });
 
         callback(data, info);
-    }
+    };
 
     return self;
-}());
+}
+
+SubmarinoViagens.prototype = new RequestManager('Submarino Viagens', 2000, 5);
+SubmarinoViagens.prototype.constructor = SubmarinoViagens;
+SubmarinoViagens.prototype.parent = RequestManager.prototype;
+
+var SUBMARINO = new SubmarinoViagens();

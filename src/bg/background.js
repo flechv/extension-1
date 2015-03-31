@@ -1,7 +1,9 @@
+const APP_NAME = "genghis";
+
 var BG = (function (SM, PQ) {
     var self = {};
 
-    const APP_NAME = "genghis", GAP_TIME = 300;
+    const GAP_TIME = 300;
 
     var sendEmailTimeout;
 
@@ -18,11 +20,9 @@ var BG = (function (SM, PQ) {
                 
                 for (k in req.departureDates) {
                     for (w in req.qtyDays) {
-                        var returnDate = req.qtyDays[w] === 0 ? null : addDaystoDate(req.departureDates[k], req.qtyDays[w]);
-                        var url = getUrl(req.store, origin, destination, req.departureDates[k], returnDate, req.adults, req.children, req.babies);
+                        var returnDate = req.qtyDays[w] == 0 ? null : addDaystoDate(req.departureDates[k], req.qtyDays[w]);
                         
                         PQ.enqueue({
-                            url: url,
                             origin: origin,
                             destination: destination,
                             departureDate: req.departureDates[k],
@@ -36,7 +36,7 @@ var BG = (function (SM, PQ) {
                             priceEmail: req.priceEmail,
                             times: [time]
                         });
-
+                        
                         time += GAP_TIME;
                     }
                 }
@@ -46,10 +46,12 @@ var BG = (function (SM, PQ) {
         setTimeout(function () {
             PQ.initServer(req, getResponse);
         }, 1);
+        
+        return PQ.getLength();
     };
     
     self.showLoading = function() {
-        return !PQ.isEmpty() && self.getResultsList().length === 0;
+        return PQ.getLength() !== 0 && self.getResultsList().length === 0;
     };
 
     self.hideBadge = function () {
@@ -63,6 +65,10 @@ var BG = (function (SM, PQ) {
     self.getResultsList = function () {
         return !SM.get("resultsList") ? [] : JSON.parse(SM.get("resultsList"));
     };
+    
+    self.getStores = function () {
+        return RequestManager.getInstances();
+    };
 
 //private methods
     //date must be in format yyyy/mm/dd
@@ -70,30 +76,6 @@ var BG = (function (SM, PQ) {
         var dateSplited = strDate.split("/");
         var date = new Date(dateSplited[0], (dateSplited[1] - 1), parseInt(dateSplited[2]) + parseInt(days));
         return date.getFullYear() + '/' + date.getMonth2() + '/' + date.getDate2();
-    };
-
-    var getUrl = function (siteToSearch, origin, destination, departureDate, returnDate, adults, children, babies) {
-        switch(siteToSearch) {
-            case "2":
-                return returnDate === null ?
-                    "http://www.decolar.com/shop/flights/results/oneway/" + origin + "/" + destination + "/" + 
-                    departureDate.split('/').join('-') + "/" + adults + "/" + children + "/" + babies + "?utm_source=" + APP_NAME :
-                
-                    "http://www.decolar.com/shop/flights/results/roundtrip/"  + origin + "/" + destination + "/" +
-                    departureDate.split('/').join('-') + "/" + returnDate.split('/').join('-') + "/" + 
-                    adults + "/" + children + "/" + babies + "?utm_source=" + APP_NAME;
-
-            case "0": case "1": default:
-                return returnDate === null ?
-                    "http://www.submarinoviagens.com.br/Passagens/selecionarvoo?SomenteIda=true" +
-                    "&Origem=" + origin + "&Destino=" + destination + "&Data=" + departureDate.split('/').reverse().join('/') +
-                    "&NumADT=" + adults + "&NumCHD=" + children + "&NumINF=" + babies + "&utm_source=" + APP_NAME :
-                    
-                    "http://www.submarinoviagens.com.br/Passagens/selecionarvoo?SomenteIda=false" +
-                    "&Origem=" + origin + "&Destino=" + destination + "&Data=" + departureDate.split('/').reverse().join('/') + 
-                    "&Origem=" + destination + "&Destino=" + origin + "&Data=" + returnDate.split('/').reverse().join('/') + 
-                    "&NumADT=" + adults + "&NumCHD=" + children + "&NumINF=" + babies + "&utm_source=" + APP_NAME;            
-        }
     };
 
     var getResponse = function (page, response) {
@@ -339,9 +321,9 @@ var BG = (function (SM, PQ) {
 Date.prototype.getDate2 = function () {
    var date = this.getDate();
    return (date < 10 ? '0' : '') + date;
-}
+};
 
 Date.prototype.getMonth2 = function () {
    var month = this.getMonth() + 1;
    return (month < 10 ? '0' : '') + month;
-}
+};
