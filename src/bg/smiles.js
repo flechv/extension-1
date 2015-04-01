@@ -5,7 +5,7 @@ function Smiles() {
     
     const SERVICE_BASE_URL = "https://www.smiles.com.br/c/portal/render_portlet",
           PUBLIC_BASE_URL = "https://www.smiles.com.br/passagens-com-milhas",
-          PARTNERS_SERVICE_BASE_URL = "https://produtos.smiles.com.br/Congeneres/AvailableFlights.aspx?dep=RIO&arr=AMS&std=20150626&paxCount=1&CHDCount=0&InfantCount=0";
+          PARTNERS_SERVICE_BASE_URL = "https://produtos.smiles.com.br/Congeneres/AvailableFlights.aspx";
     
 //public methods
     self.sendRequest = function (data, successCallback, failCallback, time) {
@@ -92,14 +92,9 @@ function Smiles() {
         xhr.open("POST", getServiceUrl2(data), true);
         xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
         
-        var dateInit = new Date();
         xhr.onload = function (e) {
             if (xhr.status === 200) {
                 try {
-                    var dateFinal = new Date();
-                    data.times.splice(0, 0, time + (dateFinal - dateInit));
-                    if (self.parent.checkGiveUp.call(self, data, successCallback)) return;
-
                     var response = JSON.parse(xhr.responseText);
                     if (response.hasCongenereFligts)
                         sendRequestPartners(data, successCallback, failCallback);
@@ -107,24 +102,19 @@ function Smiles() {
                         mapAjaxResponse(data, response, successCallback);
                 }
                 catch(error) {
-                    if (self.parent.checkGiveUp.call(self, data, successCallback)) return;
                     failCallback(data);
                 }
             }
             else {
-                var dateFinal = new Date();
-                data.times.splice(0, 0, time + (dateFinal - dateInit));
-                if (self.parent.checkGiveUp.call(self, data, successCallback)) return;
                 failCallback(data);
             }
         };
 
         try
         {
-            xhr.send(getRequestData(data));
+            xhr.send(getRequest2(data));
         }
         catch(error) {
-            if (self.parent.checkGiveUp.call(self, data, successCallback)) return;
             failCallback(data);
         }
     };
@@ -150,81 +140,7 @@ function Smiles() {
         //https://www.smiles.com.br/passagens-com-milhas?p_p_id=smilessearchflightsresultportlet_WAR_smilesflightsportlet&p_p_lifecycle=2&p_p_state=normal&p_p_mode=view&p_p_resource_id=getFlights&p_p_cacheability=cacheLevelPage&p_p_col_id=column-2&p_p_col_count=2&_smilessearchflightsresultportlet_WAR_smilesflightsportlet_currentURL=%2Fpassagens-com-milhas%3FtripType%3D1%26originAirport%3DRIO%26destinationAirport%3DGRU%26departureDay%3D1430708400%26returnDay%3D1431313200%26adults%3D01%26children%3D0%26infants%3D0?noCache=1431313200
     };
 
-    var sendRequestPartners = function (data, successCallback, failCallback, time) {
-        var xhr = new XMLHttpRequest();
-        xhr.open("POST", getServiceUrlPartners(data), true);
-        xhr.setRequestHeader("Content-Type", "text/plain;charset=UTF-8");
-        
-        var dateInit = new Date();
-        xhr.onload = function (e) {
-            if (xhr.status === 200) {
-                try {
-                    var dateFinal = new Date();
-                    data.times.splice(0, 0, time + (dateFinal - dateInit));
-                    if (self.parent.checkGiveUp.call(self, data, successCallback)) return;
-                    
-                    var parser = new DOMParser();
-                    var response = parser.parseFromString(xhr.responseText, "text/html");
-                    
-                    mapAjaxResponsePartners(data, response, successCallback);
-                }
-                catch(error) {
-                    if (self.parent.checkGiveUp.call(self, data, successCallback)) return;
-                    failCallback(data);
-                }
-            }
-            else {
-                var dateFinal = new Date();
-                data.times.splice(0, 0, time + (dateFinal - dateInit));
-                if (self.parent.checkGiveUp.call(self, data, successCallback)) return;
-                failCallback(data);
-            }
-        };
-
-        try
-        {
-            xhr.send();
-        }
-        catch(error) {
-            if (self.parent.checkGiveUp.call(self, data, successCallback)) return;
-            failCallback(data);
-        }
-    };
-    
-    var getServiceUrlPartners = function (data) {
-        var p = [];
-        
-        p.push("p_l_id=2667928");
-        p.push("p_p_id=searchflightportlet_WAR_smilesflightsportlet");
-        p.push("p_p_lifecycle=0");
-        p.push("p_t_lifecycle=0");
-        p.push("p_p_state=normal");
-        p.push("p_p_mode=view");
-        p.push("p_p_col_id=column-1");
-        p.push("p_p_col_pos=0");
-        p.push("p_p_col_count=1");
-        p.push("p_p_isolated=1");
-        
-        var pp = [];
-        pp.push("dep=" + data.origin);
-        pp.push("arr=" + data.destination);
-        pp.push("std=" + data.departureDate.split("/").join(""));
-        
-        if (data.returnDate !== null)
-            pp.push("returnstd=" + data.returnDate.split("/").join(""));
-        
-        pp.push("paxCount=" + data.adults);
-        pp.push("CHDCount=" + data.children);
-        pp.push("InfantCount=" + data.babies);
-        
-        p.push("currentURL=/passagens-milhas?" + PARTNERS_SERVICE_BASE_URL + "?" + pp.join("&"));
-
-        return PARTNERS_SERVICE_BASE_URL + "?" + p.join("&");
-        
-        //https://produtos.smiles.com.br/Congeneres/AvailableFlights.aspx?dep=GRU&arr=AMS&std=20151231&paxCount=1&CHDCount=0&InfantCount=0
-    };
-
-    var getRequestData = function (data) {
+    var getRequest2 = function (data) {
         return "_smilessearchflightsresultportlet_WAR_smilesflightsportlet_JSONParameters=" + JSON.stringify({
                 getAvailableRequest:
                 {
@@ -249,6 +165,87 @@ function Smiles() {
         });
         
         //_smilessearchflightsresultportlet_WAR_smilesflightsportlet_JSONParameters={"getAvailableRequest":{"routes":[{"tripType":"ROUND_TRIP","origin":"RIO","destination":"GRU","originAirport":"RIO","destinationAirport":"GRU","departureDay":1430708400000,"returnDay":1431313200000,"departureDayFinal":null,"returnDayFinal":null,"adults":1,"infants":0,"children":0,"role":null,"currencyCode":"BRL"}]}}
+    };
+
+    var sendRequestPartners = function (data, successCallback, failCallback, time) {
+        var xhr = new XMLHttpRequest();
+        xhr.open("GET", getServiceUrlPartners(data), true);
+        
+        xhr.onload = function (e) {
+            if (xhr.status === 200) {
+                try {
+                    var parser = new DOMParser();
+                    var response = parser.parseFromString(xhr.responseText, "text/html");
+
+                    sendRequestPartners2(data, successCallback, failCallback, time, $("form", response).serialize());
+                }
+                catch(error) {
+                    failCallback(data);
+                }
+            }
+            else {
+                failCallback(data);
+            }
+        };
+
+        try
+        {
+            xhr.send();
+        }
+        catch(error) {
+            failCallback(data);
+        }
+    };
+
+    var getServiceUrlPartners = function (data) {
+        var p = [];
+        
+        p.push("dep=" + data.origin);
+        p.push("arr=" + data.destination);
+        p.push("std=" + data.departureDate.split("/").join(""));
+        
+        if (data.returnDate !== null)
+            p.push("returnstd=" + data.returnDate.split("/").join(""));
+        
+        p.push("paxCount=" + data.adults);
+        p.push("CHDCount=" + data.children);
+        p.push("InfantCount=" + data.babies);
+        
+        return PARTNERS_SERVICE_BASE_URL + "?" + p.join("&");
+        
+        //https://produtos.smiles.com.br/Congeneres/AvailableFlights.aspx?dep=GRU&arr=AMS&std=20151231&paxCount=1&CHDCount=0&InfantCount=0
+    };
+
+    var sendRequestPartners2 = function (data, successCallback, failCallback, time, requestData) {
+        var xhr = new XMLHttpRequest();
+        xhr.open("POST", getServiceUrlPartners(data), true);
+        xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+        xhr.withCredentials = true;
+        
+        xhr.onload = function (e) {
+            if (xhr.status === 200) {
+                try {
+                    var parser = new DOMParser();
+                    var response = parser.parseFromString(xhr.responseText, "text/html");
+                    
+                    mapAjaxResponsePartners(data, response, successCallback);
+                }
+                catch(error) {
+                    failCallback(data);
+                }
+            }
+            else {
+                failCallback(data);
+            }
+        };
+
+        try
+        {
+            xhr.send(requestData);
+        }
+        catch(error) {
+            failCallback(data);
+        }
     };
     
     var mapAjaxResponse = function (data, response, callback) {
@@ -294,10 +291,6 @@ function Smiles() {
             byCompany: {}
         };
 
-        console.log(response);
-        callback(data, info);
-
-        return;
         //departure flights
         $('#tblOutboundFlights tr', response).each(function () {
             var flights = $(this).find('.resulttableFly .tStops');
@@ -324,7 +317,6 @@ function Smiles() {
                     });
                 }
             }
-            
         });
         
         //return flights
@@ -353,7 +345,6 @@ function Smiles() {
                     });
                 }
             }
-            
         });
 
         for(var i in layovers) {
