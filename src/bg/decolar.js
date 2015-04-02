@@ -67,9 +67,9 @@ function Decolar() {
         p.push(data.babies);        
         p.push("i1"); //i1 is the first page of results (lowest prices), i2 the second, ...
       
-        return SERVICE_BASE_URL + p.join("/");
+        return SERVICE_BASE_URL + p.join("/") + "?order_by=total_price&order_type=asc&currency_code=BRL";
         
-        //http://m.decolar.com/mobile-flights-web/results/roundtrip/RIO/GRU/31-12-2015/01-01-2016/1/0/0/i1
+        //http://m.decolar.com/mobile-flights-web/results/roundtrip/RIO/GRU/31-12-2015/01-01-2016/1/0/0/i1?order_by=total_price&order_type=asc&currency_code=BRL
     };
 
     var mapAjaxResponse = function (data, response, callback) {
