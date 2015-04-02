@@ -141,7 +141,6 @@ function Smiles() {
             headers: {
                 'Content-type': 'text/html;charset=UTF-8'
             },
-            time: time,
             successCallback: successCallback,
             failCallback: failCallback,
             callback: function (responseText) {
