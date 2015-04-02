@@ -180,7 +180,7 @@ function SubmarinoViagens() {
 
     var mapAjaxResponse = function (data, response, callback) {
         var info = self.parent.returnDefault();
-        var info.prices = response.AirFiltersData.NumberOfStops.map(function (a) { return a.MinPrice; });
+        info.prices = response.AirFiltersData.NumberOfStops.map(function (a) { return a.MinPrice; });
 
         var companies = response.PriceMatrix.AirCompanies;
         for (var i in companies)
