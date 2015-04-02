@@ -13,14 +13,6 @@ function RequestManager(name, gapTimeServer, MaxWaiting) {
         return MaxWaiting;
     };
     
-    //we're not able to make abstract methods yet
-    /*
-    self.getGapTimeServer;
-    self.getMaxWaiting;
-    self.sendRequest;
-    self.getUrl;
-    */
-    
     return self;
 }
 
@@ -32,8 +24,54 @@ RequestManager.prototype.checkGiveUp = function (data, callback) {
     if (data.times.length <= 10) return false;
 
     //over 5 attempts, give up
-    callback(data, { prices: [0, 0, 0], byCompany: {} });
+    callback(data, this.returnDefault());
     return true;
+};
+
+RequestManager.prototype.returnDefault = function () {
+    return { prices: [0, 0, 0], byCompany: {} };
+};
+
+RequestManager.prototype.sendRequest = function (config) { //data, method, successCallback, failCallback, time
+    var self = this;
+    var c = config || {};
+    
+    var xhr = new XMLHttpRequest();
+    xhr.open(c.method || "POST", c.url, true);
+    for(var i in c.headers) xhr.setRequestHeader(i, c.headers[i]);
+    
+    if (c.withCredentials) xhr.withCredentials = c.withCredentials;
+    
+    var init = new Date();
+    xhr.onload = function (e) {
+        if (c.time) c.data.times.splice(0, 0, c.time + ((new Date()) - init));
+        if (self.checkGiveUp(c.data, c.successCallback)) return;
+
+        if (xhr.status === 200) {
+            try {
+                c.callback(xhr.responseText);
+            }
+            catch(error) {
+                c.failCallback(c.data);
+            }
+        }
+        else {
+            c.failCallback(c.data);
+        }
+    };
+
+    try
+    {
+        xhr.send(c.requestData);
+    }
+    catch(error) {
+        if (self.checkGiveUp(c.data, c.successCallback)) return;
+        c.failCallback(c.data);
+    }
+};
+
+RequestManager.prototype.getMinPrice = function (previousPrice, price) {
+    return previousPrice == 0 || price == 0 ? Math.max(previousPrice, price) : Math.min(previousPrice, price);
 };
 
 //static properties

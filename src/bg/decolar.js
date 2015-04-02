@@ -8,44 +8,23 @@ function Decolar() {
     
 //public methods
     self.sendRequest = function (data, successCallback, failCallback, time) {
-        var xhr = new XMLHttpRequest();
-        xhr.open("GET", getServiceUrl(data), true);
-        xhr.setRequestHeader('Content-type', 'text/html;charset=UTF-8');
-        
-        var dateInit = new Date();
-        xhr.onreadystatechange = function () {
-            if (xhr.readyState === 4 && xhr.status === 200) {
-                try {
-                    var dateFinal = new Date();
-                    data.times.splice(0, 0, time + (dateFinal - dateInit));
-                    if (self.parent.checkGiveUp.call(self, data, successCallback)) return;
+        self.parent.sendRequest({
+            data: data,
+            method: "GET",
+            url: getServiceUrl(data),
+            headers: {
+                'Content-type': 'text/html;charset=UTF-8'
+            },
+            time: time,
+            successCallback: successCallback,
+            failCallback: failCallback,
+            callback: function (responseText) {
+                var parser = new DOMParser();
+                var response = parser.parseFromString(responseText, "text/html");
 
-                    var parser = new DOMParser();
-                    var response = parser.parseFromString(xhr.responseText, "text/html");
-                    
-                    mapAjaxResponse(data, response, successCallback);
-                }
-                catch(error) {
-                    if (self.parent.checkGiveUp.call(self, data, successCallback)) return;
-                    failCallback(data);
-                }
+                mapAjaxResponse(data, response, successCallback);
             }
-            else if (xhr.readyState === 4) {
-                var dateFinal = new Date();
-                data.times.splice(0, 0, time + (dateFinal - dateInit));
-                if (self.parent.checkGiveUp.call(self, data, successCallback)) return;
-                failCallback(data);
-            }
-        };
-
-        try
-        {
-            xhr.send();
-        }
-        catch(error) {
-            if (self.parent.checkGiveUp.call(self, data, successCallback)) return;
-            failCallback(data);
-        }
+        });
     };
     
     //dates must be in format yyyy/mm/dd -> output dates yyyy-mm-dd
@@ -94,10 +73,7 @@ function Decolar() {
     };
 
     var mapAjaxResponse = function (data, response, callback) {
-        var info = {
-            prices: [0, 0, 0],
-            byCompany: {}
-        };
+        var info = self.parent.returnDefault();
 
         $('.result > .flight', response).each(function () {
             var airline = $(this).find('.airlineName').text();
@@ -127,16 +103,12 @@ function Decolar() {
             }
                             
             for(var i in layovers) {
-                info.byCompany[airline][layovers[i]].price = getMinPrice(info.byCompany[airline][layovers[i]].price, price);
-                info.prices[layovers[i]] = getMinPrice(info.prices[layovers[i]], price);
+                info.byCompany[airline][layovers[i]].price = self.parent.getMinPrice(info.byCompany[airline][layovers[i]].price, price);
+                info.prices[layovers[i]] = self.parent.getMinPrice(info.prices[layovers[i]], price);
             }
         });
         
         callback(data, info);
-    };
-                
-    var getMinPrice = function (previousPrice, price) {
-        return previousPrice == 0 || price == 0 ? Math.max(previousPrice, price) : Math.min(previousPrice, price);
     };
     
     return self;

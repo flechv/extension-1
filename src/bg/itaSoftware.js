@@ -34,53 +34,44 @@ function Ita() {
 
 //private methods
     var doRequest = function (data, successCallback, failCallback, stop) {
-        var xhr = new XMLHttpRequest();
-        xhr.open("POST", SERVICE_URL, true);
-        xhr.setRequestHeader('Content-type', 'application/javascript; charset=UTF-8');
-        //xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest");
-        xhr.setRequestHeader("X-GWT-Module-Base", "http://matrix.itasoftware.com/gwt/");
-        xhr.setRequestHeader("X-GWT-Permutation", "46F5E3E13C7765F3F74D16C58212BAA2");
-        
-        xhr.onreadystatechange = function () {
-            if (xhr.readyState === 4 && xhr.status === 200) {
-                try {
-                    var response = eval("(" + xhr.responseText + ")");
+        self.parent.sendRequest({
+            data: data,
+            url: SERVICE_URL,
+            headers: {
+                'Content-type': 'application/javascript; charset=UTF-8',
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-GWT-Module-Base': 'http://matrix.itasoftware.com/gwt/',
+                'X-GWT-Permutation': '46F5E3E13C7765F3F74D16C58212BAA2'
+            },
+            time: time,
+            successCallback: successCallback,
+            failCallback: failCallback,
+            callback: function (responseText) {
+                var response = eval("(" + responseText + ")");
 
-                    if (response.error !== undefined)
-                        throw response.error.message !== undefined ? response.error.message : "unknown error";
+                if (response.error !== undefined)
+                    throw response.error.message !== undefined ? response.error.message : "unknown error";
 
-                    if (stop === undefined) {
-                        data.solutionSet = response.result[response.result.length - 3]; //response.result.solutionSet;
-                        data.session = response.result[response.result.length - 1]; //response.result.session;
-                        
-                        doRequest(data, successCallback, failCallback, 0);
-                        doRequest(data, successCallback, failCallback, 1);
-                        doRequest(data, successCallback, failCallback, 2);
-                    }
-                    else {
-                        updateCache(data, response.result, stop);
-                        receivedStops++;
+                if (stop === undefined) {
+                    data.solutionSet = response.result[response.result.length - 3]; //response.result.solutionSet;
+                    data.session = response.result[response.result.length - 1]; //response.result.session;
 
-                        if (receivedStops === 3) {
-                            cacheTime = new Date();
-                            mapAjaxResponse(data, successCallback);
-                        }
+                    doRequest(data, successCallback, failCallback, 0);
+                    doRequest(data, successCallback, failCallback, 1);
+                    doRequest(data, successCallback, failCallback, 2);
+                }
+                else {
+                    updateCache(data, response.result, stop);
+                    receivedStops++;
+
+                    if (receivedStops === 3) {
+                        cacheTime = new Date();
+                        mapAjaxResponse(data, successCallback);
                     }
                 }
-                catch (error) {
-                    console.log(error);
-                    
-                    data.failAttemps = data.failAttemps === undefined ? 1 : (data.failAttemps + 1);
-                    if (data.failAttemps > 5) return;
-
-                    setTimeout(function () {
-                        doRequest(data, successCallback, failCallback);
-                    }, 2500);
-                }
-            }
-        };
-
-        xhr.send(getRequestData(data, stop));
+            },
+            requestData: getRequestData(data, stop)
+        });
     };
 
     var getDataKey = function (data) {

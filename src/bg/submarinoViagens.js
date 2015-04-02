@@ -13,61 +13,40 @@ function SubmarinoViagens() {
 
 //public methods
     self.sendRequest = function (data, successCallback, failCallback, time) {
-        var xhr = new XMLHttpRequest();
-        xhr.open("POST", getServiceUrl(data), true);
-        xhr.setRequestHeader('Content-type', 'application/json');
+        self.parent.sendRequest({
+            data: data,
+            url: getServiceUrl(data),
+            headers: {
+                'Content-type': 'application/json'
+            },
+            time: time,
+            successCallback: successCallback,
+            failCallback: failCallback,
+            callback: function (responseText) {
+                var response = JSON.parse(responseText);
+                if (typeof response === "string")
+                    response = deserializer(JSON.parse(response));
 
-        var dateInit = new Date();
-        xhr.onreadystatechange = function () {
-            if (xhr.readyState === 4 && xhr.status === 200) {
-                try {
-                    var dateFinal = new Date();
-                    data.times.splice(0, 0, time + (dateFinal - dateInit));
-                    if (self.parent.checkGiveUp.call(self, data, successCallback)) return;
+                if (response.SearchId.replace(/-/g, '').replace(/0/g, '') === '')
+                    throw "SearchId empty";
 
-                    var response = JSON.parse(xhr.responseText);
-                    if (typeof response === "string")
-                        response = deserializer(JSON.parse(response));
+                else if (response.Status == 0 || response.PriceMatrix == null ||
+                    response.AirFiltersData == null || response.AirFiltersData.NumberOfStops == null) {
 
-                    else if (response.SearchId.replace(/-/g, '').replace(/0/g, '') === '')
-                        throw "SearchId empty";
-                    
-                    else if (response.Status == 0 || response.PriceMatrix == null ||
-                        response.AirFiltersData == null || response.AirFiltersData.NumberOfStops == null) {
-                        
-                        data.isPriority = false;
-                        data.searchId = response.SearchId;
-                        data.pullStatusFrom = response.PullStatusFrom;
+                    data.isPriority = false;
+                    data.searchId = response.SearchId;
+                    data.pullStatusFrom = response.PullStatusFrom;
 
-                        throw "Not ready yet";
-                    }
-                    else if (response.Status == 1)
-                        mapAjaxResponse(data, response, successCallback);
-
-                    else
-                        throw "Error";
+                    throw "Not ready yet";
                 }
-                catch(error) {
-                    if (self.parent.checkGiveUp.call(self, data, successCallback)) return;
-                    failCallback(data);
-                }
-            }
-            else if (xhr.readyState === 4) {
-                var dateFinal = new Date();
-                data.times.splice(0, 0, time + (dateFinal - dateInit));
-                if (self.parent.checkGiveUp.call(self, data, successCallback)) return;
-                failCallback(data);
-            }
-        };
+                else if (response.Status == 1)
+                    mapAjaxResponse(data, response, successCallback);
 
-        try
-        {
-            xhr.send(data.isPriority ? getPriorityRequestData(data) : getSecondaryRequestData(data));
-        }
-        catch(error) {
-            if (self.parent.checkGiveUp.call(self, data, successCallback)) return;
-            failCallback(data);
-        }
+                else
+                    throw "Error";
+            },
+            requestData: data.isPriority ? getPriorityRequestData(data) : getSecondaryRequestData(data)
+        });
     };
     
     self.getUrl = function(data) {
@@ -200,10 +179,8 @@ function SubmarinoViagens() {
     };
 
     var mapAjaxResponse = function (data, response, callback) {
-        var info = { 
-            prices: response.AirFiltersData.NumberOfStops.map(function (a) { return a.MinPrice; }),
-            byCompany: {}
-        };
+        var info = self.parent.returnDefault();
+        var info.prices = response.AirFiltersData.NumberOfStops.map(function (a) { return a.MinPrice; });
 
         var companies = response.PriceMatrix.AirCompanies;
         for (var i in companies)

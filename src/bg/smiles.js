@@ -9,41 +9,19 @@ function Smiles() {
     
 //public methods
     self.sendRequest = function (data, successCallback, failCallback, time) {
-        var xhr = new XMLHttpRequest();
-        xhr.open("POST", getServiceUrl(data), true);
-        xhr.setRequestHeader("Content-Type", "text/plain;charset=UTF-8");
-        
-        var dateInit = new Date();
-        xhr.onload = function (e) {
-            if (xhr.status === 200) {
-                try {
-                    var dateFinal = new Date();
-                    data.times.splice(0, 0, time + (dateFinal - dateInit));
-                    if (self.parent.checkGiveUp.call(self, data, successCallback)) return;
-
-                    sendRequest2(data, successCallback, failCallback);
-                }
-                catch(error) {
-                    if (self.parent.checkGiveUp.call(self, data, successCallback)) return;
-                    failCallback(data);
-                }
+        self.parent.sendRequest({
+            data: data,
+            url: getServiceUrl(data),
+            headers: {
+                'Content-type': 'text/plain;charset=UTF-8'
+            },
+            time: time,
+            successCallback: successCallback,
+            failCallback: failCallback,
+            callback: function (responseText) {
+                sendRequest2(data, successCallback, failCallback);
             }
-            else {
-                var dateFinal = new Date();
-                data.times.splice(0, 0, time + (dateFinal - dateInit));
-                if (self.parent.checkGiveUp.call(self, data, successCallback)) return;
-                failCallback(data);
-            }
-        };
-
-        try
-        {
-            xhr.send();
-        }
-        catch(error) {
-            if (self.parent.checkGiveUp.call(self, data, successCallback)) return;
-            failCallback(data);
-        }
+        });
     };
     
     self.getUrl = function(data) {
@@ -87,36 +65,24 @@ function Smiles() {
         return SERVICE_BASE_URL + "?" + p.join("&");
     };
     
-    var sendRequest2 = function (data, successCallback, failCallback, time) {
-        var xhr = new XMLHttpRequest();
-        xhr.open("POST", getServiceUrl2(data), true);
-        xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-        
-        xhr.onload = function (e) {
-            if (xhr.status === 200) {
-                try {
-                    var response = JSON.parse(xhr.responseText);
-                    if (response.hasCongenereFligts)
-                        sendRequestPartners(data, successCallback, failCallback);
-                    else
-                        mapAjaxResponse(data, response, successCallback);
-                }
-                catch(error) {
-                    failCallback(data);
-                }
-            }
-            else {
-                failCallback(data);
-            }
-        };
-
-        try
-        {
-            xhr.send(getRequest2(data));
-        }
-        catch(error) {
-            failCallback(data);
-        }
+    var sendRequest2 = function (data, successCallback, failCallback) {
+        self.parent.sendRequest({
+            data: data,
+            url: getServiceUrl2(data),
+            headers: {
+                'Content-type': 'application/x-www-form-urlencoded'
+            },
+            successCallback: successCallback,
+            failCallback: failCallback,
+            callback: function (responseText) {
+                var response = JSON.parse(responseText);
+                if (response.hasCongenereFligts)
+                    sendRequestPartners(data, successCallback, failCallback);
+                else
+                    mapAjaxResponse(data, response, successCallback);
+            },
+            requestData: getRequest2(data)
+        });
     };
     
     var getServiceUrl2 = function (data) {
@@ -167,34 +133,25 @@ function Smiles() {
         //_smilessearchflightsresultportlet_WAR_smilesflightsportlet_JSONParameters={"getAvailableRequest":{"routes":[{"tripType":"ROUND_TRIP","origin":"RIO","destination":"GRU","originAirport":"RIO","destinationAirport":"GRU","departureDay":1430708400000,"returnDay":1431313200000,"departureDayFinal":null,"returnDayFinal":null,"adults":1,"infants":0,"children":0,"role":null,"currencyCode":"BRL"}]}}
     };
 
-    var sendRequestPartners = function (data, successCallback, failCallback, time) {
-        var xhr = new XMLHttpRequest();
-        xhr.open("GET", getServiceUrlPartners(data), true);
-        
-        xhr.onload = function (e) {
-            if (xhr.status === 200) {
-                try {
-                    var parser = new DOMParser();
-                    var response = parser.parseFromString(xhr.responseText, "text/html");
+    var sendRequestPartners = function (data, successCallback, failCallback) {
+        self.parent.sendRequest({
+            data: data,
+            method: "GET",
+            url: getServiceUrlPartners(data),
+            headers: {
+                'Content-type': 'text/html;charset=UTF-8'
+            },
+            time: time,
+            successCallback: successCallback,
+            failCallback: failCallback,
+            callback: function (responseText) {
+                var parser = new DOMParser();
+                var response = parser.parseFromString(responseText, "text/html");
+                var requestData =  $("form", response).serialize() + '&btnStartAvailability=';
 
-                    sendRequestPartners2(data, successCallback, failCallback, time, $("form", response).serialize());
-                }
-                catch(error) {
-                    failCallback(data);
-                }
+                sendRequestPartners2(data, successCallback, failCallback, requestData);
             }
-            else {
-                failCallback(data);
-            }
-        };
-
-        try
-        {
-            xhr.send();
-        }
-        catch(error) {
-            failCallback(data);
-        }
+        });
     };
 
     var getServiceUrlPartners = function (data) {
@@ -216,47 +173,33 @@ function Smiles() {
         //https://produtos.smiles.com.br/Congeneres/AvailableFlights.aspx?dep=GRU&arr=AMS&std=20151231&paxCount=1&CHDCount=0&InfantCount=0
     };
 
-    var sendRequestPartners2 = function (data, successCallback, failCallback, time, requestData) {
-        var xhr = new XMLHttpRequest();
-        xhr.open("POST", getServiceUrlPartners(data), true);
-        xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-        xhr.withCredentials = true;
-        
-        xhr.onload = function (e) {
-            if (xhr.status === 200) {
-                try {
-                    var parser = new DOMParser();
-                    var response = parser.parseFromString(xhr.responseText, "text/html");
-                    
-                    mapAjaxResponsePartners(data, response, successCallback);
-                }
-                catch(error) {
-                    failCallback(data);
-                }
-            }
-            else {
-                failCallback(data);
-            }
-        };
+    var sendRequestPartners2 = function (data, successCallback, failCallback, requestData) {
+        self.parent.sendRequest({
+            data: data,
+            url: getServiceUrlPartners(data),
+            headers: {
+                'Content-type': 'application/x-www-form-urlencoded'
+            },
+            withCredentials: true,
+            successCallback: successCallback,
+            failCallback: failCallback,
+            callback: function (responseText) {
+                var parser = new DOMParser();
+                var response = parser.parseFromString(responseText, "text/html");
 
-        try
-        {
-            xhr.send(requestData);
-        }
-        catch(error) {
-            failCallback(data);
-        }
+                mapAjaxResponsePartners(data, response, successCallback);
+            },
+            requestData: requestData
+        });
     };
     
     var mapAjaxResponse = function (data, response, callback) {
-        var info = {
-            prices: [0, 0, 0],
-            byCompany: {}
-        };
-
+        var info = self.parent.returnDefault();
+        
         for(var i = 0; i < response.legs.length; i++) {
             var legFlights = response.legs[i].categoryFlights;
             
+            var minPricesLeg = [0, 0, 0];
             for(var j = 0; j < legFlights.length; j++) {
                 var flight = legFlights[j].flights[0];
                 var airCompany = airlinesCompaniesByCode[flight.carrierCode];
@@ -266,9 +209,11 @@ function Smiles() {
                     price = flight.clubSmilesCost[0].originalSmiles;
                 
                 var stops = flight.stops === null ? 0 : parseInt(flight.stops);
-                
-                info.prices[stops] = getMinPrice(info.prices[stops], price);
+                minPricesLeg[stops] = self.parent.getMinPrice(minPricesLeg[stops], price);
             }
+            
+            for(var k in [0, 1, 2])
+                info.prices[k] += minPricesLeg[k];
         }
         
         var airline = "Gol";
@@ -286,30 +231,29 @@ function Smiles() {
     };
     
     var mapAjaxResponsePartners = function (data, response, callback) {
-        var info = {
-            prices: [0, 0, 0],
-            byCompany: {}
-        };
-
+        var info = self.parent.returnDefault();
+        
         //departure flights
         $('#tblOutboundFlights tr', response).each(function () {
             var flights = $(this).find('.resulttableFly .tStops');
-            var milesTd = $(this).find('.resulttable');
+            var miles = $(this).find('.resulttable');
             
-            if (fly.size() == 0 || miles.size() == 0) return;
-            var price = milesTd.text().trim();
-            //one tr is the header and each other tr is a flight
-            //if there is one flight shown that is a non stop flight
-            var layover = flights.find("tr").size() - 2;
+            if (flights.size() == 0 || miles.size() == 0) return;
+            var price = miles.text().trim().replace('.', '');
+            //one tr is the header and the other is the flight '/2'
+            //if there is one flight shown that is a non stop flight '-1'
+            var layover = (flights.find("tr").size() / 2) - 1;
             
             //Usually the last flight is the most important one (the first is the regional flight) 
             var airline = flights.find("tr:last-child td:nth-child(2)").text().trim();
             
-            if (info.byCompany[airline] == undefined) {
-                info.byCompany[airline] = [];
+            //if it's a round trip, show departure and return airlines separated
+            var departureAirline = data.returnDate === null ? airline : airline + ' - Ida';
+            if (info.byCompany[departureAirline] == undefined) {
+                info.byCompany[departureAirline] = [];
 
                 for(var i in [0, 1, 2]) {
-                    info.byCompany[airline].push({ 
+                    info.byCompany[departureAirline].push({ 
                         price: 0,
                         url: data.url,
                         code: airlinesCompaniesById[airline] == undefined ? airline : airlinesCompaniesById[airline].code,
@@ -317,27 +261,32 @@ function Smiles() {
                     });
                 }
             }
+            
+            info.byCompany[departureAirline][layover].price = self.parent.getMinPrice(info.byCompany[departureAirline][layover].price, price);
+            info.prices[layover] = self.parent.getMinPrice(info.prices[layover], price);
         });
         
+        var minPricesReturn = [0, 0, 0];
         //return flights
         $('#tblInboundFlights tr', response).each(function () {
             var flights = $(this).find('.resulttableFly .tStops');
-            var milesTd = $(this).find('.resulttable');
+            var miles = $(this).find('.resulttable');
             
-            if (fly.size() == 0 || miles.size() == 0) return;
-            var price = milesTd.text().trim();
-            //one tr is the header and each other tr is a flight
-            //if there is one flight shown that is a non stop flight
-            var layover = flights.find("tr").size() - 2;
+            if (flights.size() == 0 || miles.size() == 0) return;
+            var price = miles.text().trim().replace('.', '');
+            //one tr is the header and the other is the flight '/2'
+            //if there is one flight shown that is a non stop flight '-1'
+            var layover = (flights.find("tr").size() / 2) - 1;
+
+            //Usually the first flight is the most important one in a return flight 
+            var airline = flights.find("tr:nth-child(2) td:nth-child(2)").text().trim();
             
-            //Usually the last flight is the most important one (the first is the regional flight) 
-            var airline = flights.find("tr:last-child td:nth-child(2)").text().trim();
-        
-            if (info.byCompany[airline] == undefined) {
-                info.byCompany[airline] = [];
+            var returnAirline = airline + ' - Volta';
+            if (info.byCompany[returnAirline] == undefined) {
+                info.byCompany[returnAirline] = [];
 
                 for(var i in [0, 1, 2]) {
-                    info.byCompany[airline].push({ 
+                    info.byCompany[returnAirline].push({ 
                         price: 0,
                         url: data.url,
                         code: airlinesCompaniesById[airline] == undefined ? airline : airlinesCompaniesById[airline].code,
@@ -345,18 +294,15 @@ function Smiles() {
                     });
                 }
             }
+            
+            info.byCompany[returnAirline][layover].price = self.parent.getMinPrice(info.byCompany[returnAirline][layover].price, price);
+            minPricesReturn[layover] = self.parent.getMinPrice(minPricesReturn[layover], price);
         });
-
-        for(var i in layovers) {
-            info.byCompany[airline][layovers[i]].price = getMinPrice(info.byCompany[airline][layovers[i]].price, price);
-            info.prices[layovers[i]] = getMinPrice(info.prices[layovers[i]], price);
-        }
+        
+        for(var i in [0, 1, 2])
+            info.prices[i] += minPricesReturn[i];
         
         callback(data, info);
-    };
-    
-    var getMinPrice = function (previousPrice, price) {
-        return previousPrice == 0 || price == 0 ? Math.max(previousPrice, price) : Math.min(previousPrice, price);
     };
     
     //dates must be in format yyyy/mm/dd -> output dates new Date().getTime()
