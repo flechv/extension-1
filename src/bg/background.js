@@ -30,7 +30,7 @@ var BG = (function (SM, PQ) {
                             companies: companies,
                             adults: req.adults,
                             children: req.children,
-                            babies: req.babies,
+                            infants: req.infants,
                             qtyDays: req.qtyDays,
                             email: req.email,
                             priceEmail: req.priceEmail,
@@ -72,10 +72,8 @@ var BG = (function (SM, PQ) {
 
 //private methods
     //date must be in format yyyy/mm/dd
-    var addDaystoDate = function (strDate, days) {
-        var dateSplited = strDate.split("/");
-        var date = new Date(dateSplited[0], (dateSplited[1] - 1), parseInt(dateSplited[2]) + parseInt(days));
-        return date.getFullYear() + '/' + date.getMonth2() + '/' + date.getDate2();
+    var addDaystoDate = function (dateStr, days) {
+        return dateStr.parseToDate().addDays(parseInt(days)).toDateFormat('yyyy/mm/dd');
     };
 
     var getResponse = function (page, response) {
@@ -216,10 +214,10 @@ var BG = (function (SM, PQ) {
 
     //dates must be in format yyyy/mm/dd and will be shown in format dd/mm/yyyy
     var getDateFormatted = function (page) {
-        var response = page.departureDate.split('/').reverse().join('/');
+        var response = page.departureDate.toDateFormat('dd/mm/yyyy');
 
         if (page.returnDate !== null)
-            response += " - " + page.returnDate.split('/').reverse().join('/');
+            response += " - " + page.returnDate.toDateFormat('dd/mm/yyyy');
 
         return response;
     };
@@ -317,13 +315,3 @@ var BG = (function (SM, PQ) {
 */
     return self;
 }(SM, PQ));
-
-Date.prototype.getDate2 = function () {
-   var date = this.getDate();
-   return (date < 10 ? '0' : '') + date;
-};
-
-Date.prototype.getMonth2 = function () {
-   var month = this.getMonth() + 1;
-   return (month < 10 ? '0' : '') + month;
-};

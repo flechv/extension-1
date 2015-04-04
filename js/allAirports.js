@@ -1949,3 +1949,6 @@ var allAirports = [
       { id: "HRE", country: "Zimbábue", text: "Harare, Harare International Airport (HRE)" },
       { id: "VFA", country: "Zimbábue", text: "Victoria Falls, Victoria Falls Airport (VFA)" }
 ];
+
+var airportsById = {};
+for(var i in allAirports) airportsById[allAirports[i].id] = allAirports[i];

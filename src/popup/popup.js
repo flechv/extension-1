@@ -23,7 +23,7 @@ app.controller("AngularController", function ($scope) {
     $scope.store = "0";
 	$scope.adults = 1;
 	$scope.children = 0;
-	$scope.babies = 0;
+	$scope.infants = 0;
 	$scope.companies = [];	
 	$scope.airlinesCompanies = airlinesCompanies;
 	$scope.days = [];
@@ -106,7 +106,7 @@ app.controller("AngularController", function ($scope) {
 		return	($scope.origins == null || $scope.origins.length == 0 || $scope.destinations == null || $scope.destinations.length == 0) ||
 				($scope.qtyDays == null || $scope.qtyDays.length == 0 || $scope.departureDates == null || $scope.departureDates.length == 0) ||
 				($scope.origins.length == 1 && $scope.destinations.length == 1 && $scope.origins[0].id == $scope.destinations[0].id) ||
-				($scope.adults == 0 && $scope.children == 0 && $scope.babies == 0);
+				($scope.adults == 0 && $scope.children == 0 && $scope.infants == 0);
 	};
 
 	$scope.search = function () {
@@ -115,7 +115,7 @@ app.controller("AngularController", function ($scope) {
 		else {
 			$scope.showMessageError = false;
 			$scope.showLoading = true;
-			$scope.numberOfFligths = 0;
+			$scope.numberOfFlights = 0;
 			$scope.results = [];
 	        $scope.searchedStore = $scope.store;
 
@@ -128,7 +128,7 @@ app.controller("AngularController", function ($scope) {
 				companies: $scope.companies,
 				adults: $scope.adults,
 				children: $scope.children,
-				babies: $scope.babies,
+				infants: $scope.infants,
 				store: $scope.store,
 				email: $scope.email,
 				priceEmail: $scope.priceEmail

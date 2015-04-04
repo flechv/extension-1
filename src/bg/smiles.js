@@ -35,7 +35,7 @@ function Smiles() {
         
         p.push("adults=" + data.adults);
         p.push("children=" + data.children);
-        p.push("infants=" + data.babies);
+        p.push("infants=" + data.infants);
         //p.push("utm_source=" + APP_NAME);
 
         return PUBLIC_BASE_URL + "?" + p.join("&");
@@ -64,7 +64,7 @@ function Smiles() {
         
         return SERVICE_BASE_URL + "?" + p.join("&");
     };
-    
+
     var sendRequest2 = function (data, successCallback, failCallback) {
         self.parent.sendRequest({
             data: data,
@@ -76,12 +76,14 @@ function Smiles() {
             failCallback: failCallback,
             callback: function (responseText) {
                 var response = JSON.parse(responseText);
+                var info = mapAjaxResponse(data, response, successCallback);
+
                 if (response.hasCongenereFligts)
-                    sendRequestPartners(data, successCallback, failCallback);
+                    sendRequestPartners(data, successCallback, failCallback, info);
                 else
-                    mapAjaxResponse(data, response, successCallback);
+                    successCallback(data, info);
             },
-            requestData: getRequest2(data)
+            formData: getFormData2(data)
         });
     };
     
@@ -106,7 +108,7 @@ function Smiles() {
         //https://www.smiles.com.br/passagens-com-milhas?p_p_id=smilessearchflightsresultportlet_WAR_smilesflightsportlet&p_p_lifecycle=2&p_p_state=normal&p_p_mode=view&p_p_resource_id=getFlights&p_p_cacheability=cacheLevelPage&p_p_col_id=column-2&p_p_col_count=2&_smilessearchflightsresultportlet_WAR_smilesflightsportlet_currentURL=%2Fpassagens-com-milhas%3FtripType%3D1%26originAirport%3DRIO%26destinationAirport%3DGRU%26departureDay%3D1430708400%26returnDay%3D1431313200%26adults%3D01%26children%3D0%26infants%3D0?noCache=1431313200
     };
 
-    var getRequest2 = function (data) {
+    var getFormData2 = function (data) {
         return "_smilessearchflightsresultportlet_WAR_smilesflightsportlet_JSONParameters=" + JSON.stringify({
                 getAvailableRequest:
                 {
@@ -122,7 +124,7 @@ function Smiles() {
                         departureDayFinal: null,
                         returnDayFinal: null,
                         adults: '0'+ data.adults,
-                        infants: data.babies,
+                        infants: data.infants,
                         children: data.children,
                         role: null,
                         currencyCode: "BRL"
@@ -133,65 +135,6 @@ function Smiles() {
         //_smilessearchflightsresultportlet_WAR_smilesflightsportlet_JSONParameters={"getAvailableRequest":{"routes":[{"tripType":"ROUND_TRIP","origin":"RIO","destination":"GRU","originAirport":"RIO","destinationAirport":"GRU","departureDay":1430708400000,"returnDay":1431313200000,"departureDayFinal":null,"returnDayFinal":null,"adults":1,"infants":0,"children":0,"role":null,"currencyCode":"BRL"}]}}
     };
 
-    var sendRequestPartners = function (data, successCallback, failCallback) {
-        self.parent.sendRequest({
-            data: data,
-            method: "GET",
-            url: getServiceUrlPartners(data),
-            headers: {
-                'Content-type': 'text/html;charset=UTF-8'
-            },
-            successCallback: successCallback,
-            failCallback: failCallback,
-            callback: function (responseText) {
-                var parser = new DOMParser();
-                var response = parser.parseFromString(responseText, "text/html");
-                var requestData =  $("form", response).serialize() + '&btnStartAvailability=';
-
-                sendRequestPartners2(data, successCallback, failCallback, requestData);
-            }
-        });
-    };
-
-    var getServiceUrlPartners = function (data) {
-        var p = [];
-        
-        p.push("dep=" + data.origin);
-        p.push("arr=" + data.destination);
-        p.push("std=" + data.departureDate.split("/").join(""));
-        
-        if (data.returnDate !== null)
-            p.push("returnstd=" + data.returnDate.split("/").join(""));
-        
-        p.push("paxCount=" + data.adults);
-        p.push("CHDCount=" + data.children);
-        p.push("InfantCount=" + data.babies);
-        
-        return PARTNERS_SERVICE_BASE_URL + "?" + p.join("&");
-        
-        //https://produtos.smiles.com.br/Congeneres/AvailableFlights.aspx?dep=GRU&arr=AMS&std=20151231&paxCount=1&CHDCount=0&InfantCount=0
-    };
-
-    var sendRequestPartners2 = function (data, successCallback, failCallback, requestData) {
-        self.parent.sendRequest({
-            data: data,
-            url: getServiceUrlPartners(data),
-            headers: {
-                'Content-type': 'application/x-www-form-urlencoded'
-            },
-            withCredentials: true,
-            successCallback: successCallback,
-            failCallback: failCallback,
-            callback: function (responseText) {
-                var parser = new DOMParser();
-                var response = parser.parseFromString(responseText, "text/html");
-
-                mapAjaxResponsePartners(data, response, successCallback);
-            },
-            requestData: requestData
-        });
-    };
-    
     var mapAjaxResponse = function (data, response, callback) {
         var info = self.parent.returnDefault();
         
@@ -226,11 +169,71 @@ function Smiles() {
             });
         }
         
-        callback(data, info);
+        return info;
     };
     
-    var mapAjaxResponsePartners = function (data, response, callback) {
-        var info = self.parent.returnDefault();
+    var sendRequestPartners = function (data, successCallback, failCallback, info) {
+        self.parent.sendRequest({
+            data: data,
+            method: "GET",
+            url: getServiceUrlPartners(data),
+            headers: {
+                'Content-type': 'text/html;charset=UTF-8'
+            },
+            successCallback: successCallback,
+            failCallback: failCallback,
+            callback: function (responseText) {
+                var parser = new DOMParser();
+                var response = parser.parseFromString(responseText, "text/html");
+                var formData =  $("form", response).serialize() + '&btnStartAvailability=';
+
+                sendRequestPartners2(data, successCallback, failCallback, formData, info);
+            }
+        });
+    };
+
+    var getServiceUrlPartners = function (data) {
+        var p = [];
+        
+        p.push("dep=" + data.origin);
+        p.push("arr=" + data.destination);
+        p.push("std=" + data.departureDate.split("/").join(""));
+        
+        if (data.returnDate !== null)
+            p.push("returnstd=" + data.returnDate.split("/").join(""));
+        
+        p.push("paxCount=" + data.adults);
+        p.push("CHDCount=" + data.children);
+        p.push("InfantCount=" + data.infants);
+        
+        return PARTNERS_SERVICE_BASE_URL + "?" + p.join("&");
+        
+        //https://produtos.smiles.com.br/Congeneres/AvailableFlights.aspx?dep=GRU&arr=AMS&std=20151231&paxCount=1&CHDCount=0&InfantCount=0
+    };
+
+    var sendRequestPartners2 = function (data, successCallback, failCallback, formData, info) {
+        self.parent.sendRequest({
+            data: data,
+            url: getServiceUrlPartners(data),
+            headers: {
+                'Content-type': 'application/x-www-form-urlencoded'
+            },
+            withCredentials: true,
+            successCallback: successCallback,
+            failCallback: failCallback,
+            callback: function (responseText) {
+                var parser = new DOMParser();
+                var response = parser.parseFromString(responseText, "text/html");
+                var infoPartners = mapAjaxResponsePartners(data, response, info);
+                
+                successCallback(data, infoPartners);
+            },
+            formData: formData
+        });
+    };
+    
+    var mapAjaxResponsePartners = function (data, response, info) {
+        info = info || self.parent.returnDefault();
         
         //departure flights
         $('#tblOutboundFlights tr', response).each(function () {
@@ -241,7 +244,7 @@ function Smiles() {
             var price = miles.text().trim().replace('.', '');
             //one tr is the header and the other is the flight '/2'
             //if there is one flight shown that is a non stop flight '-1'
-            var layover = (flights.find("tr").size() / 2) - 1;
+            var stops = (flights.find("tr").size() / 2) - 1;
             
             //Usually the last flight is the most important one (the first is the regional flight) 
             var airline = flights.find("tr:last-child td:nth-child(2)").text().trim();
@@ -261,8 +264,8 @@ function Smiles() {
                 }
             }
             
-            info.byCompany[departureAirline][layover].price = self.parent.getMinPrice(info.byCompany[departureAirline][layover].price, price);
-            info.prices[layover] = self.parent.getMinPrice(info.prices[layover], price);
+            info.byCompany[departureAirline][stops].price = self.parent.getMinPrice(info.byCompany[departureAirline][stops].price, price);
+            info.prices[stops] = self.parent.getMinPrice(info.prices[stops], price);
         });
         
         var minPricesReturn = [0, 0, 0];
@@ -275,7 +278,7 @@ function Smiles() {
             var price = miles.text().trim().replace('.', '');
             //one tr is the header and the other is the flight '/2'
             //if there is one flight shown that is a non stop flight '-1'
-            var layover = (flights.find("tr").size() / 2) - 1;
+            var stops = (flights.find("tr").size() / 2) - 1;
 
             //Usually the first flight is the most important one in a return flight 
             var airline = flights.find("tr:nth-child(2) td:nth-child(2)").text().trim();
@@ -294,14 +297,14 @@ function Smiles() {
                 }
             }
             
-            info.byCompany[returnAirline][layover].price = self.parent.getMinPrice(info.byCompany[returnAirline][layover].price, price);
-            minPricesReturn[layover] = self.parent.getMinPrice(minPricesReturn[layover], price);
+            info.byCompany[returnAirline][stops].price = self.parent.getMinPrice(info.byCompany[returnAirline][stops].price, price);
+            minPricesReturn[stops] = self.parent.getMinPrice(minPricesReturn[stops], price);
         });
         
         for(var i in [0, 1, 2])
             info.prices[i] += minPricesReturn[i];
         
-        callback(data, info);
+        return info;
     };
     
     //dates must be in format yyyy/mm/dd -> output dates new Date().getTime()

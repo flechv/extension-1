@@ -21,8 +21,9 @@ function Decolar() {
             callback: function (responseText) {
                 var parser = new DOMParser();
                 var response = parser.parseFromString(responseText, "text/html");
-
-                mapAjaxResponse(data, response, successCallback);
+                var info = mapAjaxResponse(data, response);
+                
+                successCallback(data, info);
             }
         });
     };
@@ -34,13 +35,13 @@ function Decolar() {
         p.push(data.returnDate === null ? "oneway" : "roundtrip");
         p.push(data.origin.toLowerCase());
         p.push(data.destination.toLowerCase());
-        p.push(data.departureDate.split('/').join('-'));
+        p.push(data.departureDate.toDateFormat('yyyy-mm-dd'));
         if (data.returnDate !== null)
-            p.push(data.returnDate.split('/').join('-'));
+            p.push(data.returnDate.toDateFormat('yyyy-mm-dd'));
 
         p.push(data.adults);
         p.push(data.children);
-        p.push(data.babies);        
+        p.push(data.infants);
 
         return PUBLIC_BASE_URL + p.join("/") + "?utm_source=" + APP_NAME;
         
@@ -55,16 +56,16 @@ function Decolar() {
         p.push(data.returnDate === null ? "oneway" : "roundtrip");
         p.push(data.origin.toLowerCase());
         p.push(data.destination.toLowerCase());
-        p.push(data.departureDate.split('/').reverse().join('-'));
+        p.push(data.departureDate.toDateFormat('dd-mm-yyyy'));
         
         if (data.returnDate !== null)
-            p.push(data.returnDate.split('/').reverse().join('-'));
+            p.push(data.returnDate.toDateFormat('dd-mm-yyyy'));
         else
-            p.push(data.departureDate.split('/').reverse().join('-'));
+            p.push(data.departureDate.toDateFormat('dd-mm-yyyy'));
 
         p.push(data.adults);
         p.push(data.children);
-        p.push(data.babies);        
+        p.push(data.infants);        
         p.push("i1"); //i1 is the first page of results (lowest prices), i2 the second, ...
       
         return SERVICE_BASE_URL + p.join("/") + "?order_by=total_price&order_type=asc&currency_code=BRL";
@@ -72,22 +73,22 @@ function Decolar() {
         //http://m.decolar.com/mobile-flights-web/results/roundtrip/RIO/GRU/31-12-2015/01-01-2016/1/0/0/i1?order_by=total_price&order_type=asc&currency_code=BRL
     };
 
-    var mapAjaxResponse = function (data, response, callback) {
+    var mapAjaxResponse = function (data, response) {
         var info = self.parent.returnDefault();
 
         $('.result > .flight', response).each(function () {
             var airline = $(this).find('.airlineName').text();
             var price = $(this).find('.price').text().replace('.', '');
-            var layovers = {};
+            var stops = {};
             $(this).find('.flightDetail').each(function () {
-                var layover = 2;
-                if ($(this).find("span:contains('2 escalas')").length > 0) layover = 2;
-                else if ($(this).find("span:contains('1 escala')").length > 0) layover = 1;
-                else if ($(this).find("span:contains('Direto')").length > 0) layover = 0;
+                var stop = 2;
+                if ($(this).find("span:contains('2 escalas')").length > 0) stop = 2;
+                else if ($(this).find("span:contains('1 escala')").length > 0) stop = 1;
+                else if ($(this).find("span:contains('Direto')").length > 0) stop = 0;
                 
-                layovers[layover] = true;
+                stops[stop] = true;
             });
-            layovers = Object.keys(layovers);
+            stops = Object.keys(stops);
             
             if (info.byCompany[airline] == undefined) {
                 info.byCompany[airline] = [];
@@ -102,13 +103,13 @@ function Decolar() {
                 }
             }
                             
-            for(var i in layovers) {
-                info.byCompany[airline][layovers[i]].price = self.parent.getMinPrice(info.byCompany[airline][layovers[i]].price, price);
-                info.prices[layovers[i]] = self.parent.getMinPrice(info.prices[layovers[i]], price);
+            for(var i in stops) {
+                info.byCompany[airline][stops[i]].price = self.parent.getMinPrice(info.byCompany[airline][stops[i]].price, price);
+                info.prices[stops[i]] = self.parent.getMinPrice(info.prices[stops[i]], price);
             }
         });
         
-        callback(data, info);
+        return info;
     };
     
     return self;

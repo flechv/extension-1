@@ -1,4 +1,4 @@
-function RequestManager(name, gapTimeServer, MaxWaiting) {
+function RequestManager(name, gapTimeServer, maxWaiting) {
     var self = this;
     
     self.store = self.constructor.instances.length;
@@ -10,7 +10,7 @@ function RequestManager(name, gapTimeServer, MaxWaiting) {
     };
 
     self.getMaxWaiting = function () {
-        return MaxWaiting;
+        return maxWaiting;
     };
     
     return self;
@@ -21,9 +21,9 @@ RequestManager.prototype.push = function () {
 };
 
 RequestManager.prototype.checkGiveUp = function (data, callback) {
-    if (data.times.length <= 10) return false;
+    if (data.times.length <= 6) return false;
 
-    //over 5 attempts, give up
+    //over 3 attempts, give up
     callback(data, this.returnDefault());
     return true;
 };
@@ -32,7 +32,7 @@ RequestManager.prototype.returnDefault = function () {
     return { prices: [0, 0, 0], byCompany: {} };
 };
 
-RequestManager.prototype.sendRequest = function (config) { //data, method, successCallback, failCallback, time
+RequestManager.prototype.sendRequest = function (config) {
     var self = this;
     var c = config || {};
     
@@ -62,7 +62,7 @@ RequestManager.prototype.sendRequest = function (config) { //data, method, succe
 
     try
     {
-        xhr.send(c.requestData);
+        xhr.send(c.formData);
     }
     catch(error) {
         if (self.checkGiveUp(c.data, c.successCallback)) return;

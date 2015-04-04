@@ -43,6 +43,7 @@ function Ita() {
                 'X-GWT-Module-Base': 'http://matrix.itasoftware.com/gwt/',
                 'X-GWT-Permutation': '46F5E3E13C7765F3F74D16C58212BAA2'
             },
+            withCredentials: true,
             time: time,
             successCallback: successCallback,
             failCallback: failCallback,
@@ -66,11 +67,13 @@ function Ita() {
 
                     if (receivedStops === 3) {
                         cacheTime = new Date();
-                        mapAjaxResponse(data, successCallback);
+                        var info = mapAjaxResponse(data);
+                        
+                        successCallback(data, info);
                     }
                 }
             },
-            requestData: getRequestData(data, stop)
+            formData: getformData(data, stop)
         });
     };
 
@@ -78,27 +81,21 @@ function Ita() {
         var response = [
             data.origin,
             data.destination,
-            parseDateString(data.departureDate).getDateString()
+            data.departureDate.toDateFormat('yyyy-mm-dd')
         ];
 
         if (data.returnDate !== null)
-            response.push(parseDateString(data.returnDate).getDateString());
+            response.push(data.returnDate.toDateFormat('yyyy-mm-dd'));
 
         return response.join(',');
     };
-
-    //date must be in format yyyy/mm/dd
-    var parseDateString = function (date) {
-        var dateSplited = date.split("/");
-        return new Date(dateSplited[0], parseInt(dateSplited[1]) - 1, dateSplited[2]);
-    };
-
+    
     var getLayovers = function (data) {
         var minLayover = 0, maxLayover = 0;
 
         if (data.returnDate !== null) {
-            var date = parseDateString(data.departureDate);
-            var date1 = parseDateString(data.returnDate);
+            var date = data.departureDate.parseToDate();
+            var date1 = data.returnDate.parseToDate();
             minLayover = Math.round((date1 - date) / (1000 * 60 * 60 * 24)) - 1;
             if (minLayover < 0)
                 minLayover = 0;
@@ -112,9 +109,9 @@ function Ita() {
         };
     };
 
-    var getRequestData = function (data, stop) {
-        var date = parseDateString(data.departureDate);
-        var date1 = parseDateString(data.departureDate);
+    var getformData = function (data, stop) {
+        var date = data.departureDate.parseToDate();
+        var date1 = data.departureDate.parseToDate();
         date1.setDate(date1.getDate() + MAX_DIFF_DAYS_ALLOW_BY_SERVICE);
 
         var slices = [{
@@ -159,12 +156,12 @@ function Ita() {
                     9: 1, //changeOfAirport
                     10: 1, //checkAvailability
                     //12: "BRL", //currency
-                    13: date1.getDateString(), //endDate
+                    13: date1.toDateFormat('yyyy-mm-dd'), //endDate
                     15: "MONDAY", //firstDayOfWeek
                     //17: 2, //stops
                     //19: "SAO" //salesCity
                     22: "default",
-                    23: date.getDateString() //startDate
+                    23: date.toDateFormat('yyyy-mm-dd') //startDate
                 }
             }
         };
@@ -279,11 +276,11 @@ function Ita() {
                     }
                     else {
                         var day0 = new Date(year, month - 1, day.date);
-                        var departureDate = day0.getDateString();
+                        var departureDate = day0.toDateFormat('yyyy-mm-dd');
                         
                         for (var l = layover.min; l <= layover.max; l++) {
                             var day1 = new Date(year, month - 1, day.date + l);
-                            var key = data.origin + ',' + data.destination + ',' + departureDate + (l == 0 ? "" : "," + day1.getDateString());
+                            var key = data.origin + ',' + data.destination + ',' + departureDate + (l == 0 ? "" : "," + day1.toDateFormat('yyyy-mm-dd'));
                             
                             if (cache[key] === undefined) cache[key] = [];
                             cache[key][stop] = 0;
@@ -312,7 +309,7 @@ function Ita() {
         }
     };
     
-    var mapAjaxResponse = function (data, callback) {
+    var mapAjaxResponse = function (data) {
         for (var i in companyCache) {
             var bestPrice = Number.MAX_SAFE_INTEGER;
             for (var j in companyCache[i])
@@ -332,9 +329,9 @@ function Ita() {
             byCompany: companyCache
         };
 
-        callback(data, info);
+        return info;
     };
-
+    
     return self;
 }
 
@@ -343,7 +340,3 @@ Ita.prototype.constructor = Ita;
 Ita.prototype.parent = RequestManager.prototype;
 
 var ITA = new Ita();
-
-Date.prototype.getDateString = function () {
-   return this.getFullYear() + '-' + this.getMonth2() + '-' + this.getDate2();
-};

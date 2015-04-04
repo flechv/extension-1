@@ -17,10 +17,12 @@
       "js/airlinesCompanies.js",
       "js/allAirports.js",
       "src/bg/storeManager.js",
+      "src/bg/extensions.js",
       "src/bg/requestManager.js",
       "src/bg/decolar.js",
       "src/bg/submarinoViagens.js",
       "src/bg/smiles.js",
+      "src/bg/tamFidelidade.js",
       "src/bg/itaSoftware.js",
       "src/bg/priorityQueue.js",
       "src/bg/background.js"
