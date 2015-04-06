@@ -137,19 +137,7 @@ function SubmarinoViagens() {
                 if (departures[j][2] || returns[j][2])
                     stops.push(2); //2 stop flight
                 
-                if (info.byCompany[j] == undefined) {
-                    info.byCompany[j] = [];
-
-                    for(var k in [0, 1, 2]) {
-                        info.byCompany[j].push({ 
-                            price: 0,
-                            url: data.url,
-                            code: airlinesCompaniesById[j] == undefined ? j : airlinesCompaniesById[j].code,
-                            bestPrice: 0
-                        });
-                    }
-                }
-                
+                self.parent.checkAirlineInitialized(info, j, data.url);
                 for(var k in stops)
                     info.byCompany[j][stops[k]].price = self.parent.getMinPrice(info.byCompany[j][stops[k]].price, price);
             }
@@ -289,8 +277,7 @@ function SubmarinoViagens() {
                 return {
                     price: ai.Price,
                     url: data.url,
-                    code: companies[i].CiaCode,
-                    bestPrice: companies[i].BestPriceAirCompany
+                    code: companies[i].CiaCode
                 };
             });
         }

@@ -29,7 +29,7 @@ function TamFidelidade() {
     
     //there is not a public url
     self.getUrl = function(data) {
-        return BASE_URL + 'entry?WDS_DEST_PAGE=SEARCH&SITE=JJBKJJBK&LANGUAGE=BR&WDS_MARKET=BR';
+        return BASE_URL + 'entry?WDS_DEST_PAGE=SEARCH&SITE=JJBKJJBK&LANGUAGE=BR&WDS_MARKET=BR&utm_source=' + APP_NAME;
         
         //http://book.tam.com.br/TAM/dyn/air/entry?WDS_DEST_PAGE=SEARCH&SITE=JJBKJJBK&LANGUAGE=BR&WDS_MARKET=BR
     };
@@ -56,10 +56,10 @@ function TamFidelidade() {
         p.push('WDS_FORCE_SITE_UPDATE=TRUE');
         p.push('WDS_CORPORATE_SALES=FALSE');
         p.push('WDS_NAVIGATION_TAB=ONLINESEARCH');
-        p.push('B_DATE_1=' + data.departureDate.toDateFormat('yyyymmdd0000');
+        p.push('B_DATE_1=' + data.departureDate.toDateFormat('yyyymmdd0000'));
         
         if (data.returnDate !== null)
-            p.push('B_DATE_2=' + data.returnDate).toDateFormat('yyyymmdd0000');
+            p.push('B_DATE_2=' + data.returnDate.toDateFormat('yyyymmdd0000'));
         
         p.push('B_LOCATION_1=' + data.origin);
         p.push('E_LOCATION_1=' + data.destination);
@@ -114,54 +114,56 @@ function TamFidelidade() {
     var mapAjaxResponse = function (data, response) {
         var info = self.parent.returnDefault();
         
+        var isOneWay = data.returnDate === null;
         //departure flights
+        var minPrices = [0, 0, 0];
         $('#outbound_list_flight tr.flight', response).each(function () {
-            var stops = $(this).attr('data-number-of-stops');
+            var stops = Math.min($(this).attr('data-number-of-stops'), 2);
             var price = 0;
             $(this).find('td').each(function () {
                 //there are also data-cell-price-chd and data-cell-price-inf
                 price = self.parent.getMinPrice(price, parseInt($(this).attr('data-cell-price-adt') || 0));                
             });
             
-            var airlineCode = $(this).attr('data-airlinecode');
-            var airlineCompany = $(this).attr('data-airlinecompany');
-            var airline = airlinesCompaniesByCode[airlineCode] || airlineCompany;
+            var airlineName = airlinesCompaniesByCode[$(this).attr('data-airlinecode')] || $(this).attr('data-airlinecompany');
             
-            if (info.byCompany[airline] == undefined) {
-                info.byCompany[airline] = [];
-
-                for(var i in [0, 1, 2]) {
-                    info.byCompany[airline].push({ 
-                        price: 0,
-                        url: data.url,
-                        code: airlinesCompaniesById[airline] == undefined ? airline : airlinesCompaniesById[airline].code,
-                        bestPrice: 0
-                    });
-                }
-            }
+            //if it's a round trip, show departure and return airlines separated
+            var airline = isOneWay ? airlineName : airlineName + self.parent.departureLabel;
             
+            self.parent.checkAirlineInitialized(info, airline, data.url);
             info.byCompany[airline][stops].price = self.parent.getMinPrice(info.byCompany[airline][stops].price, price);
-            info.prices[stops] = self.parent.getMinPrice(info.prices[stops], price);
+            minPrices[stops] = self.parent.getMinPrice(minPrices[stops], price);
         });
         
         //return flights
         var minPricesReturn = [0, 0, 0];
-        $('#inbound_list_flight tr', response).each(function () {
-            var stops = $(this).attr('data-number-of-stops');
+        $('#inbound_list_flight tr.flight', response).each(function () {
+            var stops = Math.min($(this).attr('data-number-of-stops'), 2);
             var price = 0;
             $(this).find('td').each(function () {
                 //there are also data-cell-price-chd and data-cell-price-inf
                 price = self.parent.getMinPrice(price, parseInt($(this).attr('data-cell-price-adt') || 0));                
             });
             
+            var airlineName = airlinesCompaniesByCode[$(this).attr('data-airlinecode')] || $(this).attr('data-airlinecompany');
+            var airline = airlineName + self.parent.returnLabel;
+            
+            self.parent.checkAirlineInitialized(info, airline, data.url);
+            info.byCompany[airline][stops].price = self.parent.getMinPrice(info.byCompany[airline][stops].price, price);
             minPricesReturn[stops] = self.parent.getMinPrice(minPricesReturn[stops], price);
         });
         
         for(var i in [0, 1, 2]) {
-            info.prices[i] += minPricesReturn[i];
+            var min = 0;
+            for(var j = 0; j <= i; j++) {
+                if (minPrices[i] > 0 && (isOneWay || minPricesReturn[j] > 0))
+                    min = self.parent.getMinPrice(min, minPrices[i] + minPricesReturn[j])
+                    
+                if (minPrices[j] > 0 && !isOneWay && minPricesReturn[i] > 0)
+                    min = self.parent.getMinPrice(min, minPrices[j] + minPricesReturn[i])
+            }
             
-            for(var j in info.byCompany)
-                info.byCompany[j][i].price += minPricesReturn[i];
+            info.prices[i] = min;
         }
         
         return info;

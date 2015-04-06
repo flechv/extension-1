@@ -32,6 +32,17 @@ RequestManager.prototype.returnDefault = function () {
     return { prices: [0, 0, 0], byCompany: {} };
 };
 
+RequestManager.prototype.checkAirlineInitialized = function (info, airline, url) {
+    if (info.byCompany[airline] !== undefined) return;
+    
+    var airlineName = airline.replace(this.departureLabel, '').replace(this.returnLabel, '');
+    var code = airlinesCompaniesById[airlineName] == undefined ? airline : airlinesCompaniesById[airlineName].code;
+    
+    info.byCompany[airline] = [];
+    for(var i in [0, 1, 2])
+        info.byCompany[airline].push({ price: 0, url: url, code: code });
+};
+
 RequestManager.prototype.sendRequest = function (config) {
     var self = this;
     var c = config || {};
@@ -84,3 +95,6 @@ RequestManager.getInstance = function (store) {
     var inst = RequestManager.instances.filter(function (i) { return i.store == store; });
     return inst && inst.length > 0 ? inst[0] : null;
 };
+
+RequestManager.prototype.departureLabel = ' - Ida';
+RequestManager.prototype.returnLabel = ' - Volta';

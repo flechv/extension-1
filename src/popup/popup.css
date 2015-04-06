@@ -27,8 +27,7 @@ div, a, button { outline: none }
 #avancada { font-size:10px;width:42px;float:right;margin:8px 5px 0 0;text-decoration:none;color:black;outline: none; }
 #avancada:hover { text-decoration:underline;cursor: pointer; }
 #avancada:focus { color: black }
-#help, #download, #donation { float:right;margin:11px 8px 0 0;cursor:help }
-#download, #donation { cursor:pointer }
+#help, #download, #donation, #deleteSavedSearches { float:right;margin:11px 8px 0 0;cursor:pointer}
 #divAvancada { display: block !important }
 #divAvancada.ng-hide { display: none !important }
 #divAvancada .select2-container .select2-choice { height:30px;padding:0 0 0 7px;border-radius:3px;line-height:31px }
@@ -87,3 +86,4 @@ td.ui-datepicker td span, td.ui-datepicker-unselectable span, .ui-datepicker td 
 #priceEmail { width: 26% }
 #avancada { margin-top: 6px; line-height: 12px }
 .message { margin-right: 2% }
+i.fa { font-size: 16px;color: rgba(15, 15, 15, 0.7); }

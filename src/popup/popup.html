@@ -10,6 +10,7 @@
 		<link rel="stylesheet" href="../../css/select2.css" />
 		<link rel="stylesheet" href="../../css/tipsy.css" />
 		<link rel="stylesheet" href="../../css/angular-csp.css" />
+        <link rel="stylesheet" href="../../css/font-awesome/css/font-awesome.min.css">
 		<link rel="stylesheet" href="popup.css" />
 		
   		<script src="../../js/jquery-2.0.3.min.js"></script>
@@ -30,35 +31,49 @@
 			<form name="form">
 				<div class="headerDiv">
 					<label class="help" title="{{ help.origins }}">De</label>
-					<div ui-select2="select2AirportsOptions" ng-model="origins" name="origins" data-placeholder="De onde você prefere sair?" tabindex="2" ng-class="{ 'has-error': form.origins.$dirty && form.origins.$invalid }" required>
+					<div ui-select2="select2AirportsOptions" ng-model="origins" name="origins" data-placeholder="De onde você prefere sair?" ng-class="{ 'has-error': form.origins.$dirty && form.origins.$invalid }" required>
 					</div>
 				</div>
 
 				<div class="headerDiv">
 	  				<label class="help" title="{{ help.destinations }}">Para</label>
-					<div ui-select2="select2AirportsOptions" ng-model="destinations" name="destinations" data-placeholder="Para onde você quer ir?" tabindex="3" ng-class="{ 'has-error': form.destinations.$dirty && form.destinations.$invalid || (origins.length == 1 && destinations.length == 1 && origins[0].id == destinations[0].id) }" required>
+					<div ui-select2="select2AirportsOptions" ng-model="destinations" name="destinations" data-placeholder="Para onde você quer ir?" ng-class="{ 'has-error': form.destinations.$dirty && form.destinations.$invalid || (origins.length == 1 && destinations.length == 1 && origins[0].id == destinations[0].id) }" required>
 					</div>
-				</div>
-
-				<div class="headerDiv">
-					<label class="help" title="{{ help.days }}">Duração</label>
-					<select ui-select2 multiple ng-model="qtyDays" name="qtyDays" data-placeholder="Quantos dias de viagem?" tabindex="4" ng-class="{ 'has-error': form.qtyDays.$dirty && form.qtyDays.$invalid }" required>
-						<option value="0">Somente vôos de ida</option>
-						<option value="1">1 dia</option>
-						<option ng-repeat="day in days" value="{{ day.id }}">{{ day.text }}</option>
-					</select>
 				</div>
 
 				<div class="headerDiv">
 					<label class="help" title="{{ help.departure }}">Ida(s)</label>
-					<div multipick ng-model="departureDates" name="departureDates" style="display:inline-block" tabindex="5">
+					<div multipick ng-model="departureDates" name="departureDates" style="display:inline-block">
+					</div>
+				</div>
+
+				<div class="headerDiv">
+					<label class="help" title="{{ help.days }}" ng-click="showQtyDays = !showQtyDays">
+                        {{ showQtyDays ? 'Duração' : 'Volta(s)' }} <i class="fa fa-calendar" style="font-size: 14px"></i>
+                    </label>
+					<select ui-select2 multiple ng-model="qtyDays" name="qtyDays" data-placeholder="Quantos dias de viagem?" ng-class="{ 'has-error': form.qtyDays.$dirty && form.qtyDays.$invalid }" ng-show="showQtyDays">
+						<option value="0">Somente vôos de ida</option>
+						<option value="1">1 dia</option>
+						<option ng-repeat="day in days" value="{{ day.id }}">{{ day.text }}</option>
+					</select>
+                    
+					<div multipick ng-model="returnDates" name="returnDates" style="display:inline-block" ng-hide="showQtyDays">
 					</div>
 				</div>
 					
                 <div class="headerDiv">
-                    <label class="help" title="{{ help.departure }}">Site</label>
+                    <label class="help" title="{{ help.site }}">Site</label>
                     <select ui-select2 ng-model="store" style="width:298px">
                         <option ng-repeat="item in stores" value="{{ item.store }}">{{ item.name }}</option>
+                    </select>
+                </div>
+					
+                <div class="headerDiv" ng-show="savedSearches.length > 1">
+                    <label class="help" title="{{ help.savedSearches }}">Histórico</label>
+                    <select ui-select2 ng-model="savedSearch" style="width:298px" ng-change="updateForm(savedSearch)">
+                        <option ng-repeat="item in savedSearches" value="{{ item }}">
+                            {{ ($index + 1) + '- ' + item.origins[0].id + ' - ' + item.destinations[0].id }}
+                        </option>
                     </select>
                 </div>
 
@@ -103,7 +118,7 @@
 					</div>
 					
 					<div class="headerDiv">
-						<label style="width: auto;">Enviar email para {{ email ? email : '...' }} se achar preço menor que {{ priceEmail ? priceEmail : '...' }} reais:</label>
+						<label style="width: auto;">Enviar email para {{ email ? email : '...' }} se achar preço menor que {{ priceEmail ? priceEmail : '...' }}</label>
 					</div>
 					<div class="headerDiv">
                         <label> </label>
@@ -114,19 +129,22 @@
 			</form>
 
 			<div class="headerDiv" style="height:33px">
-				<span ng-click="search()" id="btnBuscar" class="btn" tabindex="1" ng-disabled="form.$invalid">Buscar</span>
+				<span ng-click="search()" id="btnBuscar" class="btn" ng-disabled="form.$invalid">Buscar</span>
 				<span ng-click="stop()" id="btnParar" class="btn" ng-disabled="disableStop()">Parar</span>
-				<span ng-click="showAdvancedOptions = !showAdvancedOptions" id="avancada" tabindex="8">Busca avançada</span>
-				<span title="{{ help.main }}" id="help" class="help" tabindex="-1">
-					<img src="../../images/help.png" />
-				</span>
-				<span title="{{ help.donation }}" id="donation" tabindex="7">
+				<span ng-click="showAdvancedOptions = !showAdvancedOptions" id="avancada">Busca avançada</span>
+                <span title="{{ help.donation }}" id="donation" class="help">
 					<a href="http://novo.vakinha.com.br/vaquinha/passagens-mais-baratas-pra-todos">
-                        <img src="../../images/donation.png" />
+                        <i class="fa fa-thumbs-o-up"></i>
                     </a>
 				</span>
-				<span ng-click="saveAsFile(results)" ng-show="numberOfFligths > 0" title="{{ help.download }}" id="download" tabindex="6">
-					<img src="../../images/download.png" />
+				<span title="{{ help.deleteSavedSearches }}" id="deleteSavedSearches" class="help" ng-click="deleteSavedSearches()">
+                    <i class="fa fa-trash-o"></i>
+                </span>
+				<span title="{{ help.main }}" id="help" class="help">
+                    <i class="fa fa-info"></i>
+				</span>
+				<span ng-click="saveAsFile(results)" ng-show="numberOfFlights > 0" title="{{ help.download }}" id="download" class="help">
+                    <i class="fa fa-floppy-o"></i>
 				</span>
 			</div>
 			
@@ -223,8 +241,8 @@
 										</tr>
 									</thead>
 									<tbody>
-										<tr ng-repeat="byCompanies in result.bestByCompany | toArray | orderBy: orderCompaniesByPrices"
-											bestPrice="{{ byCompanies[0].bestPrice }}" code="{{ byCompanies[0].code }}">
+										<tr ng-repeat="byCompanies in result.bestByCompany | toArray | orderBy: 'orderCompaniesByPrices'"
+                                            code="{{ byCompanies[0].code }}">
 											<td>{{ byCompanies.$key }}</td>
 											<td>
 												<a ng-href="{{ byCompanies[0].url }}">
@@ -254,8 +272,8 @@
 										</tr>
 									</thead>
 									<tbody>
-										<tr ng-repeat="byCompanies in result.bestByCompany | toArray | orderBy: orderCompaniesByPrices"
-											bestPrice="{{ byCompanies[0].bestPrice }}" code="{{ byCompanies[0].code }}">
+										<tr ng-repeat="byCompanies in result.bestByCompany | toArray | orderBy: 'orderCompaniesByPrices'"
+											code="{{ byCompanies[0].code }}">
 											<td>{{ byCompanies.$key }}</td>
 											<td>
 												<a ng-href="{{ byCompanies[0].url }}">

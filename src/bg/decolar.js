@@ -45,7 +45,7 @@ function Decolar() {
 
         return PUBLIC_BASE_URL + p.join("/") + "?utm_source=" + APP_NAME;
         
-        //http://www.decolar.com/shop/flights/results/roundtrip/RIO/GRU/31-12-2015/01-01-2016/1/0/0
+        //http://www.decolar.com/shop/flights/results/roundtrip/RIO/GRU/2015-12-31/2016-01-01/1/0/0
     };
 
 //private methods
@@ -88,21 +88,9 @@ function Decolar() {
                 
                 stops[stop] = true;
             });
-            stops = Object.keys(stops);
             
-            if (info.byCompany[airline] == undefined) {
-                info.byCompany[airline] = [];
-
-                for(var i in [0, 1, 2]) {
-                    info.byCompany[airline].push({ 
-                        price: 0,
-                        url: data.url,
-                        code: airlinesCompaniesById[airline] == undefined ? airline : airlinesCompaniesById[airline].code,
-                        bestPrice: 0
-                    });
-                }
-            }
-                            
+            stops = Object.keys(stops);
+            self.parent.checkAirlineInitialized(info, airline, data.url);
             for(var i in stops) {
                 info.byCompany[airline][stops[i]].price = self.parent.getMinPrice(info.byCompany[airline][stops[i]].price, price);
                 info.prices[stops[i]] = self.parent.getMinPrice(info.prices[stops[i]], price);

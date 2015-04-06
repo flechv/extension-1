@@ -19,31 +19,46 @@ var BG = (function (SM, PQ) {
                 if (origin === destination) continue;
                 
                 for (k in req.departureDates) {
-                    for (w in req.qtyDays) {
-                        var returnDate = req.qtyDays[w] == 0 ? null : addDaystoDate(req.departureDates[k], req.qtyDays[w]);
+                    if (req.qtyDays !== null && req.qtyDays.length > 0) {
+                        for (w in req.qtyDays) {
+                            var returnDate = req.qtyDays[w] == 0 ? null : addDaystoDate(req.departureDates[k], req.qtyDays[w]);
+
+                            enqueue(origin, destination, req.departureDates[k], returnDate,
+                                companies, req.adults, req.children, req.infants,
+                                req.qtyDays, req.email, req.priceEmail, time);
+
+                            time += GAP_TIME;
+                        }
                         
-                        PQ.enqueue({
-                            origin: origin,
-                            destination: destination,
-                            departureDate: req.departureDates[k],
-                            returnDate: returnDate,
-                            companies: companies,
-                            adults: req.adults,
-                            children: req.children,
-                            infants: req.infants,
-                            qtyDays: req.qtyDays,
-                            email: req.email,
-                            priceEmail: req.priceEmail,
-                            times: [time]
-                        });
-                        
+                        continue;
+                    }
+                    
+                    //oneway
+                    if (req.returnDates === null || req.returnDates.length === 0) {
+                        enqueue(origin, destination, req.departureDates[k], null,
+                            companies, req.adults, req.children, req.infants,
+                            req.qtyDays, req.email, req.priceEmail, time);
+
+                        time += GAP_TIME;
+                        continue;
+                    }
+
+                    //roundtrip
+                    for (w in req.returnDates) {
+                        if (req.departureDates[k] > req.returnDates[w]) continue;
+
+                        enqueue(origin, destination, req.departureDates[k], req.returnDates[w],
+                            companies, req.adults, req.children, req.infants,
+                            req.qtyDays, req.email, req.priceEmail, time);
+
                         time += GAP_TIME;
                     }
                 }
             }
         }
-        
+                
         setTimeout(function () {
+            self.saveRequest(req);
             PQ.initServer(req, getResponse);
         }, 1);
         
@@ -57,9 +72,26 @@ var BG = (function (SM, PQ) {
     self.hideBadge = function () {
         chrome.browserAction.setBadgeText({ "text": "" });
     };
+    
+    self.saveRequest = function (request) {
+        var req = JSON.stringify(request);
+        if (req == undefined || req === "null" || req === "{}") return;
+        
+        var requests = self.getRequests();
+        for(var i in requests)
+            if (req === JSON.stringify(requests[i]))
+                return;
+        
+        requests.splice(0, 0, request); //save it on begining
+        SM.put("requests", JSON.stringify(requests));
+    };
 
-    self.getRequest = function () {
-        return !SM.get("request") ? {} : JSON.parse(SM.get("request"));
+    self.getRequests = function () {
+        return !SM.get("requests") ? [] : JSON.parse(SM.get("requests"));
+    };
+    
+    self.deleteRequests = function () {
+        SM.delete("requests");
     };
 
     self.getResultsList = function () {
@@ -71,6 +103,24 @@ var BG = (function (SM, PQ) {
     };
 
 //private methods
+    var enqueue = function(origin, destination, departureDate, returnDate,
+            companies, adults, children, infants, qtyDays, email, priceEmail, time) {
+        PQ.enqueue({
+            origin: origin,
+            destination: destination,
+            departureDate: departureDate,
+            returnDate: returnDate,
+            companies: companies,
+            adults: adults,
+            children: children,
+            infants: infants,
+            qtyDays: qtyDays,
+            email: email,
+            priceEmail: priceEmail,
+            times: [time]
+        });
+    };
+    
     //date must be in format yyyy/mm/dd
     var addDaystoDate = function (dateStr, days) {
         return dateStr.parseToDate().addDays(parseInt(days)).toDateFormat('yyyy/mm/dd');
@@ -108,11 +158,10 @@ var BG = (function (SM, PQ) {
         if (page.companies == undefined || page.companies == null || page.companies.length == 0)
             return response;
 
-        var info = { prices: [], byCompany: {} };
-        
+        var info = RequestManager.prototype.returnDefault();
         var companies = page.companies.map(function (a) { return a.code; });
         for (var i in page.companies) {
-            var a  = { code: page.companies[i].code, price: 0, bestPrice: 0, url: page.url };
+            var a = { code: page.companies[i].code, price: 0, bestPrice: 0, url: page.url };
             info.byCompany[page.companies[i].text] = [a, a, a];
         }
 

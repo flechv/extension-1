@@ -36,7 +36,7 @@ function Smiles() {
         p.push("adults=" + data.adults);
         p.push("children=" + data.children);
         p.push("infants=" + data.infants);
-        //p.push("utm_source=" + APP_NAME);
+        p.push("utm_source=" + APP_NAME);
 
         return PUBLIC_BASE_URL + "?" + p.join("&");
         
@@ -141,7 +141,7 @@ function Smiles() {
         for(var i = 0; i < response.legs.length; i++) {
             var legFlights = response.legs[i].categoryFlights;
             
-            var minPricesLeg = [0, 0, 0];
+            var minPrices = [0, 0, 0];
             for(var j = 0; j < legFlights.length; j++) {
                 var flight = legFlights[j].flights[0];
                 var airCompany = airlinesCompaniesByCode[flight.carrierCode];
@@ -151,23 +151,32 @@ function Smiles() {
                     price = flight.clubSmilesCost[0].originalSmiles;
                 
                 var stops = flight.stops === null ? 0 : parseInt(flight.stops);
-                minPricesLeg[stops] = self.parent.getMinPrice(minPricesLeg[stops], price);
+                minPrices[stops] = self.parent.getMinPrice(minPrices[stops], price);
             }
             
-            for(var k in [0, 1, 2])
-                info.prices[k] += minPricesLeg[k];
+            for(var j in [0, 1, 2]) {
+                if (i === 0) {
+                    info.prices[j] = minPrices[j];
+                    continue;
+                }
+                
+                var min = 0;
+                for(var k = 0; k <= j; k++) {
+                    if (minPrices[j] > 0 && info.prices[k] > 0)
+                        min = self.parent.getMinPrice(min, minPrices[j] + info.prices[k])
+
+                    if (minPrices[k] > 0 && info.prices[j] > 0)
+                        min = self.parent.getMinPrice(min, minPrices[k] + info.prices[j])
+                }
+
+                info.prices[j] = min;
+            }
         }
         
-        var airline = "Gol";
-        info.byCompany[airline] = [];
-        for(var i in [0, 1, 2]) {
-            info.byCompany[airline].push({ 
-                price: info.prices[i],
-                url: data.url,
-                code: airlinesCompaniesById[airline] == undefined ? airline : airlinesCompaniesById[airline].code,
-                bestPrice: 0
-            });
-        }
+        var airline = "Gol";        
+        self.parent.checkAirlineInitialized(info, airline, data.url);
+        for(var i in [0, 1, 2])
+            info.byCompany[airline][i].price = info.prices[i];
         
         return info;
     };
@@ -235,7 +244,9 @@ function Smiles() {
     var mapAjaxResponsePartners = function (data, response, info) {
         info = info || self.parent.returnDefault();
         
+        var isOneWay = data.returnDate === null;
         //departure flights
+        var minPrices = [0, 0, 0];
         $('#tblOutboundFlights tr', response).each(function () {
             var flights = $(this).find('.resulttableFly .tStops');
             var miles = $(this).find('.resulttable');
@@ -247,29 +258,18 @@ function Smiles() {
             var stops = (flights.find("tr").size() / 2) - 1;
             
             //Usually the last flight is the most important one (the first is the regional flight) 
-            var airline = flights.find("tr:last-child td:nth-child(2)").text().trim();
+            var airlineName = flights.find("tr:last-child td:nth-child(2)").text().trim();
             
             //if it's a round trip, show departure and return airlines separated
-            var departureAirline = data.returnDate === null ? airline : airline + ' - Ida';
-            if (info.byCompany[departureAirline] == undefined) {
-                info.byCompany[departureAirline] = [];
-
-                for(var i in [0, 1, 2]) {
-                    info.byCompany[departureAirline].push({ 
-                        price: 0,
-                        url: data.url,
-                        code: airlinesCompaniesById[airline] == undefined ? airline : airlinesCompaniesById[airline].code,
-                        bestPrice: 0
-                    });
-                }
-            }
+            var airline = isOneWay ? airlineName : airlineName + self.parent.departureLabel;
             
-            info.byCompany[departureAirline][stops].price = self.parent.getMinPrice(info.byCompany[departureAirline][stops].price, price);
-            info.prices[stops] = self.parent.getMinPrice(info.prices[stops], price);
+            self.parent.checkAirlineInitialized(info, airline, data.url);
+            info.byCompany[airline][stops].price = self.parent.getMinPrice(info.byCompany[airline][stops].price, price);
+            minPrices[stops] = self.parent.getMinPrice(minPrices[stops], price);
         });
         
-        var minPricesReturn = [0, 0, 0];
         //return flights
+        var minPricesReturn = [0, 0, 0];
         $('#tblInboundFlights tr', response).each(function () {
             var flights = $(this).find('.resulttableFly .tStops');
             var miles = $(this).find('.resulttable');
@@ -281,28 +281,26 @@ function Smiles() {
             var stops = (flights.find("tr").size() / 2) - 1;
 
             //Usually the first flight is the most important one in a return flight 
-            var airline = flights.find("tr:nth-child(2) td:nth-child(2)").text().trim();
+            var airlineName = flights.find("tr:nth-child(2) td:nth-child(2)").text().trim();
+            var airline = airlineName + self.parent.returnLabel;
             
-            var returnAirline = airline + ' - Volta';
-            if (info.byCompany[returnAirline] == undefined) {
-                info.byCompany[returnAirline] = [];
-
-                for(var i in [0, 1, 2]) {
-                    info.byCompany[returnAirline].push({ 
-                        price: 0,
-                        url: data.url,
-                        code: airlinesCompaniesById[airline] == undefined ? airline : airlinesCompaniesById[airline].code,
-                        bestPrice: 0
-                    });
-                }
-            }
-            
-            info.byCompany[returnAirline][stops].price = self.parent.getMinPrice(info.byCompany[returnAirline][stops].price, price);
+            self.parent.checkAirlineInitialized(info, airline, data.url);
+            info.byCompany[airline][stops].price = self.parent.getMinPrice(info.byCompany[airline][stops].price, price);
             minPricesReturn[stops] = self.parent.getMinPrice(minPricesReturn[stops], price);
         });
         
-        for(var i in [0, 1, 2])
-            info.prices[i] += minPricesReturn[i];
+        for(var i in [0, 1, 2]) {
+            var min = 0;
+            for(var j = 0; j <= i; j++) {
+                if (minPrices[i] > 0 && (isOneWay || minPricesReturn[j] > 0))
+                    min = self.parent.getMinPrice(min, minPrices[i] + minPricesReturn[j])
+                    
+                if (minPrices[j] > 0 && !isOneWay && minPricesReturn[i] > 0)
+                    min = self.parent.getMinPrice(min, minPrices[j] + minPricesReturn[i])
+            }
+            
+            info.prices[i] = min;
+        }
         
         return info;
     };

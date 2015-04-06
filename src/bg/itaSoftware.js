@@ -41,7 +41,7 @@ function Ita() {
                 'Content-type': 'application/javascript; charset=UTF-8',
                 'X-Requested-With': 'XMLHttpRequest',
                 'X-GWT-Module-Base': 'http://matrix.itasoftware.com/gwt/',
-                'X-GWT-Permutation': '46F5E3E13C7765F3F74D16C58212BAA2'
+                'X-GWT-Permutation': 'B5513158EEAFFE2FEBD482C2895FDA7B'
             },
             withCredentials: true,
             time: time,
@@ -170,7 +170,7 @@ function Ita() {
         if (stop === undefined) {
             req.method = "search";
             req.params[4] = "calendar";            
-            req.params[7] = "!6-hCHhKLRclJQcZEdJHKMa0SC1wCAAAAUVIAAAAIKgD-X8ffq7Oykw-j8qoA72DeFjWEX0Ubvgbn0paVm7vHsbJ3NlNiZkBaOsVegTDKvFWdEmroixagpqNoKFPDmiswzulX_u6IS-JYwNNcnmZN51fQfw69Oq5m7tt6_vlYWUnvfOVvuoS6WDSCWiMKfe-9PBt1NpRYuGMtzXgRXSWDlh4ycSYklBL42oGCVnoK63egsTHpXe6cRUFvMdUljYWU1O9VcHxMc7K4AnRLmtt_oyzkjBj83EXjrC9rh_K-XDy99LfVC0NH1V2Gs85cro-7rZu4DKXe2W5aWJBNh3xiLv3A4KWhMxXOTIfuI7XYrsUWWBPCvgwS_JnZz1YCM6o";
+            req.params[7] = "!ISJCR5gwqHt4w8hEm59PMbi5PY8CAAAAMlIAAAAHKgD-HRO37CrrpXeaF6mk7JFgOd-OWCUuJJ-J10g6r0gJwNeb5AMRDWt-D85rbr7yXYfknH1LyW8TQ6Q-Xm1KBhnofEoebNUjRC-oEmXZXj-YybEn2ISyhLKzbJXC8pWE5qdNaJ7IGy2BwExW9YkeynMckCik5x5s3qlYLs_-cVtF7Efu0Cm5SInts3P3DLVjKljTxjjPQGYZ-Jd-BuL9xSmI03EC621Q4FmAupOoMExEw6Oz-TEFlg1pNr7iYurAhZ_AJ1v4FLh6wIeVPz7a22UvkJU_kf6kC6Tmx_fLU69gktEjaN-Q74IYOroPGo8-rKNKLneKMCv2Yu8iHmi-JRI";
             
         } else {
             req.method = "summarize";
@@ -339,4 +339,5 @@ Ita.prototype = new RequestManager('Ita Software By Google', 200, 1);
 Ita.prototype.constructor = Ita;
 Ita.prototype.parent = RequestManager.prototype;
 
-var ITA = new Ita();
+//var ITA = new Ita();
+//This is not working yet

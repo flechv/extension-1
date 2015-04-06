@@ -2,7 +2,7 @@
 var PQ = (function () {
     var self = {};
 
-    var RM, gapTimeServer = 1500, maxWaiting = 8,
+    var RM, gapTimeServer = 2000, maxWaiting = 5,
         list = [], time, callback;
 
 //public methods
@@ -16,7 +16,6 @@ var PQ = (function () {
     };
 
     self.initServer = function (request, backgroundCallback) {
-        SM.put("request", JSON.stringify(request));
         SM.put("pages", JSON.stringify(list));
 
         callback = backgroundCallback;
@@ -35,8 +34,9 @@ var PQ = (function () {
 
     self.stopServer = function () {
         list = [];
-        SM.clear();
         SM.put("waiting", 0);
+        SM.delete("resultsList");
+        SM.delete("receivedPages");
     };
 
     self.decreaseWaiting = function () {        

@@ -1,8 +1,11 @@
 var app = angular.module('app', ['ui.select2']);
 app.controller("AngularController", function ($scope) {
-	var bg = chrome.extension.getBackgroundPage().BG;
+    var getBg = function () {
+        return chrome.extension.getBackgroundPage().BG
+    };
+	var bg = getBg();
     
-	$scope.showMessageError = false;
+    $scope.showMessageError = false;
 	$scope.showLoading = bg.showLoading();
 	$scope.showAdvancedOptions = false;
 	$scope.initialNumberOfFlights = 0;
@@ -10,21 +13,18 @@ app.controller("AngularController", function ($scope) {
 	$scope.currency = "R$";
 	$scope.help = {
 		origins: "De quais cidades você pode partir?",
-		destinations: "Para quais cidades você quer pesquisar?",
-		days: "Quantos dias você quer ficar? Escolha mais de 1 opção e ache a melhor",
-		departure: "Quais dias você pode partir? Escolha mais de 1 e ache o melhor pra você",
-		main: "Você pode selecionar:<br/><br/>&nbsp&nbsp 1. Uma ou mais cidades de origem <br/>&nbsp&nbsp 2. Uma ou mais cidades de destino <br/>&nbsp&nbsp 3. Quantos dias de estadia <br/>&nbsp&nbsp 4. Um ou mais dias de partida <br/>&nbsp&nbsp 5. As companhias aéreas desejadas <br/>&nbsp&nbsp 6. O nº de adultos, crianças e bebês <br/>&nbsp&nbsp 7. Site que deseja pesquisar <br/>&nbsp&nbsp 8. Um email para ser avisado <br/><br/>Sugetões? genghislabs@gmail.com",
+		destinations: "Para quais cidades você gostaria de ir?",
+		departure: "Quais dias você pode partir?<br/>Escolha mais de um e ache o melhor",
+		days: "Quantos dias você quer ficar?<br/>Escolha mais de um e ache o melhor<br/><br/> Ou clique aqui para escolher dias exatos",
+        site: "Escolha em qual site deseja pesquisar",
+        savedSearches: "Escolha uma das suas pesquisas salvas",
+		main: "Você pode selecionar:<br/><br/>&nbsp 1. Uma ou mais cidades de origem<br/>&nbsp 2. Uma ou mais cidades de destino<br/>&nbsp 3. Um ou mais dias de partida<br/>&nbsp 4. Duração da viagem ou dias de volta<br/>&nbsp 5. As companhias aéreas desejadas<br/>&nbsp 6. O nº de adultos, crianças e bebês<br/>&nbsp 7. Site que deseja pesquisar<br/>&nbsp 8. Um email para ser avisado <br/><br/>Sugetões? genghislabs@gmail.com",
 		company: "Pesquise vôos apenas das companhias aéreas desejadas",
-		download: "Salvar os resultados abaixo <br/><br/>Sugetões? genghislabs@gmail.com",
-        donation: "Faça uma doação para continuarmos melhorando esse app!"
+		download: "Salvar os resultados abaixo",
+        donation: "Faça uma doação para continuar melhorando esse app!",
+        deleteSavedSearches: "Excluir histórico de pesquisas"
 	};
 
-	$scope.searchedStore = "0";
-    $scope.store = "0";
-	$scope.adults = 1;
-	$scope.children = 0;
-	$scope.infants = 0;
-	$scope.companies = [];	
 	$scope.airlinesCompanies = airlinesCompanies;
 	$scope.days = [];
 	for (var i = 2; i <= 120; i++)
@@ -89,63 +89,102 @@ app.controller("AngularController", function ($scope) {
 		$scope.results = results;
 	};
     
-	bg.hideBadge();
+    bg.hideBadge();
 
-	var request = bg.getRequest();
-	$scope.origins = request.origins == undefined ? [] : request.origins;
-	$scope.destinations = request.destinations == undefined ? [] :request.destinations;
-	$scope.departureDates = request.departureDates == undefined ? [] : request.departureDates;
-	$scope.qtyDays = request.qtyDays == undefined ? [] : request.qtyDays;
-	$scope.store = request.store == undefined ? "0" : request.store;
+    $scope.updateForm = function (request) {
+        if (typeof request === "string")
+            request = JSON.parse(request);
+        
+        $scope.origins = request.origins || [];
+        $scope.destinations = request.destinations || [];
+        $scope.departureDates = request.departureDates || [];
+        $scope.returnDates = request.returnDates || [];
+        $scope.qtyDays = request.qtyDays || [];
+        $scope.showQtyDays = typeof request.showQtyDays === "boolean" ? request.showQtyDays : true;
+        $scope.companies = request.companies || [];	
+        $scope.adults = request.adults || 1;
+        $scope.children = request.children || 0;
+        $scope.infants = request.infants || 0;
+        $scope.store = request.store || "0";
+        $scope.searchedStore = $scope.store;
+    };
+    
+    $scope.savedSearches = bg.getRequests();
+    $scope.updateForm($scope.savedSearches[0] || {});
+    
+    var getRequest = function () {
+        var departureDates = angular.copy($scope.departureDates).sort();
+        var returnDates = angular.copy($scope.returnDates).sort();
+        
+        return {
+            origins: $scope.origins,
+            destinations: $scope.destinations,
+            departureDates: departureDates,
+            returnDates: $scope.showQtyDays ? [] : returnDates,
+            qtyDays: $scope.showQtyDays ? $scope.qtyDays : [],
+            showQtyDays: $scope.showQtyDays,
+            companies: $scope.companies,
+            adults: $scope.adults,
+            children: $scope.children,
+            infants: $scope.infants,
+            store: $scope.store,
+            email: $scope.email,
+            priceEmail: $scope.priceEmail
+        };
+    };
+    
+    $scope.deleteSavedSearches = function () {
+        getBg().deleteRequests();
+    };
 
 	var resultsJson = bg.getResultsList();
 	$scope.updateResults(resultsJson);
 	$scope.saveAsFile = saveTextAsFile;
 
 	var checkInvalidForm = function () {
-		return	($scope.origins == null || $scope.origins.length == 0 || $scope.destinations == null || $scope.destinations.length == 0) ||
-				($scope.qtyDays == null || $scope.qtyDays.length == 0 || $scope.departureDates == null || $scope.departureDates.length == 0) ||
-				($scope.origins.length == 1 && $scope.destinations.length == 1 && $scope.origins[0].id == $scope.destinations[0].id) ||
-				($scope.adults == 0 && $scope.children == 0 && $scope.infants == 0);
+        return (($scope.origins || []).length == 0 || ($scope.destinations || []).length == 0) ||
+            ($scope.origins.length == 1 && $scope.destinations.length == 1 && $scope.origins[0].id == $scope.destinations[0].id) ||
+            (($scope.departureDates || []).length == 0) ||
+            ($scope.showQtyDays && ($scope.qtyDays || []).length == 0) ||
+            (!$scope.showQtyDays && ($scope.returnDates || []).length > 0 && $scope.departureDates[0] > $scope.returnDates[$scope.returnDates.length - 1]) || //the highest return can not be before the lowest departure
+            
+            ($scope.adults == 0 && $scope.children == 0 && $scope.infants == 0);
 	};
 
 	$scope.search = function () {
 		if (checkInvalidForm())
 			$scope.showMessageError = true;
-		else {
+        else {
 			$scope.showMessageError = false;
 			$scope.showLoading = true;
 			$scope.numberOfFlights = 0;
 			$scope.results = [];
 	        $scope.searchedStore = $scope.store;
 
-			var departures = angular.copy($scope.departureDates).sort();
-			$scope.initialNumberOfFlights = chrome.extension.getBackgroundPage().BG.init({
-				origins: $scope.origins,
-				destinations: $scope.destinations,
-				qtyDays: $scope.qtyDays,
-				departureDates: departures,
-				companies: $scope.companies,
-				adults: $scope.adults,
-				children: $scope.children,
-				infants: $scope.infants,
-				store: $scope.store,
-				email: $scope.email,
-				priceEmail: $scope.priceEmail
-			});
+			$scope.initialNumberOfFlights = getBg().init(getRequest());
 		}
 	};
 
 	$scope.stop = function () {
-		chrome.extension.getBackgroundPage().PQ.stopServer();
+		getBg().PQ.stopServer();
 	};
     
     $scope.disableStop = function () {
         return $scope.initialNumberOfFlights <= $scope.numberOfFlights;
     };
     
+    var getMinPrice = function (previousPrice, price) {
+        return previousPrice == 0 || price == 0 ? Math.max(previousPrice, price) : Math.min(previousPrice, price);
+    };
+    
 	$scope.orderCompaniesByPrices = function (company) {
-		return company == undefined ? Number.MAX_SAFE_INTEGER : parseFloat(company[0].bestPrice);
+        if (company == undefined) return Number.MAX_SAFE_INTEGER;
+        
+        var min = 0;
+        for(var i in company)
+            min = getMinPrice(min, company[i].price);
+        
+        return min;
 	};
     
     $scope.stores = bg.getStores();
@@ -154,7 +193,7 @@ app.controller("AngularController", function ($scope) {
         return price > 0 ? (value ? value : price) : "-";
     };
     
-	$(".help, #download, #donation").tipsy({ gravity: 'w', html: true, fade: true, opacity: 0.9 });
+	$(".help").tipsy({ gravity: 'w', html: true, fade: true, opacity: 0.95 });
 });
 
 app.filter('toArray', function () {
@@ -162,7 +201,7 @@ app.filter('toArray', function () {
 
     return function (obj) {
     	return Object.keys(obj).map(function (key) {
-            return Object.defineProperty(obj[key], '$key', {__proto__: null, value: key});
+            return Object.defineProperty(obj[key], '$key', { __proto__: null, value: key });
         });
     }
 });
@@ -182,7 +221,7 @@ app.directive('multipick', function () {
 							});
 			    		}
 			        })
-			        .appendTo($(".ui-datepicker-buttonpane"))
+			        .appendTo($("div[name='" + attrs['name'] + "'] .ui-datepicker-buttonpane"))
 			        .addClass("ui-datepicker-clear ui-state-default ui-priority-secondary ui-corner-all");
 			        
 			        $("<button>", {
@@ -198,7 +237,7 @@ app.directive('multipick', function () {
 							});
 			    		}
 			        })
-			        .appendTo($(".ui-datepicker-buttonpane"))
+			        .appendTo($("div[name='" + attrs['name'] + "'] .ui-datepicker-buttonpane"))
 			        .addClass("ui-datepicker-clear ui-state-default ui-priority-secondary ui-corner-all");
 			    }, 1);
 			};
