@@ -138,6 +138,7 @@ function Smiles() {
     var mapAjaxResponse = function (data, response, callback) {
         var info = self.parent.returnDefault();
         
+        var isOneWay = data.returnDate === null;
         for(var i = 0; i < response.legs.length; i++) {
             var legFlights = response.legs[i].categoryFlights;
             
@@ -171,13 +172,16 @@ function Smiles() {
 
                 info.prices[j] = min;
             }
+
+            //if it's a round trip, show departure and return airlines separated
+            var airlineName = "Gol";
+            var airline = isOneWay ? airlineName : airlineName + (i === 0 ? self.parent.departureLabel : self.parent.returnLabel);
+
+            self.parent.checkAirlineInitialized(info, airline, data.url);
+            for(var j in [0, 1, 2])
+                info.byCompany[airline][j].price = minPrices[j];
         }
-        
-        var airline = "Gol";        
-        self.parent.checkAirlineInitialized(info, airline, data.url);
-        for(var i in [0, 1, 2])
-            info.byCompany[airline][i].price = info.prices[i];
-        
+
         return info;
     };
     

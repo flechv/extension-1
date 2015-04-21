@@ -118,7 +118,8 @@ function TamFidelidade() {
         //departure flights
         var minPrices = [0, 0, 0];
         $('#outbound_list_flight tr.flight', response).each(function () {
-            var stops = Math.min($(this).attr('data-number-of-stops'), 2);
+            var stops = parseInt($(this).find('td:not(.th)').attr('rowspan') / 2) - 1;
+            stops = Math.min(Math.max(stops, 0), 2); //must be between 0 and 2
             var price = 0;
             $(this).find('td').each(function () {
                 //there are also data-cell-price-chd and data-cell-price-inf
@@ -138,7 +139,8 @@ function TamFidelidade() {
         //return flights
         var minPricesReturn = [0, 0, 0];
         $('#inbound_list_flight tr.flight', response).each(function () {
-            var stops = Math.min($(this).attr('data-number-of-stops'), 2);
+            var stops = parseInt($(this).find('td:not(.th)').attr('rowspan') / 2) - 1;
+            stops = Math.min(Math.max(stops, 0), 2); //must be between 0 and 2
             var price = 0;
             $(this).find('td').each(function () {
                 //there are also data-cell-price-chd and data-cell-price-inf

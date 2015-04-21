@@ -91,7 +91,7 @@ app.controller("AngularController", function ($scope) {
     
     bg.hideBadge();
 
-    $scope.updateForm = function (request) {
+    $scope.updateForm = function (request, initialNumberOfFlights) {
         if (typeof request === "string")
             request = JSON.parse(request);
         
@@ -107,10 +107,12 @@ app.controller("AngularController", function ($scope) {
         $scope.infants = request.infants || 0;
         $scope.store = request.store || "0";
         $scope.searchedStore = $scope.store;
+
+        $scope.initialNumberOfFlights = initialNumberOfFlights || 0;
     };
     
     $scope.savedSearches = bg.getRequests();
-    $scope.updateForm($scope.savedSearches[0] || {});
+    $scope.updateForm($scope.savedSearches[0] || {}, bg.getInitialNumberOfFlights());
     
     var getRequest = function () {
         var departureDates = angular.copy($scope.departureDates).sort();
@@ -274,6 +276,7 @@ app.directive('multipick', function () {
 					options.defaultDate = today.getDateString();
 				}
 				
+                elm.multiDatesPicker('resetDates');
 				elm.multiDatesPicker(options);
 		    	addCustomButtons(options.defaultDate.split("/")[0], options.defaultDate.split("/")[1]);
 			});

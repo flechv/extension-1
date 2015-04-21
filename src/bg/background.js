@@ -62,6 +62,7 @@ var BG = (function (SM, PQ) {
             PQ.initServer(req, getResponse);
         }, 1);
         
+        SM.put("initialNumberOfFlights", PQ.getLength());
         return PQ.getLength();
     };
     
@@ -100,6 +101,10 @@ var BG = (function (SM, PQ) {
     
     self.getStores = function () {
         return RequestManager.getInstances();
+    };
+
+    self.getInitialNumberOfFlights = function () {
+        return !SM.get("initialNumberOfFlights") ? 0 : parseInt(SM.get("initialNumberOfFlights"));
     };
 
 //private methods
