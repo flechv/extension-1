@@ -3,9 +3,9 @@ const APP_NAME = "genghis";
 var BG = (function (SM, PQ) {
     var self = {};
 
-    const GAP_TIME = 300;
+    const GAP_TIME = 300, REPEAT_SEARCH_DELAY = 6 * 60 * 60 * 1000; //6 HOURS
 
-    var sendEmailTimeout;
+    var sendEmailTimeout, repeatSearchTimeout;
 
 //public methods
     self.init = function (req) {
@@ -62,6 +62,8 @@ var BG = (function (SM, PQ) {
             PQ.initServer(req, getResponse);
         }, 1);
         
+        setupRepeatSearch(req);
+
         SM.put("initialNumberOfFlights", PQ.getLength());
         return PQ.getLength();
     };
@@ -301,6 +303,7 @@ var BG = (function (SM, PQ) {
 
         if (datesWithLowFare !== "") {
             clearTimeout(sendEmailTimeout);
+            clearTimeout(repeatSearchTimeout);
             sendEmailTimeout = setTimeout(function () {
                 $.ajax({
                     type: "POST",
@@ -331,6 +334,38 @@ var BG = (function (SM, PQ) {
             }, 2000 * 60); //wait two minutes, enough time to fetch more results
         }
     };
+
+    var setupRepeatSearch = function (req) {
+        if (req === undefined) { //pc turn on, verify if we need do the saved search
+            var timeToSearch = SM.get("repeatSearchTime");
+            if (timeToSearch !== null) {
+                clearTimeout(repeatSearchTimeout);
+                repeatSearchTimeout = setTimeout(function () {
+                    self.init(JSON.parse(SM.get("repeatSearchRequest")));
+                }, Math.max(1, parseInt(timeToSearch) - (new Date()).getTime()));
+            }
+        }
+        else if (req.email !== undefined && req.priceEmail !== undefined) {
+            var now = new Date();
+            now.setMilliseconds(now.getMilliseconds() + REPEAT_SEARCH_DELAY);
+            //saving ticks, in case the pc shutdown. So next time the pc turn on, we verify this
+            SM.put("repeatSearchTime", now.getTime());
+            SM.put("repeatSearchRequest", JSON.stringify(req));
+
+            clearTimeout(repeatSearchTimeout);
+            repeatSearchTimeout = setTimeout(function () {
+                self.init(JSON.parse(SM.get("repeatSearchRequest")));
+            }, REPEAT_SEARCH_DELAY);
+        }
+        else {
+            SM.delete("repeatSearchTime");
+            SM.delete("repeatSearchRequest");
+            clearTimeout(repeatSearchTimeout);
+        }
+    };
+
+    setupRepeatSearch();
+
 /*
     var getPages = function () {
         return !SM.get("pages") ? [] : JSON.parse(SM.get("pages"));
