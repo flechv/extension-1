@@ -23,12 +23,6 @@ var PQ = (function () {
         RM = RequestManager.getInstance(request.store);
         updateUrls();
 
-        if (RM.getGapTimeServer !== undefined && typeof RM.getGapTimeServer === "function")
-            gapTimeServer = RM.getGapTimeServer();
-
-        if (RM.getMaxWaiting !== undefined && typeof RM.getMaxWaiting === "function")
-            maxWaiting = RM.getMaxWaiting();
-
         router();
     };
 
@@ -50,7 +44,8 @@ var PQ = (function () {
             if (parseInt(SM.get("waiting")) === 0)
                 return false; //stops the 'server'
         }
-        else if (page.times[0] <= time && page.isPriority === undefined && parseInt(SM.get("waiting")) < maxWaiting) {
+        else if (page.times[0] <= time && page.isPriority === undefined &&
+                 parseInt(SM.get("waiting")) < (RM.maxWaiting || maxWaiting)) {
             page = list.shift(); //remove the first item
             page.isPriority = true;
             
@@ -68,7 +63,7 @@ var PQ = (function () {
         }
 
         time += gapTimeServer;
-        setTimeout(router, gapTimeServer);
+        setTimeout(router, RM.gapTimeServer || gapTimeServer);
     };
 
     var sendPage = function (page) {

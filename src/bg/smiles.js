@@ -136,6 +136,7 @@ function Smiles() {
     };
 
     var mapAjaxResponse = function (data, response, callback) {
+        self.parent.maxWaiting = 5; //just in case of it had been decreased by mapAjaxResponsePartners
         var info = self.parent.returnDefault();
         
         var isOneWay = data.returnDate === null;
@@ -246,6 +247,7 @@ function Smiles() {
     };
     
     var mapAjaxResponsePartners = function (data, response, info) {
+        self.parent.maxWaiting = 2; //decrease maxWaiting since server can't handle many pending request
         info = info || self.parent.returnDefault();
         
         var isOneWay = data.returnDate === null;

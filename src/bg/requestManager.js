@@ -3,15 +3,8 @@ function RequestManager(name, gapTimeServer, maxWaiting) {
     
     self.store = self.constructor.instances.length;
     self.name = name;
-    
-//public methods
-    self.getGapTimeServer = function () {
-        return gapTimeServer;
-    };
-
-    self.getMaxWaiting = function () {
-        return maxWaiting;
-    };
+    self.gapTimeServer = gapTimeServer;
+    self.maxWaiting = maxWaiting;
     
     return self;
 }
