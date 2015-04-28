@@ -305,7 +305,7 @@ function Smiles() {
                     min = self.parent.getMinPrice(min, minPrices[j] + minPricesReturn[i])
             }
             
-            info.prices[i] = min;
+            info.prices[i] = self.parent.getMinPrice(info.prices[i], min);
         }
         
         return info;

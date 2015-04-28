@@ -2,7 +2,7 @@
   "name": "Passagens aéreas",
   "short_name": "Genghis Labs",
   "author": "Breno Vieira",
-  "version": "1.6",
+  "version": "1.6.1",
   "manifest_version": 2,
   "homepage_url": "https://github.com/brenovieira/extensao",
   "description": "Pesquise passagens para várias cidades e vários dias de 1 só vez. Rápido, seguro e o melhor: sem pagar nada!",
