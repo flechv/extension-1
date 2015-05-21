@@ -81,10 +81,13 @@ var BG = (function (SM, PQ) {
         if (req == undefined || req === "null" || req === "{}") return;
         
         var requests = self.getRequests();
-        for(var i in requests)
-            if (req === JSON.stringify(requests[i]))
-                return;
-        
+        for (var i in requests) {
+            if (req === JSON.stringify(requests[i])) {
+				requests.splice(i, 1); //remove it
+				break;
+			}
+		}
+		
         requests.splice(0, 0, request); //save it on begining
         SM.put("requests", JSON.stringify(requests));
     };
@@ -95,6 +98,10 @@ var BG = (function (SM, PQ) {
     
     self.deleteRequests = function () {
         SM.delete("requests");
+    };
+    
+    self.deleteResults = function () {
+        SM.delete("resultsList");
     };
 
     self.getResultsList = function () {
@@ -108,6 +115,10 @@ var BG = (function (SM, PQ) {
     self.getInitialNumberOfFlights = function () {
         return !SM.get("initialNumberOfFlights") ? 0 : parseInt(SM.get("initialNumberOfFlights"));
     };
+	
+	self.getPq = function () {
+		return PQ;
+	};
 
 //private methods
     var enqueue = function(origin, destination, departureDate, returnDate,

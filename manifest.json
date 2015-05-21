@@ -17,7 +17,7 @@
       "js/airlinesCompanies.js",
       "js/allAirports.js",
       "src/bg/storeManager.js",
-      "src/bg/extensions.js",
+      "js/extensions.js",
       "src/bg/requestManager.js",
       "src/bg/decolar.js",
       "src/bg/submarinoViagens.js",

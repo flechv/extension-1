@@ -23,6 +23,7 @@
   		<script src="../../js/allAirports.js"></script>
   		<script src="../../js/angular.min.js"></script>
   		<script src="../../js/angular-select2.js"></script>
+  		<script src="../../js/extensions.js"></script>
   		<script src="save.js"></script>
   		<script src="popup.js"></script>
 	</head>
@@ -48,7 +49,7 @@
 				</div>
 
 				<div class="headerDiv">
-					<label class="help" title="{{ help.days }}" ng-click="showQtyDays = !showQtyDays">
+					<label class="help" title="{{ help.days }}" ng-click="showQtyDays = !showQtyDays"style="font-style: italic;">
                         {{ showQtyDays ? 'Duração' : 'Volta(s)' }} <i class="fa fa-calendar" style="font-size: 14px"></i>
                     </label>
 					<select ui-select2 multiple ng-model="qtyDays" name="qtyDays" data-placeholder="Quantos dias de viagem?" ng-class="{ 'has-error': form.qtyDays.$dirty && form.qtyDays.$invalid }" ng-show="showQtyDays">
@@ -72,7 +73,7 @@
                     <label class="help" title="{{ help.savedSearches }}">Histórico</label>
                     <select ui-select2 ng-model="savedSearch" style="width:298px" ng-change="updateForm(savedSearch)">
                         <option ng-repeat="item in savedSearches" value="{{ item }}">
-                            {{ ($index + 1) + '- ' + item.origins[0].id + ' - ' + item.destinations[0].id }}
+                            {{ printSavedSearch(item, $index) }}
                         </option>
                     </select>
                 </div>

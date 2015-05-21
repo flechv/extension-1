@@ -1,3 +1,7 @@
+Date.prototype.getDateString = function () {
+   return this.getFullYear() + '/' + this.getMonth2() + '/' + this.getDate2();
+};
+
 Date.prototype.addDays = function (days) {
     this.setDate(this.getDate() + days);
     return this;
@@ -33,4 +37,12 @@ String.prototype.parseToDate = function () {
 
 String.prototype.toDateFormat = function (format) {
     return this.parseToDate().toDateFormat(format);
+};
+
+Number.prototype.to2Digits = function () {
+   return this.toFixed(2).toString().replace(".", ",");
+};
+
+String.prototype.to2Digits = function () {
+	return this == "" ? "-" : parseFloat(this).to2Digits();
 };

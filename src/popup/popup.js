@@ -22,7 +22,7 @@ app.controller("AngularController", function ($scope) {
 		company: "Pesquise vôos apenas das companhias aéreas desejadas",
 		download: "Salvar os resultados abaixo",
         donation: "Faça uma doação para continuar melhorando esse app!",
-        deleteSavedSearches: "Excluir histórico de pesquisas"
+        deleteSavedSearches: "Excluir histórico"
 	};
 
 	$scope.airlinesCompanies = airlinesCompanies;
@@ -136,7 +136,15 @@ app.controller("AngularController", function ($scope) {
     };
     
     $scope.deleteSavedSearches = function () {
-        getBg().deleteRequests();
+        var bg = getBg();
+		bg.deleteRequests();
+		bg.deleteResults();
+		$scope.stop();
+		
+		$scope.updateForm({});
+		$scope.savedSearches = [];
+		$scope.results = [];
+		$scope.numberOfFlights = 0;
     };
 
 	var resultsJson = bg.getResultsList();
@@ -168,7 +176,7 @@ app.controller("AngularController", function ($scope) {
 	};
 
 	$scope.stop = function () {
-		getBg().PQ.stopServer();
+		getBg().getPq().stopServer();
 	};
     
     $scope.disableStop = function () {
@@ -194,6 +202,11 @@ app.controller("AngularController", function ($scope) {
     $scope.print = function (price, value) {
         return price > 0 ? (value ? value : price) : "-";
     };
+	
+	$scope.printSavedSearch = function (item, index) {
+		return (index + 1) + '- ' + item.origins[0].id + ' - ' + item.destinations[0].id + ' - ' +
+			item.departureDates[0].toDateFormat('dd/mm/yyyy') + (item.returnDates && item.returnDates[0] ? (' - ' + item.returnDates[0].toDateFormat('dd/mm/yyyy')) : '')
+	};
     
 	$(".help").tipsy({ gravity: 'w', html: true, fade: true, opacity: 0.95 });
 });
@@ -299,25 +312,3 @@ function getValidDaysInMonth(year, month) {
 
 	return days;
 }
-
-Number.prototype.to2Digits = function () {
-   return this.toFixed(2).toString().replace(".", ",");
-};
-
-String.prototype.to2Digits = function () {
-	return this == "" ? "-" : parseFloat(this).to2Digits();
-};
-
-Date.prototype.getDateString = function () {
-   return this.getFullYear() + '/' + this.getMonth2() + '/' + this.getDate2();
-};
-
-Date.prototype.getDate2 = function () {
-   var date = this.getDate();
-   return (date < 10 ? '0' : '') + date;
-};
-
-Date.prototype.getMonth2 = function () {
-   var month = this.getMonth() + 1;
-   return (month < 10 ? '0' : '') + month;
-};
