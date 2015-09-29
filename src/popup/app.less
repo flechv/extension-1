@@ -1,0 +1,143 @@
+@import "../../bower_components/bootstrap/less/bootstrap.less";
+
+// Fonts are not in fonts folder as we are deploying all files into dist (root) folder
+@icon-font-path: "../dist/";
+
+@import "../../bower_components/bootstrap-material-design/less/material.less";
+
+// Override @primary color with one took from _colors.less
+@primary: @light-blue-800;
+@info: @light-blue-800;
+@body-bg: @grey-50;
+@popover-background: rgba(101, 101, 101, 0.95);
+
+@material-font-path: "../dist";
+
+@import (inline) "../../bower_components/angular-ui-grid/ui-grid.min.css";
+@import (inline) "../../bower_components/ui-select/dist/select.min.css";
+@import (inline) "../../bower_components/angular/angular-csp.css";
+
+html, body {
+    width:450px;
+}
+#popup-form {
+	padding: 5px 0;
+}
+#popup-info i {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+	width: 24px;
+}
+label {
+    font-weight: normal;
+}
+.row, .btn {
+    margin: 0;
+}
+.btn {
+	color: @white;
+    text-transform: none;
+}
+.btn-default-focus {
+    outline: none;
+}
+.btn.btn-xs {
+    padding: 4px 10px;
+}
+.btn-primary, .btn-info, .btn-info.active {
+	&:not(.btn-link):not(.btn-flat) {
+    	color: @white;
+	}
+}
+.form-group {
+    margin-bottom: 7px;
+    label {
+        padding-top: 5px;
+    }
+    .secondary {
+        color: @grey-600;
+        padding: 0;
+    }
+}
+.form-icon {
+    padding: 2px;
+    line-height: 15px;
+}
+.form-single-select .ui-select-match-text {
+    padding-top: 4px;
+}
+.ui-select-small {
+    padding-left: 10px;
+}
+.datepicker {
+    th, td {
+        padding: 0px 1px;
+    }
+    th {
+        font-weight: normal;
+    }
+    thead th:first-child .btn.btn-sm, thead th:last-child .btn.btn-sm {
+        border-radius: 10px;
+        padding: 0px 4px;
+    }
+    thead th:first-child .btn.btn-sm {
+        margin-left: 11px;
+    }
+    thead th:last-child .btn.btn-sm {
+        margin-right: 11px;
+    }
+    .btn {
+        margin: 0;
+        padding: 6px 28px;
+    }
+    .btn.btn-sm, .btn-group-sm > .btn {
+        padding: 0 17px;
+    }
+    .btn:active, .btn.active {
+        -webkit-box-shadow: none;
+        box-shadow: none;
+    }
+    .text-muted {
+        display: none;
+    }
+	.btn-info .text-info {
+		color: @white;
+	}
+}
+.nav {
+    /*col-xs-2*/
+    width: 16.66666667%;
+    float: left;
+    position: relative;
+    min-height: 1px;
+    /*col-xs-2*/
+    padding: 0 0 0 4px;
+    & > li > a {
+        padding: 4px 0;
+        text-align: center;
+    }
+}
+.nav-pills > li.active > a {
+    &, &:focus, &:hover {
+		background-color: @grey-200;
+		color: @grey-900;
+	}
+}
+#grid-results {
+    width: 448px;
+	height: 545px;
+}
+.ui-grid-cell-contents {
+    padding: 5px 1px 5px 4px;
+    font-size: 13px;
+}
+.ui-grid-menu-button {
+    height: 28px;
+}
+.ui-grid-scrollbar-placeholder {
+    display: none;
+}
+.ui-grid-viewport {
+	overflow-x: hidden !important;
+}

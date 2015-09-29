@@ -1,0 +1,17 @@
+<!doctype html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  		<title>Passagens aéreas Genghis</title>
+  		<base target="_blank">
+
+        <link rel="stylesheet" href="app.css" />
+	</head>
+	<body ng-app="app" ng-csp="" ng-controller="Controller as vm">
+        <div ng-include="'popup.form.html'" id="popup-form" ng-show="vm.showForm" class="row"></div>
+		<div ng-include="'popup.info.html'" id="popup-info" class="row"></div>
+        <div ng-include="'popup.results.html'" ng-if="vm.gridOptions.data.length > 0" class="row"></div>
+
+		<script src="libs.js"></script>
+		<script src="app.js"></script>
+	</body>
+</html>

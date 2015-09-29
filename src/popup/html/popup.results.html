@@ -1,0 +1,24 @@
+<div ui-grid="vm.gridOptions" ui-grid-grouping ui-grid-exporter ui-grid-expandable id="grid-results"></div>
+
+<script type="text/ng-template" id="expandableRowTemplate.html">
+	<div ui-grid="row.entity.subGridOptions" style="height: 130px; overflow-y:scroll"></div>
+</script>
+
+<script type="text/ng-template" id="priceTemplate.html">
+	<div class="ui-grid-cell-contents" title="TOOLTIP">
+		<a ng-if="row.entity.url" ng-href="{{ row.entity.url }}">
+			{{ COL_FIELD CUSTOM_FILTERS }}
+		</a>
+		<span ng-if="!row.entity.url">
+			{{ COL_FIELD CUSTOM_FILTERS }}
+		</span>
+	</div>
+</script>
+
+<script type="text/ng-template" id="groupingTemplate.html">
+	<div>
+		<div ng-if="!col.grouping || col.grouping.groupPriority === undefined || col.grouping.groupPriority === null || ( row.groupHeader && col.grouping.groupPriority === row.treeLevel )" class="ui-grid-cell-contents" title="TOOLTIP">
+			{{ COL_FIELD CUSTOM_FILTERS }}
+		</div>
+	</div>
+</script>

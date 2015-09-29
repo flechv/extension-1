@@ -1,41 +1,30 @@
 {
-  "name": "Passagens aéreas",
-  "short_name": "Genghis Labs",
-  "author": "Breno Vieira",
-  "version": "1.6.1",
-  "manifest_version": 2,
-  "homepage_url": "https://github.com/brenovieira/extensao",
-  "description": "Pesquise passagens para várias cidades e vários dias de 1 só vez. Rápido, seguro e o melhor: sem pagar nada!",
-  "icons": {
-    "16": "images/icon16.png",
-    "48": "images/icon48.png",
-    "128": "images/icon128.png"
-  },
-  "background": {
-    "scripts": [
-      "js/jquery-2.0.3.min.js",
-      "js/airlinesCompanies.js",
-      "js/allAirports.js",
-      "src/bg/storeManager.js",
-      "js/extensions.js",
-      "src/bg/requestManager.js",
-      "src/bg/decolar.js",
-      "src/bg/submarinoViagens.js",
-      "src/bg/smiles.js",
-      "src/bg/tamFidelidade.js",
-      "src/bg/itaSoftware.js",
-      "src/bg/priorityQueue.js",
-      "src/bg/background.js"
-    ],
-    "persistent": true
-  },
-  "browser_action": {
-    "default_icon": "images/icon19.png",
-    "default_title": "Buscar Passagens",
-    "default_popup": "src/popup/popup.html"
-  },
-  "permissions": [
-    "*://*/*"
-  ],
-  "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'"
+	"manifest_version": 2,
+	"name": "__MSG_extensionName__",
+	"short_name": "Genghis",
+	"version": "2.0",
+	"default_locale": "pt_BR",
+	"description": "__MSG_extensionDescription__",
+	"icons": {
+		"16": "dist/icon16.png",
+		"48": "dist/icon48.png",
+		"128": "dist/icon128.png"
+	},
+	"author": "Breno Vieira",
+	"homepage_url": "https://github.com/brenovieira/extensao",
+	"background": {
+		"scripts": [
+		  "dist/background.js"
+		],
+		"persistent": true
+	},
+	"browser_action": {
+		"default_icon": "dist/icon19.png",
+		"default_title": "__MSG_extensionName__",
+		"default_popup": "dist/popup.html"
+	},
+	"permissions": [
+		"*://*/*"
+	],
+	"content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'"
 }
