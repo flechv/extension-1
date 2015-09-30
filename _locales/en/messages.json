@@ -202,5 +202,11 @@
 	},
 	"messagesFoundFlightsPlural": {
 		"message": "NUMBER_OF_FLIGHTS dates found"
+	},
+	"labelResetDates": {
+		"message": "Reset"
+	},
+	"tooltipResetDates": {
+		"message": "Reset selected dates"
 	}
 }

@@ -12,12 +12,11 @@
 		return {
 			initServer: initServer,
 			stopServer: stopServer,
+			deleteHistory: deleteHistory,
 			showLoading: showLoading,
 			hideBadge: hideBadge,
 			saveRequest: saveRequest,
 			getRequests: getRequests,
-			deleteRequests: deleteRequests,
-			deleteResults: deleteResults,
 			getResults: getResults,
 			getSites: getSites,
 			getInitialNumberOfFlights: getInitialNumberOfFlights,
@@ -92,6 +91,10 @@
 			saveInitialNumberOfFlights();
 		}
 
+		function deleteHistory() {
+			SM.clear();
+		}
+
 		function showLoading() {
 			return PQ.getLength() !== 0 && getResults().length === 0;
 		}
@@ -144,14 +147,6 @@
 
 		function getRequests() {
 			return JSON.parse(SM.get('requests')) || [];
-		}
-
-		function deleteRequests() {
-			SM.delete('requests');
-		}
-
-		function deleteResults() {
-			SM.delete('results');
 		}
 
 		function getResults() {

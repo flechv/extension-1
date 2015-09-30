@@ -202,5 +202,11 @@
 	},
 	"messagesFoundFlightsPlural": {
 		"message": "NUMBER_OF_FLIGHTS datas encontradas"
+	},
+	"labelResetDates": {
+		"message": "Limpar"
+	},
+	"tooltipResetDates": {
+		"message": "Limpar datas selecionadas"
 	}
 }
