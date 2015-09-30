@@ -26,6 +26,7 @@
 					infants: get('labelInfants'),
 					start: get('labelStart'),
 					stop: get('labelStop'),
+					resetDates: get('labelResetDates'),
 				},
 				placeholders: {
 					origins: get('placeholderOrigins'),
@@ -50,6 +51,7 @@
 					expandMore: get('tooltipExpandMore'),
 					expandLess: get('tooltipExpandLess'),
 					main: get('tooltipMain'),
+					resetDates: get('tooltipResetDates'),
 				},
 				grid: {
 					originDestination: get('gridOriginDestination'),

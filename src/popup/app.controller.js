@@ -252,6 +252,7 @@
 			bg.hideBadge();
 
 			vm.airports = backgroundPage.airports;
+			vm.airportsById = backgroundPage.airportsById;
 			vm.airlines = backgroundPage.airlines;
 
 			vm.days = [{
@@ -274,18 +275,21 @@
 
 			setupDatepickers();
 
+			vm.savedSearches = bg.getRequests();
+			if (vm.savedSearches && vm.savedSearches.length > 0) {
+				var recentSearch = vm.savedSearches[0];
+				
+				// saved data from old version, different format, so clear all storage
+				if (!recentSearch.site) // we had field store instead of site
+					deleteHistory();
+				else
+					updateForm(recentSearch);
+			}
+			
 			vm.showLoading = bg.showLoading();
 			vm.sites = bg.getSites();
 			vm.initialNumberOfFlights = bg.getInitialNumberOfFlights() || 0;
-			vm.savedSearches = bg.getRequests();
-			updateForm(vm.savedSearches[0]);
-
-			var results = bg.getResults();
-			// saved data from old version, different format so erase it
-			if (results && results.length > 0 && !results[0].departure)
-				deleteHistory();
-			else
-				updateResults(results);
+			updateResults(bg.getResults());
 		}
 
 		function start() {
@@ -303,9 +307,7 @@
 		}
 
 		function deleteHistory() {
-			var bg = getBg();
-			bg.deleteRequests();
-			bg.deleteResults();
+			getBg().deleteHistory();
 
 			stop();
 			updateForm();

@@ -77,7 +77,7 @@ gulp.task('background', function () {
 		}))
 		//.pipe(sourcemaps.init())
 		.pipe(concat(distPaths.background))
-		//.pipe(uglify())
+		.pipe(uglify())
 		//.pipe(sourcemaps.write())
 		.pipe(gulp.dest(distPaths.dest))
 });
@@ -136,9 +136,12 @@ gulp.task('default', ['build', 'watch']);
 
 // Zip manifest and dist folder to deploy the app
 gulp.task('zip', ['build'], function () {
-	return gulp.src(['manifest.json', '_locales/*', distPaths.dest + '/*'], {
+	return gulp.src(['manifest.json', '_locales/**/*', distPaths.dest + '/*'], {
 			base: '.'
 		})
+		.pipe(debug({
+			title: 'Zip file:'
+		}))
 		.pipe(zip('deploy.zip'))
 		.pipe(gulp.dest(distPaths.dest));
 });
