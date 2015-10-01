@@ -1,5 +1,5 @@
 <tabset vertical="true" type="pills">
-	<tab heading="{{ ::labels.returns }}" tooltip="{{ ::tooltips.returns }}">
+	<tab heading="{{ ::labels.returns }}" tooltip="{{ ::tooltips.returns }}" active="!vm.showQtyDays">
 		<div class="col-xs-10">
 			<datepicker multi-select="vm.model.returns" ng-model="vm.activeReturn" init-date="vm.initDateReturn" select-range="{{ vm.returnsRange }}" min-date="vm.minDeparture" id="returns" name="returns" class="datepicker"></datepicker>
 	<span class="btn btn-default btn-sm pull-left resetDate" ng-click="vm.model.returns = []" tooltip="{{ ::tooltips.resetDates }}">{{ ::labels.resetDates }}</span>
