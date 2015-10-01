@@ -2,25 +2,100 @@
 	'use strict';
 
 	window.airports = [
-		{ id: 'SAO', country: 'Brasil', text: 'São Paulo', text2: 'todos os aeroportos' },
+		// popular airports first
 		{ id: 'RIO', country: 'Brasil', text: 'Rio de Janeiro', text2: 'todos os aeroportos' },
-		{ id: 'BSB', country: 'Brasil', text: 'Brasília', text2: 'Presidente J. Kubitschek' },
-		{ id: 'BHZ', country: 'Brasil', text: 'Belo Horizonte', text2: 'todos os aeroportos' },
-		{ id: 'FEN', country: 'Brasil', text: 'Fernando de Noronha' },
+		{ id: 'SAO', country: 'Brasil', text: 'São Paulo', text2: 'todos os aeroportos' },
 		{ id: 'IGU', country: 'Brasil', text: 'Foz do Iguaçú', text2: 'aeroporto das Cataratas' },
-		{ id: 'FOR', country: 'Brasil', text: 'Fortaleza', text2: 'Pinto Martins' },
 		{ id: 'SSA', country: 'Brasil', text: 'Salvador', text2: 'Deputado Luis E. Mag.' },
-		{ id: 'FLN', country: 'Brasil', text: 'Florianópolis', text2: 'Hercilio Luz' },
+		{ id: 'BSB', country: 'Brasil', text: 'Brasília', text2: 'Presidente J. Kubitschek' },
+		{ id: 'FEN', country: 'Brasil', text: 'Fernando de Noronha' },
+		{ id: 'PAR', country: 'França', text: 'Paris', text2: 'todos os aeroportos' },
+		{ id: 'MCO', country: 'Estados Unidos', text: 'Orlando', text2: 'FL, Orlando International Airport' },
+		{ id: 'NYC', country: 'Estados Unidos', text: 'Nova Iorque', text2: 'NY, todos os aeroportos' },
+		{ id: 'MIA', country: 'Estados Unidos', text: 'Miami', text2: 'FL, Miami International Airport' },
+		{ id: 'LAS', country: 'Estados Unidos', text: 'Las Vegas', text2: 'NV, McCarran International Airport' },
+		{ id: 'BUE', country: 'Argentina', text: 'Buenos Aires', text2: 'BA, todos os aeroportos' },
+		{ id: 'LON', country: 'Inglaterra', text: 'Londres', text2: 'todos os aeroportos' },
+		{ id: 'FCO', country: 'Itália', text: 'Roma', text2: 'RM, Leonardo da Vinci/Fiumicino' },
+		{ id: 'SCL', country: 'Chile', text: 'Santiago de Chile', text2: 'RM, Aeropuerto Comodoro Arturo Merino Benitez' },
+		{ id: 'DXB', country: 'Emirados Árabes', text: 'Dubai', text2: 'DU, Dubai International Airport' },
+		{ id: 'BCN', country: 'Espanha', text: 'Barcelona', text2: 'Aeropuerto Transoceanico de Barcelona' },
+		{ id: 'MAD', country: 'Espanha', text: 'Madri', text2: 'MD, Barajas' },
+		{ id: 'BER', country: 'Alemanha', text: 'Berlim', text2: 'BE, todos os aeroportos' },
+		{ id: 'FRA', country: 'Alemanha', text: 'Frankfurt', text2: 'HE, Rhein-Main' },
+		{ id: 'MUC', country: 'Alemanha', text: 'Munique', text2: 'Franz Josef Strauss' },
+		{ id: 'MVD', country: 'Uruguai', text: 'Montevideu', text2: 'MO, Carrasco' },
+		{ id: 'CUN', country: 'México', text: 'Cancun', text2: 'QR, Cancun International' },
+		{ id: 'MEX', country: 'México', text: 'Cidade Do Mexico', text2: 'Aeropuerto Internacional Ben' },
+		{ id: 'CZM', country: 'México', text: 'Cozumel', text2: 'QR, Cozumel International Airport' },
+		{ id: 'SYD', country: 'Austrália', text: 'Sydney', text2: 'NS, Kingsford Smith' },
+		{ id: 'MEL', country: 'Austrália', text: 'Melbourne', text2: 'VI, Tullamarine International Airport' },
+		{ id: 'CMN', country: 'Marrocos', text: 'Casablanca', text2: 'GC, Mohamed V' },
+		{ id: 'REP', country: 'Camboja', text: 'Siem Reap', text2: 'Angkor' },
+		{ id: 'IST', country: 'Turquia', text: 'Istambul', text2: 'IB, Ataturk/Yesilkov International Airport' },
+		{ id: 'HAN', country: 'Vietnã', text: 'Hanoi', text2: 'Noi-Bai' },
+		{ id: 'PRG', country: 'República Tcheca', text: 'Praga', text2: 'Ruzyne' },
+		{ id: 'CPT', country: 'África', text: 'Cape Town', text2: 'WC, Cape Town International Airport' },
+		{ id: 'CUZ', country: 'Peru', text: 'Cuzco ', text2: 'CS, Alejandro Velasco Astete International Airport' },
+		{ id: 'LED', country: 'Rússia', text: 'São Petersburgo', text2: 'Pulkowo-2' },
+		{ id: 'BKK', country: 'Tailândia', text: 'Bangkok', text2: 'BM, Don Muang International Airport' },
+		{ id: 'ATH', country: 'Grécia', text: 'Atenas', text2: 'AT, Hellinikon International Airport' },
+		{ id: 'BUD', country: 'Hungria', text: 'Budapeste', text2: 'BU, Ferihegyi' },
+		{ id: 'AMS', country: 'Holanda', text: 'Amsterdam', text2: 'Schiphol' },
+		{ id: 'LIS', country: 'Portugal', text: 'Lisboa', text2: 'Aeroporto da Portela de Sacavem' },
+		{ id: 'HKG', country: 'China', text: 'Hong Kong', text2: 'HK, Kai-Tak International Airport' },
+		{ id: 'PEK', country: 'China', text: 'Pequim', text2: 'BJ, Capital' },
+		{ id: 'SHA', country: 'China', text: 'Xangai', text2: 'Hongqiao' },
+		{ id: 'ADZ', country: 'Colômbia', text: 'San Andres ', text2: 'SA, Sesquicentenario' },
+		{ id: 'CTG', country: 'Colômbia', text: 'Cartagena', text2: 'BL, Rafael Nunez' },
+		{ id: 'AKL', country: 'Nova Zelândia', text: 'Auckland', text2: 'AU, Auckland Airport' },
+		{ id: 'PUJ', country: 'República Dominicana', text: 'Punta Cana', text2: 'AL, Punta Cana International Airport' },
+		{ id: 'VIE', country: 'Áustria', text: 'Viena', text2: 'WI, Schwechat' },
+		{ id: 'MIL', country: 'Itália', text: 'Milao', text2: 'MA, todos os aeroportos' },
+		{ id: 'VCE', country: 'Itália', text: 'Veneza', text2: 'VE, Marco Polo, Tessera' },
+		{ id: 'IPC', country: 'Chile', text: 'Ilha de Pascoa', text2: 'Mataveri' },
+		{ id: 'AUA', country: 'Aruba', text: 'Aruba', text2: 'Queen Beatrix International Airport' },
+		{ id: 'CUR', country: 'Antilhas Holandesas', text: 'Curacao', text2: 'CU, Aeropuerto Hato' },
+		{ id: 'YYZ', country: 'Canadá', text: 'Toronto', text2: 'ON, Lester B. Pearson International Airport' },
+		{ id: 'YVR', country: 'Canadá', text: 'Vancouver', text2: 'BC, Vancouver International Airport' },
+		{ id: 'HAV', country: 'Cuba', text: 'Havana', text2: 'Aeropuerto Internacional Jose Marti' },
+		{ id: 'CAI', country: 'Egito', text: 'Cairo', text2: 'Cairo International Airport' },
+		{ id: 'TYO', country: 'Japão', text: 'Toquio', text2: 'TK, todos os aeroportos' },
+		{ id: 'SEL', country: 'Coréia do Sul', text: 'Seoul', text2: 'todos os aeroportos' },
+		{ id: 'DPS', country: 'Indonésia', text: 'Bali', text2: 'Ngurah Rai' },
+		{ id: 'BOM', country: 'Índia', text: 'Mumbai', text2: 'Sahar, Santa Cruz International Airport' },
+		{ id: 'DEL', country: 'Índia', text: 'Deli', text2: 'Ddelhi, Indira Gandhi International Airport' },
+		{ id: 'KUL', country: 'Malásia', text: 'Kuala Lumpur', text2: 'Subang' },
+		{ id: 'PPT', country: 'Polinésia', text: 'Papeete', text2: 'Taiti Faaa' },
+		{ id: 'DUB', country: 'Irlanda', text: 'Dublin', text2: 'DN, Dublin Airport' },
+		{ id: 'OSL', country: 'Noruega', text: 'Oslo', text2: 'OS, Oslo Airport' },
+		{ id: 'BUH', country: 'Romênia', text: 'Bucareste', text2: 'IF, todos os aeroportos' },
+		{ id: 'MOW', country: 'Rússia', text: 'Moscou', text2: 'todos os aeroportos' },
+		{ id: 'STO', country: 'Suécia', text: 'Estocolmo', text2: 'todos os aeroportos' },
+		{ id: 'ZRH', country: 'Suiça', text: 'Zurique', text2: 'Zurich-Kloten' },
+		{ id: 'HKT', country: 'Tailândia', text: 'Phuket', text2: 'PU, Phuket International Airport' },
+		{ id: 'CNX', country: 'Tailândia', text: 'Chiang Mai', text2: 'Chiang Mai International Airport' },
+		{ id: 'NAV', country: 'Turquia', text: 'Capadocia', text2: 'Nevsehir, todos os aeroportos' },
+		{ id: 'ZQN', country: 'Nova Zelândia', text: 'Queenstown', text2: 'Queenstown Airport' },
+		{ id: 'OPO', country: 'Portugal', text: 'Porto', text2: 'Francisco Sa Carneiro, Pedras Rubras' },
+		{ id: 'IBZ', country: 'Espanha', text: 'Ibiza', text2: 'PM, Ibiza Airport' },
+		{ id: 'XYD', country: 'França', text: 'Lyon', text2: 'RH, Lyon Part-Dieu Railway Station' },
+		{ id: 'TLV', country: 'Israel', text: 'Tel Aviv', text2: 'TA, Ben Gurion' },
+		{ id: 'LIM', country: 'Peru', text: 'Lima', text2: 'Aeropuerto Internacional Jorge Chavez' },
+		
+		{ id: 'FOR', country: 'Brasil', text: 'Fortaleza', text2: 'Pinto Martins' },
 		{ id: 'REC', country: 'Brasil', text: 'Recife', text2: 'Guararapes' },
+		{ id: 'BPS', country: 'Brasil', text: 'Porto Seguro', text2: '' },
+		{ id: 'BHZ', country: 'Brasil', text: 'Belo Horizonte', text2: 'todos os aeroportos' },
+		{ id: 'FLN', country: 'Brasil', text: 'Florianópolis', text2: 'Hercilio Luz' },
+		{ id: 'NAT', country: 'Brasil', text: 'Natal', text2: 'Augusto Severo' },
+		{ id: 'MCZ', country: 'Brasil', text: 'Maceió', text2: 'Zumbi dos Palmares' },
 		{ id: 'CWB', country: 'Brasil', text: 'Curitiba', text2: 'Afonso Pena' },
 		{ id: 'MAO', country: 'Brasil', text: 'Manaus', text2: 'Eduardo Gomes' },
 		{ id: 'CGR', country: 'Brasil', text: 'Campo Grande', text2: '' },
-		{ id: 'NAT', country: 'Brasil', text: 'Natal', text2: 'Augusto Severo' },
-		{ id: 'MCZ', country: 'Brasil', text: 'Maceió', text2: 'Zumbi dos Palmares' },
 		{ id: 'VIX', country: 'Brasil', text: 'Vitória', text2: 'Eurico de Aguiar Salles' },
 		{ id: 'GYN', country: 'Brasil', text: 'Goiânia', text2: 'Santa Genoveva' },
 		{ id: 'BEL', country: 'Brasil', text: 'Belém', text2: 'Val de Cans' },
-		{ id: 'BPS', country: 'Brasil', text: 'Porto Seguro', text2: '' },
 		{ id: 'AJU', country: 'Brasil', text: 'Aracaju', text2: 'Santa Maria' },
 		{ id: 'JPA', country: 'Brasil', text: 'João Pessoa', text2: 'Presidente C. Pinto' },
 		{ id: 'POA', country: 'Brasil', text: 'Porto Alegre', text2: 'Salgado Filho' },
@@ -121,7 +196,7 @@
 		{ id: 'CGH', country: 'Brasil', text: 'São Paulo', text2: 'Congonhas' },
 		{ id: 'VCP', country: 'Brasil', text: 'São Paulo', text2: 'Campinas, Viracopos' },
 		{ id: 'OLC', country: 'Brasil', text: 'São Paulo de Olivenca', text2: '' },
-		{ id: 'BUE', country: 'Argentina', text: 'Buenos Aires', text2: 'BA, todos os aeroportos' },
+		
 		{ id: 'BRC', country: 'Argentina', text: 'Bariloche', text2: 'RN, San Carlos de Bariloche International Airport' },
 		{ id: 'MDZ', country: 'Argentina', text: 'Mendoza', text2: 'El Plumerillo' },
 		{ id: 'COR', country: 'Argentina', text: 'Cordoba', text2: 'CD, Pajas Blancas' },
@@ -155,16 +230,12 @@
 		{ id: 'REL', country: 'Argentina', text: 'Trelew', text2: 'CB, Almirante Zar' },
 		{ id: 'USH', country: 'Argentina', text: 'Ushuaia', text2: 'TF, Ushuaia Malvinas Argentinas International Airport' },
 		{ id: 'VDM', country: 'Argentina', text: 'Viedma', text2: 'RN, Gobernador Castello' },
-
-		{ id: 'MIA', country: 'Estados Unidos', text: 'Miami', text2: 'FL, Miami International Airport' },
-		{ id: 'MCO', country: 'Estados Unidos', text: 'Orlando', text2: 'FL, Orlando International Airport' },
-		{ id: 'NYC', country: 'Estados Unidos', text: 'Nova Iorque', text2: 'NY, todos os aeroportos' },
-		{ id: 'EWR', country: 'Estados Unidos', text: 'Newark', text2: 'NJ, Newark International Airport' },
-		{ id: 'LAS', country: 'Estados Unidos', text: 'Las Vegas', text2: 'NV, McCarran International Airport' },
+		
 		{ id: 'LAX', country: 'Estados Unidos', text: 'Los Angeles', text2: 'CA, Los Angeles International Airport' },
+		{ id: 'SFO', country: 'Estados Unidos', text: 'São Francisco', text2: 'CA, San Francisco International Airport' },
+		{ id: 'EWR', country: 'Estados Unidos', text: 'Newark', text2: 'NJ, Newark International Airport' },
 		{ id: 'WAS', country: 'Estados Unidos', text: 'Washington', text2: 'DC, todos os aeroportos' },
 		{ id: 'ASE', country: 'Estados Unidos', text: 'Aspen', text2: 'CO, Aspen-Pitkin County Airport/Sardy Field' },
-		{ id: 'SFO', country: 'Estados Unidos', text: 'São Francisco', text2: 'CA, San Francisco International Airport' },
 		{ id: 'TPA', country: 'Estados Unidos', text: 'Tampa', text2: 'FL, Tampa International Airport' },
 		{ id: 'ATL', country: 'Estados Unidos', text: 'Atlanta', text2: 'GA, The William B. Hartsfield Atlanta International Airport' },
 		{ id: 'CHI', country: 'Estados Unidos', text: 'Chicago ', text2: 'IL, todos os aeroportos' },
@@ -587,8 +658,6 @@
 		{ id: 'YAK', country: 'Estados Unidos', text: 'Yakutat', text2: 'AK, Yakutat Airport' },
 		{ id: 'YUM', country: 'Estados Unidos', text: 'Yuma', text2: 'AZ, Yuma Marine Corps Air Station/Yuma International' },
 
-		{ id: 'PAR', country: 'França', text: 'Paris', text2: 'todos os aeroportos' },
-		{ id: 'XYD', country: 'França', text: 'Lyon', text2: 'RH, Lyon Part-Dieu Railway Station' },
 		{ id: 'LYS', country: 'França', text: 'Lyon', text2: 'RH, Satolas' },
 		{ id: 'AGF', country: 'França', text: 'Agen', text2: 'Agen La Garenne Aerodrome' },
 		{ id: 'AJA', country: 'França', text: 'Ajaccio', text2: 'Campo Dell\'Oro' },
@@ -637,9 +706,6 @@
 		{ id: 'TLN', country: 'França', text: 'Toulon/Hyeres', text2: 'La Palyvestre' },
 		{ id: 'TUF', country: 'França', text: 'Tours', text2: 'Saint-Symphorien' },
 
-		{ id: 'MAD', country: 'Espanha', text: 'Madri', text2: 'MD, Barajas' },
-		{ id: 'BCN', country: 'Espanha', text: 'Barcelona', text2: 'Aeropuerto Transoceanico de Barcelona' },
-		{ id: 'IBZ', country: 'Espanha', text: 'Ibiza', text2: 'PM, Ibiza Airport' },
 		{ id: 'VDE', country: 'Espanha', text: 'Valverde', text2: '' },
 		{ id: 'ALC', country: 'Espanha', text: 'Alicante', text2: 'VC, El Altet Airport' },
 		{ id: 'LEI', country: 'Espanha', text: 'Almeria', text2: 'AN, Almería International Airport' },
@@ -671,7 +737,6 @@
 		{ id: 'VIT', country: 'Espanha', text: 'Vitoria Spain', text2: 'Vitoria Foronda International Airport' },
 		{ id: 'ZAZ', country: 'Espanha', text: 'Zaragoza', text2: 'Zaragoza Airport' },
 
-		{ id: 'LON', country: 'Inglaterra', text: 'Londres', text2: 'todos os aeroportos' },
 		{ id: 'MAN', country: 'Inglaterra', text: 'Manchester', text2: 'Ringway International Airport' },
 		{ id: 'BHX', country: 'Inglaterra', text: 'Birmingham', text2: 'Birmingham International Airport' },
 		{ id: 'BOH', country: 'Inglaterra', text: 'Bournemouth', text2: 'Bournemouth Airport' },
@@ -690,8 +755,6 @@
 		{ id: 'SYY', country: 'Inglaterra', text: 'Stornway', text2: 'Stornoway Airport' },
 		{ id: 'MME', country: 'Inglaterra', text: 'Tees Side', text2: 'Durham Tees Valley Airport' },
 
-		{ id: 'SCL', country: 'Chile', text: 'Santiago de Chile', text2: 'RM, Aeropuerto Comodoro Arturo Merino Benitez' },
-		{ id: 'IPC', country: 'Chile', text: 'Ilha de Pascoa', text2: 'Mataveri' },
 		{ id: 'ANF', country: 'Chile', text: 'Antofagasta', text2: 'Cerro Moreno' },
 		{ id: 'ARI', country: 'Chile', text: 'Arica', text2: 'Chacalluta' },
 		{ id: 'BBA', country: 'Chile', text: 'Balmaceda', text2: 'Balmaceda Airport' },
@@ -708,7 +771,6 @@
 		{ id: 'ZCO', country: 'Chile', text: 'Temuco', text2: 'Maquehue Airport' },
 		{ id: 'ZAL', country: 'Chile', text: 'Valdivia', text2: 'Pichoy Airport' },
 
-		{ id: 'CPT', country: 'África', text: 'Cape Town', text2: 'WC, Cape Town International Airport' },
 		{ id: 'JNB', country: 'África', text: 'Johannesburgo', text2: 'GT, Jan Smuts Airport' },
 		{ id: 'BFN', country: 'África', text: 'Bloemfontein', text2: 'J.B.M. Hertzog' },
 		{ id: 'DUR', country: 'África', text: 'Durban', text2: 'Louis Botha' },
@@ -726,11 +788,8 @@
 
 		{ id: 'TIA', country: 'Albânia', text: 'Tirana', text2: 'Rinas' },
 
-		{ id: 'BER', country: 'Alemanha', text: 'Berlim', text2: 'BE, todos os aeroportos' },
 		{ id: 'SXF', country: 'Alemanha', text: 'Berlim', text2: 'BE, Schonefeld' },
 		{ id: 'TXL', country: 'Alemanha', text: 'Berlim', text2: 'BE, Tegel' },
-		{ id: 'FRA', country: 'Alemanha', text: 'Frankfurt', text2: 'HE, Rhein-Main' },
-		{ id: 'MUC', country: 'Alemanha', text: 'Munique', text2: 'Franz Josef Strauss' },
 		{ id: 'BRE', country: 'Alemanha', text: 'Bremen', text2: 'Nieuenland' },
 		{ id: 'CGN', country: 'Alemanha', text: 'Colonia', text2: 'Konrad Adenauer' },
 		{ id: 'DTM', country: 'Alemanha', text: 'Dortmund', text2: 'Wickede' },
@@ -773,7 +832,6 @@
 
 		{ id: 'ANU', country: 'Antigua e Barbuda', text: 'Antigua', text2: '' },
 
-		{ id: 'CUR', country: 'Antilhas Holandesas', text: 'Curacao', text2: 'CU, Aeropuerto Hato' },
 		{ id: 'BON', country: 'Antilhas Holandesas', text: 'Kralendijk', text2: 'Flamingo Airport' },
 		{ id: 'SAB', country: 'Antilhas Holandesas', text: 'Saba', text2: 'Juancho E. Yrausquin Airport' },
 		{ id: 'SXM', country: 'Antilhas Holandesas', text: 'Saint Maarten', text2: 'Princes Juliana' },
@@ -784,10 +842,6 @@
 
 		{ id: 'EVN', country: 'Armênia', text: 'Yerevan', text2: 'Zapadny' },
 
-		{ id: 'AUA', country: 'Aruba', text: 'Aruba', text2: 'Queen Beatrix International Airport' },
-
-		{ id: 'SYD', country: 'Austrália', text: 'Sidnei', text2: 'NS, Kingsford Smith' },
-		{ id: 'MEL', country: 'Austrália', text: 'Melbourne', text2: 'VI, Tullamarine International Airport' },
 		{ id: 'ADL', country: 'Austrália', text: 'Adelaide', text2: 'SA, International' },
 		{ id: 'ABX', country: 'Austrália', text: 'Albury', text2: 'NS, Albury Airport' },
 		{ id: 'ASP', country: 'Austrália', text: 'Alice Springs', text2: 'NT, Alice Springs Airport' },
@@ -843,7 +897,6 @@
 		{ id: 'KLU', country: 'Áustria', text: 'Klagenfurt', text2: 'Woerthersee' },
 		{ id: 'LNZ', country: 'Áustria', text: 'Linz', text2: 'Horsching' },
 		{ id: 'SZG', country: 'Áustria', text: 'Salzburgo', text2: 'Salzburg Airport' },
-		{ id: 'VIE', country: 'Áustria', text: 'Viena', text2: 'WI, Schwechat' },
 
 		{ id: 'ASD', country: 'Bahamas', text: 'Andros Town', text2: 'International' },
 		{ id: 'BIM', country: 'Bahamas', text: 'Bimini', text2: '' },
@@ -905,10 +958,7 @@
 		{ id: 'YAO', country: 'Camarões', text: 'Yaounde', text2: 'Nsimalen International' },
 
 		{ id: 'PNH', country: 'Camboja', text: 'Phnom Penh', text2: 'Pochentong' },
-		{ id: 'REP', country: 'Camboja', text: 'Siem Reap', text2: 'Angkor' },
 
-		{ id: 'YYZ', country: 'Canadá', text: 'Toronto', text2: 'ON, Lester B. Pearson International Airport' },
-		{ id: 'YVR', country: 'Canadá', text: 'Vancouver', text2: 'BC, Vancouver International Airport' },
 		{ id: 'YUL', country: 'Canadá', text: 'Montreal', text2: 'QC, Dorval International Airport' },
 		{ id: 'YOW', country: 'Canadá', text: 'Ottawa', text2: 'ON, Macdonald-Cartier International Airport' },
 		{ id: 'YQB', country: 'Canadá', text: 'Quebec', text2: 'QC, Quebec Airport' },
@@ -973,9 +1023,6 @@
 
 		{ id: 'NDJ', country: 'Chade', text: 'N\'Djamena', text2: 'N Djamena Airport' },
 
-		{ id: 'HKG', country: 'China', text: 'Hong Kong', text2: 'HK, Kai-Tak International Airport' },
-		{ id: 'PEK', country: 'China', text: 'Pequim', text2: 'BJ, Capital' },
-		{ id: 'SHA', country: 'China', text: 'Xangai', text2: 'Hongqiao' },
 		{ id: 'BAV', country: 'China', text: 'Baotou', text2: 'Baotou Airport' },
 		{ id: 'CAN', country: 'China', text: 'Canton', text2: 'GD, Baiyun' },
 		{ id: 'CGQ', country: 'China', text: 'Changchun', text2: 'Changchun Longjia International Airport' },
@@ -1052,8 +1099,6 @@
 		{ id: 'PFO', country: 'Chipre', text: 'Paphos', text2: 'International' },
 
 		{ id: 'BOG', country: 'Colômbia', text: 'Bogota', text2: 'CU, Eldorado' },
-		{ id: 'ADZ', country: 'Colômbia', text: 'San Andres ', text2: 'SA, Sesquicentenario' },
-		{ id: 'CTG', country: 'Colômbia', text: 'Cartagena', text2: 'BL, Rafael Nunez' },
 		{ id: 'SMR', country: 'Colômbia', text: 'Santa Marta', text2: 'Simon Bolivar' },
 		{ id: 'AXM', country: 'Colômbia', text: 'Armenia', text2: 'El Edén International Airport' },
 		{ id: 'EJA', country: 'Colômbia', text: 'Barrancabermeja', text2: 'Yarigüies Airport' },
@@ -1076,7 +1121,6 @@
 
 		{ id: 'HAH', country: 'Comoros', text: 'Moroni', text2: 'Hahaya' },
 
-		{ id: 'SEL', country: 'Coréia do Sul', text: 'Seoul', text2: 'todos os aeroportos' },
 		{ id: 'HIN', country: 'Coréia do Sul', text: 'Chinju', text2: 'Sacheon Airport' },
 		{ id: 'CJU', country: 'Coréia do Sul', text: 'Jeju', text2: 'Jeju International Airport' },
 		{ id: 'KUV', country: 'Coréia do Sul', text: 'Kunsan', text2: 'Gunsan Airport' },
@@ -1104,7 +1148,6 @@
 		{ id: 'CYO', country: 'Cuba', text: 'Cayo Largo del Sur', text2: 'Vilo Acuña Airport' },
 		{ id: 'PTP', country: 'Cuba', text: 'Colonia', text2: 'Le Raizet Airport' },
 		{ id: 'QKL', country: 'Cuba', text: 'Colonia', text2: 'Railway Station' },
-		{ id: 'HAV', country: 'Cuba', text: 'Havana', text2: 'Aeropuerto Internacional Jose Marti' },
 		{ id: 'HOG', country: 'Cuba', text: 'Holguin', text2: 'Holguin Frank Pais International Airport' },
 		{ id: 'VRA', country: 'Cuba', text: 'Varadero', text2: 'Juan Gualberto Gómez Airport' },
 
@@ -1120,7 +1163,6 @@
 
 		{ id: 'DOM', country: 'Dominica', text: 'Dominica', text2: '' },
 
-		{ id: 'CAI', country: 'Egito', text: 'Cairo', text2: 'Cairo International Airport' },
 		{ id: 'HBE', country: 'Egito', text: 'Alexandria ', text2: '' },
 		{ id: 'ALY', country: 'Egito', text: 'Alexandria ', text2: 'El Nouzha Airport' },
 		{ id: 'HRG', country: 'Egito', text: 'Hurghada', text2: 'Hurghada International Airport' },
@@ -1129,7 +1171,6 @@
 
 		{ id: 'SAL', country: 'El Salvador', text: 'San Salvador', text2: 'Internacional' },
 
-		{ id: 'DXB', country: 'Emirados Árabes', text: 'Dubai', text2: 'DU, Dubai International Airport' },
 		{ id: 'AUH', country: 'Emirados Árabes', text: 'Abu Dhabi', text2: 'Nadia International Airport' },
 		{ id: 'SHJ', country: 'Emirados Árabes', text: 'Sharjah', text2: 'Sharjah International Airport' },
 
@@ -1199,7 +1240,6 @@
 
 		{ id: 'GND', country: 'Granada', text: 'Grenada', text2: '' },
 
-		{ id: 'ATH', country: 'Grécia', text: 'Atenas', text2: 'AT, Hellinikon International Airport' },
 		{ id: 'CHQ', country: 'Grécia', text: 'Chania', text2: '' },
 		{ id: 'HER', country: 'Grécia', text: 'Iraklion', text2: 'Nikos Kazantzakis International Airport' },
 		{ id: 'EFL', country: 'Grécia', text: 'Kefalonia', text2: '' },
@@ -1222,7 +1262,6 @@
 
 		{ id: 'PAP', country: 'Haiti', text: 'Porto Principe', text2: 'Port au Prince International Airport' },
 
-		{ id: 'AMS', country: 'Holanda', text: 'Amsterdam', text2: 'Schiphol' },
 		{ id: 'EIN', country: 'Holanda', text: 'Eindhoven', text2: 'Eindhoven Airport' },
 		{ id: 'ENS', country: 'Holanda', text: 'Enschede', text2: 'Enschede Airport Twente' },
 		{ id: 'GRQ', country: 'Holanda', text: 'Groningen', text2: 'Eeide' },
@@ -1233,8 +1272,6 @@
 		{ id: 'RTB', country: 'Honduras', text: 'Roatan', text2: 'Juan Manuel Gálvez International Airport' },
 		{ id: 'SAP', country: 'Honduras', text: 'San Pedro Sula', text2: 'CR, La Mesa' },
 		{ id: 'TGU', country: 'Honduras', text: 'Tegucigalpa', text2: 'Toncontin' },
-
-		{ id: 'BUD', country: 'Hungria', text: 'Budapeste', text2: 'BU, Ferihegyi' },
 
 		{ id: 'ADE', country: 'Iemen', text: 'Aden', text2: 'International' },
 		{ id: 'SAH', country: 'Iemen', text: 'Sanaa', text2: '' },
@@ -1265,8 +1302,6 @@
 
 		{ id: 'EIS', country: 'Ilhas Virgens Britânicas', text: 'Tortola', text2: 'Terrance B. Lettsome International Airport' },
 
-		{ id: 'BOM', country: 'Índia', text: 'Mumbai', text2: 'Sahar, Santa Cruz International Airport' },
-		{ id: 'DEL', country: 'Índia', text: 'Deli', text2: 'Ddelhi, Indira Gandhi International Airport' },
 		{ id: 'BLR', country: 'Índia', text: 'Bangalore ', text2: 'Bengaluru International Airport' },
 		{ id: 'AMD', country: 'Índia', text: 'Ahmedabad', text2: 'Sardar Vallabhbhai Patel International Airport' },
 		{ id: 'ATQ', country: 'Índia', text: 'Amritsar', text2: 'Raja Sansi International Airport' },
@@ -1303,7 +1338,6 @@
 		{ id: 'UDR', country: 'Índia', text: 'Udaipur', text2: '' },
 		{ id: 'VNS', country: 'Índia', text: 'Varanasi', text2: 'Varanasi Airport' },
 
-		{ id: 'DPS', country: 'Indonésia', text: 'Bali', text2: 'Ngurah Rai' },
 		{ id: 'CGK', country: 'Indonésia', text: 'Jakarta', text2: 'Soekarno-Hatta International Airport' },
 		{ id: 'BPN', country: 'Indonésia', text: 'Balikpapan', text2: 'Sepinggan' },
 		{ id: 'BDJ', country: 'Indonésia', text: 'Banjarmarsin', text2: 'Syamsudin Noor' },
@@ -1326,18 +1360,13 @@
 
 		{ id: 'BGW', country: 'Iraque', text: 'Bagda', text2: 'Baghdad International Airport, Al Muthana Airport' },
 
-		{ id: 'DUB', country: 'Irlanda', text: 'Dublin', text2: 'DN, Dublin Airport' },
 		{ id: 'ORK', country: 'Irlanda', text: 'Cork', text2: 'Cork International Airport' },
 		{ id: 'SNN', country: 'Irlanda', text: 'Shannon', text2: 'Shannon International Airport' },
 
 		{ id: 'KEF', country: 'Islândia', text: 'Reykjavik', text2: 'Keflavik' },
 
-		{ id: 'TLV', country: 'Israel', text: 'Tel Aviv', text2: 'TA, Ben Gurion' },
 		{ id: 'ETH', country: 'Israel', text: 'Elat', text2: 'Hozman' },
 
-		{ id: 'FCO', country: 'Itália', text: 'Roma', text2: 'RM, Leonardo da Vinci/Fiumicino' },
-		{ id: 'MIL', country: 'Itália', text: 'Milao', text2: 'MA, todos os aeroportos' },
-		{ id: 'VCE', country: 'Itália', text: 'Veneza', text2: 'VE, Marco Polo, Tessera' },
 		{ id: 'PSA', country: 'Itália', text: 'Pisa', text2: 'Galilei, San Giusto' },
 		{ id: 'FLR', country: 'Itália', text: 'Florença', text2: 'FI, Peretola' },
 		{ id: 'GOA', country: 'Itália', text: 'Genova', text2: 'GE, Cristoforo Colombo, Seatri' },
@@ -1373,7 +1402,6 @@
 		{ id: 'KIN', country: 'Jamaica', text: 'Kingston', text2: 'Norman Manley' },
 		{ id: 'MBJ', country: 'Jamaica', text: 'Montego Bay', text2: 'Sangster' },
 
-		{ id: 'TYO', country: 'Japão', text: 'Toquio', text2: 'TK, todos os aeroportos' },
 		{ id: 'OSA', country: 'Japão', text: 'Osaka', text2: 'todos os aeroportos' },
 		{ id: 'CTS', country: 'Japão', text: 'Sapporo', text2: 'Chitose International Airport' },
 		{ id: 'AGJ', country: 'Japão', text: 'Aguni', text2: 'Aguni Airport' },
@@ -1481,7 +1509,6 @@
 
 		{ id: 'TNR', country: 'Madagascar', text: 'Antananarivo', text2: 'Ivato' },
 
-		{ id: 'KUL', country: 'Malásia', text: 'Kuala Lumpur', text2: 'Subang' },
 		{ id: 'JHB', country: 'Malásia', text: 'Johor Bahru', text2: 'Sultan Ismail International Airport' },
 		{ id: 'AOR', country: 'Malásia', text: 'Alor Setar', text2: 'Sultan Abdul Halim Airport' },
 		{ id: 'BTU', country: 'Malásia', text: 'Bintulu', text2: 'Bintulu Airport' },
@@ -1505,7 +1532,6 @@
 
 		{ id: 'BKO', country: 'Mali', text: 'Bamako', text2: 'Senou' },
 
-		{ id: 'CMN', country: 'Marrocos', text: 'Casablanca', text2: 'GC, Mohamed V' },
 		{ id: 'RAK', country: 'Marrocos', text: 'Marraqueche', text2: 'Menara' },
 		{ id: 'CAS', country: 'Marrocos', text: 'Casablanca', text2: 'GC, Anfa Airport' },
 		{ id: 'AGA', country: 'Marrocos', text: 'Agadir', text2: 'Al Massira' },
@@ -1520,9 +1546,6 @@
 
 		{ id: 'DZA', country: 'Mayotte', text: 'Dzaoudzi', text2: '' },
 
-		{ id: 'MEX', country: 'México', text: 'Cidade Do Mexico', text2: 'Aeropuerto Internacional Ben' },
-		{ id: 'CUN', country: 'México', text: 'Cancun', text2: 'QR, Cancun International' },
-		{ id: 'CZM', country: 'México', text: 'Cozumel', text2: 'QR, Cozumel International Airport' },
 		{ id: 'ACA', country: 'México', text: 'Acapulco De Juarez', text2: 'GR, General Juan N. Alvarez' },
 		{ id: 'AGU', country: 'México', text: 'Aguascalientes', text2: 'Lic. Jesús Terán Peredo International Airport' },
 		{ id: 'CPE', country: 'México', text: 'Campeche', text2: 'Alberto Acuna Ongay' },
@@ -1609,7 +1632,6 @@
 		{ id: 'LOS', country: 'Nigéria', text: 'Lagos', text2: 'Murtala Muhammed' },
 		{ id: 'PHC', country: 'Nigéria', text: 'Port Harcourt', text2: 'Omagwa' },
 
-		{ id: 'OSL', country: 'Noruega', text: 'Oslo', text2: 'OS, Oslo Airport' },
 		{ id: 'AES', country: 'Noruega', text: 'Alesund', text2: '' },
 		{ id: 'ALF', country: 'Noruega', text: 'Alta', text2: 'Alta Airport' },
 		{ id: 'BDU', country: 'Noruega', text: 'Bardufoss', text2: 'Bardufoss Airport' },
@@ -1628,7 +1650,6 @@
 		{ id: 'TRD', country: 'Noruega', text: 'Trondheim', text2: 'Vaernes' },
 		{ id: 'VDS', country: 'Noruega', text: 'Vadsoe', text2: '' },
 
-		{ id: 'AKL', country: 'Nova Zelândia', text: 'Auckland', text2: 'AU, Auckland Airport' },
 		{ id: 'CHC', country: 'Nova Zelândia', text: 'Christchurch', text2: 'Christchurch International Airport' },
 		{ id: 'PMR', country: 'Nova Zelândia', text: 'Palmerston North', text2: 'Palmerston North International Airport' },
 		{ id: 'BHE', country: 'Nova Zelândia', text: 'Blenheim', text2: 'Woodbourne Air Station' },
@@ -1643,7 +1664,6 @@
 		{ id: 'NSN', country: 'Nova Zelândia', text: 'Nelson', text2: 'Nelson Airport' },
 		{ id: 'NPL', country: 'Nova Zelândia', text: 'New Plymouth', text2: 'New Plymouth Airport' },
 		{ id: 'NOU', country: 'Nova Zelândia', text: 'Noumea', text2: 'La Tontouta' },
-		{ id: 'ZQN', country: 'Nova Zelândia', text: 'Queenstown', text2: 'Queenstown Airport' },
 		{ id: 'ROT', country: 'Nova Zelândia', text: 'Rotorua', text2: 'BP, Rotorua Airport' },
 		{ id: 'TUO', country: 'Nova Zelândia', text: 'Taupo', text2: 'Taupo Airport' },
 		{ id: 'TRG', country: 'Nova Zelândia', text: 'Tauranga', text2: 'BP, Tauranga Airport' },
@@ -1673,8 +1693,6 @@
 		{ id: 'ASU', country: 'Paraguai', text: 'Asuncion', text2: 'Presidente Stroessner' },
 		{ id: 'AGT', country: 'Paraguai', text: 'Cidade Del Este', text2: 'Guarani International Airport' },
 
-		{ id: 'LIM', country: 'Peru', text: 'Lima', text2: 'Aeropuerto Internacional Jorge Chavez' },
-		{ id: 'CUZ', country: 'Peru', text: 'Cuzco ', text2: 'CS, Alejandro Velasco Astete International Airport' },
 		{ id: 'AQP', country: 'Peru', text: 'Arequipa', text2: 'Rodriguez Ballon' },
 		{ id: 'CJA', country: 'Peru', text: 'Cajamarca', text2: 'Major General FAP Armando Revoredo Iglesias Airport' },
 		{ id: 'CIX', country: 'Peru', text: 'Chiclayo', text2: 'Capitán FAP José A. Quiñones Gonzales International Airport' },
@@ -1687,8 +1705,6 @@
 		{ id: 'TPP', country: 'Peru', text: 'Tarapoto', text2: 'Peru' },
 		{ id: 'TRU', country: 'Peru', text: 'Trujillo', text2: 'Cap. FAP Carlos Martínez de Pinillos International Airport' },
 		{ id: 'TBP', country: 'Peru', text: 'Tumbes', text2: '' },
-
-		{ id: 'PPT', country: 'Polinésia', text: 'Papeete', text2: 'Faaa' },
 
 		{ id: 'KRK', country: 'Polônia', text: 'Cracovia', text2: 'Balice' },
 		{ id: 'WAW', country: 'Polônia', text: 'Varsovia', text2: 'Okecie' },
@@ -1705,8 +1721,6 @@
 		{ id: 'SJU', country: 'Porto Rico', text: 'San Juan ', text2: 'SJ, Luis Munoz Marin International Airport' },
 		{ id: 'VQS', country: 'Porto Rico', text: 'Vieques', text2: 'Antonio Rivera Rodriguez Airport' },
 
-		{ id: 'OPO', country: 'Portugal', text: 'Porto', text2: 'Francisco Sa Carneiro, Pedras Rubras' },
-		{ id: 'LIS', country: 'Portugal', text: 'Lisboa', text2: 'Aeroporto da Portela de Sacavem' },
 		{ id: 'CVU', country: 'Portugal', text: 'Corvo Island', text2: 'Corvo Island Airport' },
 		{ id: 'FAO', country: 'Portugal', text: 'Faro', text2: 'Faro Airport ' },
 		{ id: 'HOR', country: 'Portugal', text: 'Horta', text2: '' },
@@ -1719,7 +1733,6 @@
 
 		{ id: 'BGF', country: 'República Centro Africana', text: 'Bangui', text2: 'M\'Poko' },
 
-		{ id: 'PUJ', country: 'República Dominicana', text: 'Punta Cana', text2: 'AL, Punta Cana International Airport' },
 		{ id: 'LRM', country: 'República Dominicana', text: 'La Romana', text2: 'RO, La Romana International Airport' },
 		{ id: 'POP', country: 'República Dominicana', text: 'Puerto Plata', text2: 'Puerto Plata Airport' },
 		{ id: 'STI', country: 'República Dominicana', text: 'Santiago Republica Dominicana', text2: 'RM, Cibao' },
@@ -1729,13 +1742,11 @@
 		{ id: 'FIH', country: 'República do Congo', text: 'Kinshasa', text2: 'N\'Djili' },
 		{ id: 'PNR', country: 'República do Congo', text: 'Pointe Noire', text2: 'Pointe Noire Airport' },
 
-		{ id: 'PRG', country: 'República Tcheca', text: 'Praga', text2: 'Ruzyne' },
 		{ id: 'BRQ', country: 'República Tcheca', text: 'Brno', text2: 'Brno Turany Airport' },
 		{ id: 'OSR', country: 'República Tcheca', text: 'Ostrava', text2: 'Mosnov' },
 
 		{ id: 'RUN', country: 'Reunion', text: 'Reunion', text2: '' },
 
-		{ id: 'BUH', country: 'Romênia', text: 'Bucareste', text2: 'IF, todos os aeroportos' },
 		{ id: 'BAY', country: 'Romênia', text: 'Baia Mare', text2: 'Baia Mare Airport' },
 		{ id: 'BBU', country: 'Romênia', text: 'Bucareste', text2: 'IF, Baneasa' },
 		{ id: 'OTP', country: 'Romênia', text: 'Bucareste', text2: 'IF, Otopeni' },
@@ -1746,8 +1757,6 @@
 		{ id: 'SCV', country: 'Romênia', text: 'Suceava', text2: 'Suceava Airport' },
 		{ id: 'TSR', country: 'Romênia', text: 'Timisoara', text2: 'Giarmata' },
 
-		{ id: 'MOW', country: 'Rússia', text: 'Moscou', text2: 'todos os aeroportos' },
-		{ id: 'LED', country: 'Rússia', text: 'São Petersburgo', text2: 'Pulkowo-2' },
 		{ id: 'AER', country: 'Rússia', text: 'Adler/Sochi', text2: 'Adler Sochi International Airport' },
 		{ id: 'VVO', country: 'Rússia', text: 'Vladivostok', text2: 'Vladivostok International Airport ' },
 		{ id: 'KGD', country: 'Rússia', text: 'Kaliningrad', text2: 'Khrabrovo Airport' },
@@ -1801,7 +1810,6 @@
 
 		{ id: 'KRT', country: 'Sudão', text: 'Khartoum', text2: 'Khartoum International Airport' },
 
-		{ id: 'STO', country: 'Suécia', text: 'Estocolmo', text2: 'todos os aeroportos' },
 		{ id: 'AGH', country: 'Suécia', text: 'Angelholm', text2: '' },
 		{ id: 'AJR', country: 'Suécia', text: 'Arvidsjaur', text2: 'Arvidsjaur Airport' },
 		{ id: 'BLE', country: 'Suécia', text: 'Borlange', text2: 'Borlange Air Base' },
@@ -1830,7 +1838,6 @@
 		{ id: 'VHM', country: 'Suécia', text: 'Vilhelmina', text2: 'Vilhelmina Airport' },
 		{ id: 'VBY', country: 'Suécia', text: 'Visby', text2: 'Visby Airport' },
 
-		{ id: 'ZRH', country: 'Suiça', text: 'Zurique', text2: 'Zurich-Kloten' },
 		{ id: 'GVA', country: 'Suiça', text: 'Genebra', text2: 'GE, Geneve-Cointrin' },
 		{ id: 'BRN', country: 'Suiça', text: 'Berna', text2: 'Bern-Belp' },
 		{ id: 'ACH', country: 'Suiça', text: 'Altenrhein', text2: 'Rorshach' },
@@ -1838,10 +1845,7 @@
 		{ id: 'LUG', country: 'Suiça', text: 'Lugano', text2: 'Agno' },
 
 		{ id: 'PBM', country: 'Suriname', text: 'Paramaribo', text2: 'Johan Adolf Pengel' },
-
-		{ id: 'BKK', country: 'Tailândia', text: 'Bangkok', text2: 'BM, Don Muang International Airport' },
-		{ id: 'HKT', country: 'Tailândia', text: 'Phuket', text2: 'PU, Phuket International Airport' },
-		{ id: 'CNX', country: 'Tailândia', text: 'Chiang Mai', text2: 'Chiang Mai International Airport' },
+		
 		{ id: 'CEI', country: 'Tailândia', text: 'Chiang Rai', text2: 'Chiang Rai INternational Airport' },
 		{ id: 'HDY', country: 'Tailândia', text: 'Hatyai', text2: '' },
 		{ id: 'KKC', country: 'Tailândia', text: 'Khon Kaen', text2: '' },
@@ -1880,8 +1884,6 @@
 
 		{ id: 'ASB', country: 'Turcomenistão', text: 'Ashgabat', text2: 'Ashgabat Airport' },
 
-		{ id: 'IST', country: 'Turquia', text: 'Istambul', text2: 'IB, Ataturk/Yesilkov International Airport' },
-		{ id: 'NAV', country: 'Turquia', text: 'Capadocia', text2: 'Nevsehir, todos os aeroportos' },
 		{ id: 'ADA', country: 'Turquia', text: 'Adana', text2: 'Adana Sakirpasa Airport' },
 		{ id: 'ESB', country: 'Turquia', text: 'Ankara', text2: 'Esenboga' },
 		{ id: 'ANK', country: 'Turquia', text: 'Ankara', text2: 'Etimesgut' },
@@ -1915,7 +1917,6 @@
 
 		{ id: 'EBB', country: 'Uganda', text: 'Kampala', text2: '' },
 
-		{ id: 'MVD', country: 'Uruguai', text: 'Montevideu', text2: 'MO, Carrasco' },
 		{ id: 'PDP', country: 'Uruguai', text: 'Punta Del Este', text2: 'MA, El Jacuel' },
 
 		{ id: 'BHK', country: 'Uzbequistão', text: 'Bukhoro', text2: '' },
@@ -1930,7 +1931,6 @@
 		{ id: 'MUN', country: 'Venezuela', text: 'Maturin', text2: 'Maturín Airport' },
 		{ id: 'PZO', country: 'Venezuela', text: 'Puerto Ordaz', text2: 'BL, Guayana' },
 
-		{ id: 'HAN', country: 'Vietnã', text: 'Hanoi', text2: 'Noi-Bai' },
 		{ id: 'DAD', country: 'Vietnã', text: 'Da Nang', text2: 'Da Nang International Airport' },
 		{ id: 'HPH', country: 'Vietnã', text: 'Hai Phong', text2: 'Cat Bi International Airport' },
 		{ id: 'SGN', country: 'Vietnã', text: 'Ho Chi Minh City', text2: 'Tan Son Nhut International Airpor' },
