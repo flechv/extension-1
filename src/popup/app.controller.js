@@ -11,9 +11,6 @@
 	function Controller($scope, $filter, i18nService, c, gridConst, gridGroupConst) {
 		var vm = this;
 
-		var userLocale = chrome.i18n.getUILanguage();
-		i18nService.setCurrentLang(userLocale);
-
 		vm.model = {
 			origins: [],
 			destinations: [],
@@ -39,7 +36,6 @@
 			maxVisibleColumnCount: 10,
 			minRowsToShow: 30,
 			virtualizationThreshold: 30,
-
 			// see more on: http://ui-grid.info/docs/#/tutorial/216_expandable_grid
 			expandableRowTemplate: 'expandableRowTemplate.html',
 			expandableRowHeight: 130,
@@ -52,7 +48,7 @@
 					type: 'string',
 					displayName: c.grid.originDestination,
 					displayName: c.grid.originDestinationTooltip,
-					width: '*', //'17%',
+					width: '*',
 					minWidth: 80,
 					/*
 					grouping: {
@@ -273,7 +269,7 @@
 				});
 			}
 
-			setupDatepickers();
+			vm.sites = bg.getSites();
 
 			vm.savedSearches = bg.getRequests();
 			if (vm.savedSearches && vm.savedSearches.length > 0) {
@@ -285,11 +281,16 @@
 				else
 					updateForm(recentSearch);
 			}
+			else {
+				updateForm();
+			}
 			
 			vm.showLoading = bg.showLoading();
-			vm.sites = bg.getSites();
 			vm.initialNumberOfFlights = bg.getInitialNumberOfFlights() || 0;
 			updateResults(bg.getResults());
+
+			setupDatepickers();
+			setupUiGrid();
 		}
 
 		function start() {
@@ -410,6 +411,31 @@
 
 		function getBackgroundPage() {
 			return chrome.extension.getBackgroundPage();
+		}
+		
+		function setupUiGrid() {
+			var userLang = chrome.i18n.getUILanguage().toLowerCase();
+			var availableLangs = i18nService.getAllLangs();
+			
+			var lang, regionLang;
+			for (var i = 0 ; i < availableLangs.length; i++) {
+				if (availableLangs[i] === userLang) {
+					lang = userLang;
+					break;
+				}
+				
+				if (getRegion(availableLangs[i]) === getRegion(userLang)) {
+					regionLang = availableLangs[i];
+				}
+			}
+			
+			lang = lang || regionLang || 'en';
+			i18nService.setCurrentLang(lang);
+		}
+		
+		// example: 'en_US' or 'en-GB' return 'en'
+		function getRegion(lang) {
+			return !lang ? '' : lang.split(/[_-]/)[0];
 		}
 	}
 })();
