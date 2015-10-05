@@ -70,11 +70,11 @@
 		<div class="form-group">
 			<div class="col-xs-10 col-xs-offset-2">
 				<label class="pull-right small secondary">
-					<input type="checkbox" ng-model="vm.showSendEmailLowFares" />
+					<input type="checkbox" ng-model="vm.showSendEmailLowFares" ng-checked="vm.showSendEmailLowFares" />
 					<span class="checkbox-material"><span class="check"></span></span> {{ ::labels.sendEmailLowFares }}
 				</label>
 				<label class="pull-right small secondary">
-					<input type="checkbox" ng-model="vm.showPassengers" />
+					<input type="checkbox" ng-model="vm.showPassengers" ng-checked="vm.showPassengers" />
 					<span class="checkbox-material"><span class="check"></span></span> {{ ::labels.changePassengers }}
 				</label>
 			</div>

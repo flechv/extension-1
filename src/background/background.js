@@ -3,49 +3,59 @@
 
 	window.APP_NAME = 'genghis';
 	window.BG = (function (SM, PQ, RM) {
-		const GAP_TIME = 300,
-			REPEAT_SEARCH_DELAY = 6 * 60 * 60 * 1000; //6 HOURS
-
-		var sendEmailTimeout, repeatSearchTimeout;
+		var GAP_TIME = 300,
+			REPEAT_SEARCH_DELAY = 6 * 60 * 60 * 1000, //6 HOURS
+			sendEmailTimeout,
+			repeatSearchTimeout;
 
 		// public methods
 		return {
 			initServer: initServer,
 			stopServer: stopServer,
 			deleteHistory: deleteHistory,
-			showLoading: showLoading,
 			hideBadge: hideBadge,
 			saveRequest: saveRequest,
 			getRequests: getRequests,
 			getResults: getResults,
 			getSites: getSites,
-			getInitialNumberOfFlights: getInitialNumberOfFlights,
+			getInitialNumberOfFlights: getInitialNumberOfFlights
 		};
 
 		function initServer(req) {
-			var time = new Date().getTime();
 			stopServer();
+			var i, j, k, w,
+				time = new Date().getTime(),
+				email = req.email,
+				priceEmail = req.priceEmail,
+				adults = req.adults,
+				children = req.children,
+				infants = req.infants,
+				site = req.site,
+				origin,
+				destination,
+				departure,
+				returnDate,
+				qtyDays;
 
-			var k, w;
-			for (var i = 0; i < req.origins.length; i++) {
-				for (var j = 0; j < req.destinations.length; j++) {
-					var origin = req.origins[i],
-						destination = req.destinations[j];
+			for (i = 0; i < req.origins.length; i++) {
+				for (j = 0; j < req.destinations.length; j++) {
+					origin = req.origins[i];
+					destination = req.destinations[j];
 					if (origin === destination) continue;
 
-					for (var k = 0; k < req.departures.length; k++) {
-						var departure = req.departures[k];
+					for (k = 0; k < req.departures.length; k++) {
+						departure = req.departures[k];
 
 						if (req.qtyDays !== null && req.qtyDays.length > 0) {
-							for (var w = 0; w < req.qtyDays.length; w++) {
-								var qtyDays = req.qtyDays[w];
+							for (w = 0; w < req.qtyDays.length; w++) {
+								qtyDays = req.qtyDays[w];
 
-								var returnDate = null; // oneway
+								returnDate = null; // oneway
 								if (qtyDays >= 0) // roundtrip
 									returnDate = new Date(departure).setHours(24 * qtyDays, 0, 0, 0);
 
-								enqueue(origin, destination, departure, returnDate,
-									req.adults, req.children, req.infants, req.site, time);
+								enqueue(origin, destination, departure, returnDate, adults,
+										children, infants, site, email, priceEmail, time);
 
 								time += GAP_TIME;
 							}
@@ -55,20 +65,20 @@
 
 						// oneway
 						if (req.returns === null || req.returns.length === 0) {
-							enqueue(origin, destination, departure, null,
-								req.adults, req.children, req.infants, req.site, time);
+							enqueue(origin, destination, departure, null, adults,
+									children, infants, site, email, priceEmail, time);
 
 							time += GAP_TIME;
 							continue;
 						}
 
 						// roundtrip
-						for (var w = 0; w < req.returns.length; w++) {
-							var returnDate = req.returns[w];
+						for (w = 0; w < req.returns.length; w++) {
+							returnDate = req.returns[w];
 							if (departure > returnDate) continue;
 
-							enqueue(origin, destination, departure, returnDate,
-								req.adults, req.children, req.infants, req.site, time);
+							enqueue(origin, destination, departure, returnDate, adults,
+									children, infants, site, email, priceEmail, time);
 
 							time += GAP_TIME;
 						}
@@ -95,10 +105,6 @@
 			SM.clear();
 		}
 
-		function showLoading() {
-			return PQ.getLength() !== 0 && getResults().length === 0;
-		}
-
 		function hideBadge() {
 			chrome.browserAction.setBadgeText({
 				text: ''
@@ -108,8 +114,9 @@
 		function saveRequest(request) {
 			if (!request || Object.keys(request).length === 0) return;
 
-			var requests = getRequests();
-			for (var i in requests) {
+			var i, j, requests = getRequests();
+			for (i in requests) {
+				if (!requests.hasOwnProperty(i)) continue;
 				var savedRequest = requests[i];
 
 				// if it has same origins and destinations as an old request, override it
@@ -118,8 +125,9 @@
 					request.destinations.length === savedRequest.destinations.length;
 
 				if (hasSameOriginsAndDepartures) {
-					for (var j in request.origins) {
-						if (savedRequest.origins.indexOf(request.origins[j]) === -1) {
+					for (j in request.origins) {
+						if (request.origins.hasOwnProperty(j) &&
+							savedRequest.origins.indexOf(request.origins[j]) === -1) {
 							hasSameOriginsAndDepartures = false;
 							break;
 						}
@@ -127,8 +135,9 @@
 				}
 
 				if (hasSameOriginsAndDepartures) {
-					for (var j in request.destinations) {
-						if (savedRequest.destinations.indexOf(request.destinations[j]) === -1) {
+					for (j in request.destinations) {
+						if (request.destinations.hasOwnProperty(j) &&
+							savedRequest.destinations.indexOf(request.destinations[j]) === -1) {
 							hasSameOriginsAndDepartures = false;
 							break;
 						}
@@ -174,7 +183,7 @@
 		}
 
 		function enqueue(origin, destination, departureDate, returnDate,
-			adults, children, infants, site, time) {
+			adults, children, infants, site, email, priceEmail, time) {
 			PQ.enqueue({
 				origin: origin,
 				destination: destination,
@@ -184,6 +193,8 @@
 				children: children,
 				infants: infants,
 				site: site,
+				email: email,
+				priceEmail: priceEmail,
 				times: [time]
 			});
 		}
@@ -247,8 +258,10 @@
 		}
 
 		function sendEmailIfLowFare(request, results) {
-			var datesWithLowFare = '';
-			for (var i in results) {
+			var i, datesWithLowFare = '';
+			
+			for (i in results) {
+				if (!results.hasOwnProperty(i)) continue;
 				var result = results[i];
 
 				if (result.minPrice <= request.priceEmail) {
@@ -257,7 +270,7 @@
 					if (result.return !== null) //roundtrip
 						text += ' - ' + result.return.toDateFormat('dd/MM/yyyy');
 
-					text += ' - ' + minPrice;
+					text += ' - ' + result.minPrice;
 					datesWithLowFare += '<br/><a href="' + result.url + '">' + text + '</a>';
 				}
 			}
