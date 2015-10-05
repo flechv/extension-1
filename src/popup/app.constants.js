@@ -9,6 +9,7 @@
 			return {
 				priceInfinity: Number.MAX_SAFE_INTEGER,
 				labels: {
+					extensionName: get('extensionName'),
 					origins: get('labelOrigins'),
 					destinations: get('labelDestinations'),
 					departures: get('labelDepartures'),

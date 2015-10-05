@@ -47,7 +47,7 @@
 					field: 'key',
 					type: 'string',
 					displayName: c.grid.originDestination,
-					displayName: c.grid.originDestinationTooltip,
+					headerTooltip: c.grid.originDestinationTooltip,
 					width: '*',
 					minWidth: 80,
 					/*
@@ -83,7 +83,7 @@
 					name: 'return',
 					field: 'return',
 					type: 'number',
-					displayName: c.grid.return,
+					displayName: c.grid['return'],
 					headerTooltip: c.grid.returnTooltip,
 					width: '*',
 					cellTooltip: true,
@@ -221,11 +221,15 @@
 					cellFilter: 'toPrice:this',
 					cellTemplate: 'priceTemplate.html',
 					enableColumnMenu: false
-			}]
+				}
+			]
 		};
 
 		vm.showForm = true;
 		vm.showQtyDays = false;
+		vm.showReturns = true;
+		vm.showSendEmailLowFares = false;
+		vm.showPassengers = false;
 		vm.messageError = '';
 		vm.initialNumberOfFlights = 0;
 		vm.days = [];
@@ -243,8 +247,10 @@
 		/////////////
 
 		function activate() {
-			var backgroundPage = getBackgroundPage();
-			var bg = backgroundPage.BG;
+			var backgroundPage = getBackgroundPage(),
+				bg = backgroundPage.BG,
+				i;
+			
 			bg.hideBadge();
 
 			vm.airports = backgroundPage.airports;
@@ -262,7 +268,7 @@
 				text: '1 ' + c.days.singular
             }];
 
-			for (var i = 2; i <= 120; i++) {
+			for (i = 2; i <= 120; i++) {
 				vm.days.push({
 					id: i,
 					text: i + ' ' + c.days.plural
@@ -285,7 +291,6 @@
 				updateForm();
 			}
 			
-			vm.showLoading = bg.showLoading();
 			vm.initialNumberOfFlights = bg.getInitialNumberOfFlights() || 0;
 			updateResults(bg.getResults());
 
@@ -328,10 +333,10 @@
 				origins: request.origins || [],
 				destinations: request.destinations || [],
 				departures: (request.departures || []).filter(function (d) {
-					return d >= today
+					return d >= today;
 				}),
 				returns: (request.returns || []).filter(function (d) {
-					return d >= today
+					return d >= today;
 				}),
 				qtyDays: request.qtyDays || [],
 				site: request.site || vm.sites[0].id,
@@ -343,6 +348,9 @@
 			};
 
 			vm.showQtyDays = vm.model.qtyDays.length > 0;
+			vm.showReturns = !vm.showQtyDays;
+			vm.showSendEmailLowFares = vm.model.email !== null && vm.model.priceEmail !== null;
+			vm.showPassengers = vm.model.adults !== 1 || vm.model.children !== 0 || vm.model.infants !== 0;
 		}
 
 		function broadcast(event) {
@@ -352,10 +360,11 @@
 		function updateResults(results) {
 			if (!results || results.length === 0) return;
 
-			for (var i = 0; i < results.length; i++) {
+			var i, j;
+			for (i = 0; i < results.length; i++) {
 				var result = results[i];
 
-				for (var j = 0; j < result.byCompany.length; j++)
+				for (j = 0; j < result.byCompany.length; j++)
 					result.byCompany[j].url = result.url;
 
 				result.subGridOptions = {
@@ -382,7 +391,7 @@
 			else if (model.departures.length === 0)
 				vm.messageError = c.messages.selectAtLeastOneDeparture;
 
-			else if (model.adults == 0 && model.children == 0 && model.infants == 0)
+			else if (model.adults === 0 && model.children === 0 && model.infants === 0)
 				vm.messageError = c.messages.selectAtLeastOnePassenger;
 
 			return vm.messageError === '';
@@ -406,7 +415,7 @@
 		}
 
 		function getBg() {
-			return getBackgroundPage().BG
+			return getBackgroundPage().BG;
 		}
 
 		function getBackgroundPage() {
