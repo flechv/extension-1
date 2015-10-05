@@ -264,7 +264,7 @@
 				if (!results.hasOwnProperty(i)) continue;
 				var result = results[i];
 
-				if (result.minPrice <= request.priceEmail) {
+				if (result.minPrice > 0 && result.minPrice <= request.priceEmail) {
 					var text = result.key + ' - ' + result.departure.toDateFormat('dd/MM/yyyy');
 
 					if (result.return !== null) //roundtrip
