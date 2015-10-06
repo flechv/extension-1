@@ -174,11 +174,7 @@
 			}
 
 			var info = self.parent.returnDefault();
-			if (isOneWay)
-				info.prices = departurePrices;
-			else
-				self.parent.setTotalPrices(info, departurePrices, returnPrices);
-
+			self.parent.setTotalPrices(info, departurePrices, returnPrices, isOneWay);
 			self.parent.setAirlinePrices(info, byCompany);
 
 			return info;
@@ -300,11 +296,7 @@
 			}
 
 			info = info || self.parent.returnDefault();
-			if (isOneWay)
-				info.prices = departurePrices;
-			else
-				self.parent.setTotalPrices(info, departurePrices, returnPrices);
-
+			self.parent.setTotalPrices(info, departurePrices, returnPrices, isOneWay);
 			self.parent.setAirlinePrices(info, byCompany);
 
 			return info;
