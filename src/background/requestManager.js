@@ -57,16 +57,20 @@ RequestManager.prototype.setAirlinePrices = function (info, pricesByCompany) {
 	});
 };
 
-RequestManager.prototype.setTotalPrices = function (info, departurePrices, returnPrices) {
+RequestManager.prototype.setTotalPrices = function (info, departurePrices, returnPrices, isOneWay) {
 	for (var stops = 0; stops <= 2; stops++) {
 		var min = 0;
 
-		for (var i = 0; i <= stops; i++) {
-			if (departurePrices[stops] > 0 && returnPrices[i] > 0)
-				min = this.getMinPrice(min, departurePrices[stops] + returnPrices[i]);
+		if (isOneWay) {
+			min = departurePrices[stops];
+		} else {
+			for (var i = 0; i <= stops; i++) {
+				if (departurePrices[stops] > 0 && returnPrices[i] > 0)
+					min = this.getMinPrice(min, departurePrices[stops] + returnPrices[i]);
 
-			if (departurePrices[i] > 0 && returnPrices[stops] > 0)
-				min = this.getMinPrice(min, departurePrices[i] + returnPrices[stops]);
+				if (departurePrices[i] > 0 && returnPrices[stops] > 0)
+					min = this.getMinPrice(min, departurePrices[i] + returnPrices[stops]);
+			}	
 		}
 
 		info.prices[stops] = this.getMinPrice(info.prices[stops], min);
