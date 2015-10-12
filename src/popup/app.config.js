@@ -5,10 +5,10 @@
         .module('app')
         .config(config);
 
-    config.$inject = ['$tooltipProvider', 'uiSelectConfig', 'datepickerConfig'];
+    config.$inject = ['$uibTooltipProvider', 'uiSelectConfig', 'uibDatepickerConfig'];
 
-    function config($tooltipProvider, uiSelectConfig, datepickerConfig) {
-        $tooltipProvider.options({
+    function config($uibTooltipProvider, uiSelectConfig, uibDatepickerConfig) {
+        $uibTooltipProvider.options({
             trigger: 'mouseenter',
             placement: 'right',
             animation: false,
@@ -24,13 +24,10 @@
 
         var today = new Date();
 
-        angular.extend(datepickerConfig, {
+        angular.extend(uibDatepickerConfig, {
             showWeeks: false,
             datepickerPopup: 'dd/MM/yyyy',
             //'format-day-header': 'E',
-            closeText: 'Fechar',
-            currentText: 'Hoje',
-            clearText: 'Resetar',
             minMode: 'day',
             maxMode: 'month',
             minDate: new Date(),

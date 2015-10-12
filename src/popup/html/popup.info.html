@@ -15,10 +15,10 @@
 	</span>
 	<span ng-if="vm.gridOptions.data.length >= vm.initialNumberOfFlights">{{ ::messages.searchFinished }}</span>
 	<a href="">
-		<i class="mdi-navigation-expand-more" ng-hide="vm.showForm" ng-click="vm.showForm = true" tooltip="{{ ::tooltips.expandMore }}"></i>
+		<i class="mdi-navigation-expand-more" ng-hide="vm.showForm" ng-click="vm.showForm = true" uib-tooltip="{{ ::tooltips.expandMore }}"></i>
 	</a>
 	<a href="">
-		<i class="mdi-navigation-expand-less" ng-show="vm.showForm" ng-click="vm.showForm = false" tooltip="{{ ::tooltips.expandLess }}"></i>
+		<i class="mdi-navigation-expand-less" ng-show="vm.showForm" ng-click="vm.showForm = false" uib-tooltip="{{ ::tooltips.expandLess }}"></i>
 	</a>
 </div>
 
