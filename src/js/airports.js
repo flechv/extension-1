@@ -1,6 +1,6 @@
 (function () {
 	'use strict';
-
+	
 	window.airports = [
 		// popular airports first
 		{ id: 'SAO', country: 'Brasil', text: 'São Paulo', text2: 'todos os aeroportos' },
@@ -45,9 +45,10 @@
 		{ id: 'DEN', country: 'Estados Unidos', text: 'Denver', text2: 'Stapleton, Colorado, CO' },
 		{ id: 'SFO', country: 'Estados Unidos', text: 'São Francisco', text2: 'Califórnia, CA' },
 		{ id: 'PAR', country: 'França', text: 'Paris', text2: 'todos os aeroportos' },
+		{ id: 'NCE', country: 'França', text: 'Nice', text2: 'Nice–Côte d\'Azur' },
 		{ id: 'XYD', country: 'França', text: 'Lyon', text2: 'RH, Lyon Part-Dieu Railway Station' },
 		{ id: 'BUE', country: 'Argentina', text: 'Buenos Aires', text2: 'BA, todos os aeroportos' },
-		{ id: 'LON', country: 'Inglaterra', text: 'Londres', text2: 'todos os aeroportos' },
+		{ id: 'LON', country: 'Reino Unido', text: 'Londres', text2: 'todos os aeroportos', state: 'Inglaterra' },
 		{ id: 'FCO', country: 'Itália', text: 'Roma', text2: 'Leonardo da Vinci-Fiumicino' },
 		{ id: 'MIL', country: 'Itália', text: 'Milão', text2: 'MA, todos os aeroportos' },
 		{ id: 'VCE', country: 'Itália', text: 'Veneza', text2: 'VE, Marco Polo, Tessera' },
@@ -58,6 +59,8 @@
 		{ id: 'BCN', country: 'Espanha', text: 'Barcelona', text2: 'El Prat' },
 		{ id: 'MAD', country: 'Espanha', text: 'Madri', text2: 'Barajas, Adolfo Suárez, Madrid' },
 		{ id: 'IBZ', country: 'Espanha', text: 'Ibiza', text2: 'Ibiza, Spain' },
+		{ id: 'LIM', country: 'Peru', text: 'Lima', text2: 'Jorge Chavez' },
+		{ id: 'CUZ', country: 'Peru', text: 'Cuzco ', text2: 'CS, Alejandro Velasco Astete' },
 		{ id: 'FRA', country: 'Alemanha', text: 'Frankfurt', text2: 'Flughafen Frankfurt am Main' },
 		{ id: 'MUC', country: 'Alemanha', text: 'Munique', text2: 'Franz Josef Strauss' },
 		{ id: 'BER', country: 'Alemanha', text: 'Berlim', text2: 'BE, todos os aeroportos' },
@@ -71,12 +74,10 @@
 		{ id: 'REP', country: 'Camboja', text: 'Siem Reap', text2: 'Angkor, Cambodia' },
 		{ id: 'PNH', country: 'Camboja', text: 'Phnom Penh', text2: 'Pochentong, Cambodia' },
 		{ id: 'IST', country: 'Turquia', text: 'Istambul', text2: 'Istanbul, Atatürk/Yesilkov' },
-		{ id: 'NAV', country: 'Turquia', text: 'Capadocia', text2: 'Nevsehir, todos os aeroportos' },
+		{ id: 'NAV', country: 'Turquia', text: 'Capadócia', text2: 'Nevsehir, todos os aeroportos' },
 		{ id: 'HAN', country: 'Vietnã', text: 'Hanoi', text2: 'Noi-Bai' },
 		{ id: 'PRG', country: 'República Tcheca', text: 'Praga', text2: 'Ruzyne' },
 		{ id: 'CPT', country: 'África do Sul', text: 'Cape Town', text2: 'WC, Cape Town' },
-		{ id: 'LIM', country: 'Peru', text: 'Lima', text2: 'Jorge Chavez' },
-		{ id: 'CUZ', country: 'Peru', text: 'Cuzco ', text2: 'CS, Alejandro Velasco Astete' },
 		{ id: 'MOW', country: 'Rússia', text: 'Moscou', text2: 'todos os aeroportos' },
 		{ id: 'LED', country: 'Rússia', text: 'São Petersburgo', text2: 'Pulkovo, Saint Petersburg' },
 		{ id: 'ATH', country: 'Grécia', text: 'Atenas', text2: 'AT, Hellinikon' },
@@ -95,7 +96,7 @@
 		{ id: 'PUJ', country: 'República Dominicana', text: 'Punta Cana', text2: 'AL, Punta Cana' },
 		{ id: 'VIE', country: 'Áustria', text: 'Viena', text2: 'WI, Schwechat' },
 		{ id: 'AUA', country: 'Aruba', text: 'Aruba', text2: 'Queen Beatrix' },
-		{ id: 'CUR', country: 'Antilhas Holandesas', text: 'Curacao', text2: 'CU, Aeropuerto Hato' },
+		{ id: 'CUR', country: 'Antilhas Holandesas', text: 'Curaçao', text2: 'CU, Aeropuerto Hato' },
 		{ id: 'YYZ', country: 'Canadá', text: 'Toronto', text2: 'Lester B. Pearson, Ontario, ON' },
 		{ id: 'YVR', country: 'Canadá', text: 'Vancouver', text2: 'BC, Vancouver' },
 		{ id: 'HAV', country: 'Cuba', text: 'Havana', text2: 'Jose Marti' },
@@ -160,6 +161,7 @@
 		{ id: 'PIN', country: 'Brasil', text: 'Parintins', text2: 'Júlio Belém', state: 'Amazonas' },
 		{ id: 'JPR', country: 'Brasil', text: 'Ji-Paraná', text2: 'José Coleto', state: 'Rondônia' },
 		{ id: 'JDF', country: 'Brasil', text: 'Juiz de Fora', text2: 'Francisco A. de Assis', state: 'Minas Gerais' },
+		{ id: 'IZA', country: 'Brasil', text: 'Juiz de Fora', text2: 'Regional da Zona da Mata', state: 'Minas Gerais' },
 		{ id: 'AUX', country: 'Brasil', text: 'Araguaína', text2: 'Tocantins' },
 		{ id: 'DOU', country: 'Brasil', text: 'Dourados', text2: 'Francisco de M. Pereira', state: 'Mato Grosso do Sul' },
 		{ id: 'CZS', country: 'Brasil', text: 'Cruzeiro do Sul', text2: 'Acre' },
@@ -167,6 +169,7 @@
 		{ id: 'CLV', country: 'Brasil', text: 'Caldas Novas', text2: 'Goiás' },
 		{ id: 'GVR', country: 'Brasil', text: 'Governador Valadares', text2: 'Minas Gerais' },
 		{ id: 'BYO', country: 'Brasil', text: 'Bonito', text2: 'Mato Grosso do Sul' },
+		{ id: 'TJL', country: 'Brasil', text: 'Três Lagoas', text2: 'Plínio Alarcon', state: 'Mato Grosso do Sul' },
 		{ id: 'MII', country: 'Brasil', text: 'Marilia', text2: 'Frank Miloye Milenkovich', state: 'São Paulo' },
 		{ id: 'PFB', country: 'Brasil', text: 'Passo Fundo', text2: 'Lauro Kurtz', state: 'Rio Grande do Sul' },
 		{ id: 'PET', country: 'Brasil', text: 'Pelotas', text2: 'João Simões L. Neto', state: 'Rio Grande do Sul' },
@@ -215,6 +218,7 @@
 		{ id: 'ROS', country: 'Argentina', text: 'Rosario ', text2: 'SF, Rosario Islas Malvinas' },
 		{ id: 'EZE', country: 'Argentina', text: 'Buenos Aires', text2: 'BA, Ezeiza/Ministro Pista' },
 		{ id: 'AEP', country: 'Argentina', text: 'Buenos Aires', text2: 'BA, Aeroparque Jorge Newbery' },
+		{ id: 'IGR', country: 'Argentina', text: 'Iguazu', text2: 'Cataratas del Iguazú' },
 		{ id: 'BHI', country: 'Argentina', text: 'Bahia Blanca', text2: 'Comandante Espora' },
 		{ id: 'CTC', country: 'Argentina', text: 'Catamarca', text2: 'Coronel Felipe Varela' },
 		{ id: 'CRD', country: 'Argentina', text: 'Comodoro Rivadavia', text2: 'CB, General E. Mosconi' },
@@ -227,11 +231,14 @@
 		{ id: 'LGS', country: 'Argentina', text: 'Malargue', text2: 'Comodoro D. Ricardo Salomón' },
 		{ id: 'MDQ', country: 'Argentina', text: 'Mar Del Plata', text2: 'BA, Ástor Piazzola' },
 		{ id: 'NQN', country: 'Argentina', text: 'Neuquen', text2: 'NE, Presidente Perón' },
+		{ id: 'PRA', country: 'Argentina', text: 'Paraná', text2: 'General Justo J. de Urquiza' },
 		{ id: 'PSS', country: 'Argentina', text: 'Posadas', text2: 'MI, Libertador General José de San Martín' },
 		{ id: 'RES', country: 'Argentina', text: 'Resistencia', text2: 'CH, Resistencia' },
 		{ id: 'RGL', country: 'Argentina', text: 'Rio Gallegos', text2: 'SC, Piloto Civil Norberto Fernández' },
 		{ id: 'RGA', country: 'Argentina', text: 'Rio Grande', text2: 'Hermes Quijada' },
+		{ id: 'RHD', country: 'Argentina', text: 'Rio Hondo', text2: 'Las Termas' },
 		{ id: 'SLA', country: 'Argentina', text: 'Salta', text2: 'SA, Martín Miguel de Güemes' },
+		{ id: 'UAQ', country: 'Argentina', text: 'San Juan', text2: 'Domingo Faustino Sarmiento' },
 		{ id: 'LUQ', country: 'Argentina', text: 'San Luis', text2: 'San Luis' },
 		{ id: 'CPC', country: 'Argentina', text: 'San Martin De Los Andes', text2: 'NE, Chapelco' },
 		{ id: 'TUC', country: 'Argentina', text: 'San Miguel De Tucuman', text2: 'TU, Teniente Ben Matienz' },
@@ -254,6 +261,9 @@
 		{ id: 'SEA', country: 'Estados Unidos', text: 'Seattle', text2: 'Seattle-Tacoma, Washington, WA' },
 		{ id: 'SAT', country: 'Estados Unidos', text: 'San Antonio', text2: 'Texas, TX, San Antonio' },
 		{ id: 'MSP', country: 'Estados Unidos', text: 'Minneapolis', text2: 'Logan, Minneapolis-Saint Paul' },
+		{ id: 'QDF', country: 'Estados Unidos', text: 'Dallas', text2: 'todos os aeroportos' },
+		{ id: 'DTT', country: 'Estados Unidos', text: 'Detroit', text2: 'todos os aeroportos' },
+		{ id: 'QHO', country: 'Estados Unidos', text: 'Houston', text2: 'todos os aeroportos' },
 		{ id: 'ASE', country: 'Estados Unidos', text: 'Aspen', text2: 'Colorado, CO, Aspen-Pitkin County' },
 		{ id: 'JFK', country: 'Estados Unidos', text: 'Nova Iorque', text2: 'New York, NY, John F. Kennedy' },
 		{ id: 'LGA', country: 'Estados Unidos', text: 'Nova Iorque', text2: 'New York, NY, La Guardia' },
@@ -424,8 +434,10 @@
 		{ id: 'HSV', country: 'Estados Unidos', text: 'Huntsville/Decatur', text2: 'Alabama, AL, Carl T. Jones' },
 		{ id: 'HON', country: 'Estados Unidos', text: 'Huron', text2: 'South Dakota, SD, Huron' },
 		{ id: 'HYA', country: 'Estados Unidos', text: 'Hyannis', text2: 'Massachusetts, MA, Barnstable Municipal' },
+		{ id: 'IDA', country: 'Estados Unidos', text: 'Idaho Falls', text2: 'Idaho, ID, Fanning Field' },
 		{ id: 'IND', country: 'Estados Unidos', text: 'Indianapolis', text2: 'Indiana, IN, Indianapolis' },
 		{ id: 'IYK', country: 'Estados Unidos', text: 'Inyokern', text2: 'Califórnia, CA, Inyokern' },
+		{ id: 'INL', country: 'Estados Unidos', text: 'International Falls', text2: 'Minnesota, MN' },
 		{ id: 'IMT', country: 'Estados Unidos', text: 'Iron Mountain/Kingsford', text2: 'Michigan, MI, Ford' },
 		{ id: 'ISP', country: 'Estados Unidos', text: 'Islip', text2: 'New York, NY, Long Island Mac Arthur' },
 		{ id: 'ITH', country: 'Estados Unidos', text: 'Ithaca', text2: 'New York, NY, Tompkins County' },
@@ -433,6 +445,7 @@
 		{ id: 'MKL', country: 'Estados Unidos', text: 'Jackson', text2: 'Tennessee, TN, McKellar-Sipes' },
 		{ id: 'JAC', country: 'Estados Unidos', text: 'Jackson', text2: 'Wyoming, WY, Jackson Hole' },
 		{ id: 'JAX', country: 'Estados Unidos', text: 'Jacksonville', text2: 'Flórida, FL, Jacksonville' },
+		{ id: 'OAJ', country: 'Estados Unidos', text: 'Jacksonville', text2: 'North Carolina, NC, Albert J. Ellis' },
 		{ id: 'JST', country: 'Estados Unidos', text: 'Johnstown', text2: 'Pennsylvania, PA, Cambria County' },
 		{ id: 'JLN', country: 'Estados Unidos', text: 'Joplin', text2: 'Missouri, MO, Joplin' },
 		{ id: 'JNU', country: 'Estados Unidos', text: 'Juneau', text2: 'Alaska, AK, Juneau' },
@@ -441,6 +454,7 @@
 		{ id: 'AZO', country: 'Estados Unidos', text: 'Kalamazoo', text2: 'Michigan, MI, Kalamazoo/Battle Creek' },
 		{ id: 'FCA', country: 'Estados Unidos', text: 'Kalispell', text2: 'Montana, MT, Glacier Park' },
 		{ id: 'MCI', country: 'Estados Unidos', text: 'Kansas City', text2: 'Missouri, MO, Kansas City' },
+		{ id: 'LIH', country: 'Estados Unidos', text: 'Kauai Island', text2: 'Lihue, Hawaii, HI' },
 		{ id: 'JHM', country: 'Estados Unidos', text: 'Kapalua', text2: 'Hawaii, HI' },
 		{ id: 'EAR', country: 'Estados Unidos', text: 'Kearney', text2: 'Nebraska, NE, Kearney Municipal' },
 		{ id: 'ENA', country: 'Estados Unidos', text: 'Kenai', text2: 'Alaska, AK, Kenai Municipal' },
@@ -529,6 +543,7 @@
 		{ id: 'OGS', country: 'Estados Unidos', text: 'Ogdensburg', text2: 'New York, NY, Ogdensburg' },
 		{ id: 'OKC', country: 'Estados Unidos', text: 'Oklahoma City', text2: 'Oklahoma, OK, Will Rogers World' },
 		{ id: 'OMA', country: 'Estados Unidos', text: 'Omaha', text2: 'Nebraska, NE, Eppley Airfield' },
+		{ id: 'ONT', country: 'Estados Unidos', text: 'Ontario', text2: 'Califórnia, CA, Los Angeles' },
 		{ id: 'ORL', country: 'Estados Unidos', text: 'Orlando', text2: 'Flórida, FL, Executive' },
 		{ id: 'OWB', country: 'Estados Unidos', text: 'Owensboro', text2: 'Kentucky, KY, Owensboro-Daviess County' },
 		{ id: 'OXR', country: 'Estados Unidos', text: 'Oxnard', text2: 'Califórnia, CA, Oxnard' },
@@ -536,6 +551,7 @@
 		{ id: 'PGA', country: 'Estados Unidos', text: 'Page', text2: 'Arizona, AZ, Page Municipal' },
 		{ id: 'PSP', country: 'Estados Unidos', text: 'Palm Springs', text2: 'Califórnia, CA, Palm Springs' },
 		{ id: 'PFN', country: 'Estados Unidos', text: 'Panama City Beach', text2: 'Flórida, FL, Bay County' },
+		{ id: 'ECP', country: 'Estados Unidos', text: 'Panama City', text2: 'Flórida, FL, Northwest Beaches' },
 		{ id: 'PKB', country: 'Estados Unidos', text: 'Parkersburg', text2: 'West Virginia, WV' },
 		{ id: 'PSC', country: 'Estados Unidos', text: 'Pasco', text2: 'Washington, WA, Tri-Cities' },
 		{ id: 'PLN', country: 'Estados Unidos', text: 'Pellston', text2: 'Michigan, MI, Pellston of Emmet County' },
@@ -652,6 +668,7 @@
 		{ id: 'WYS', country: 'Estados Unidos', text: 'West Yellowstone', text2: 'Montana, MT, Yellowstone' },
 		{ id: 'HPN', country: 'Estados Unidos', text: 'Westchester County', text2: 'New York , NY' },
 		{ id: 'SPS', country: 'Estados Unidos', text: 'Wichita Falls', text2: 'Texas, TX, Sheppard Air Force Base' },
+		{ id: 'ICT', country: 'Estados Unidos', text: 'Wichita', text2: 'Kansas, KS, Dwight D. Eisenhower' },
 		{ id: 'AVP', country: 'Estados Unidos', text: 'Wilkes-Barre/Scranton', text2: 'Pennsylvania, PA' },
 		{ id: 'IPT', country: 'Estados Unidos', text: 'Williamsport', text2: 'Pennsylvania, PA, Lycoming County' },
 		{ id: 'ISN', country: 'Estados Unidos', text: 'Williston', text2: 'North Dakota, ND, Sloulin Field' },
@@ -663,7 +680,7 @@
 		{ id: 'YKM', country: 'Estados Unidos', text: 'Yakima', text2: 'Washington, WA, Yakima Air Terminal' },
 		{ id: 'YAK', country: 'Estados Unidos', text: 'Yakutat', text2: 'Alaska, AK, Yakutat' },
 		{ id: 'YUM', country: 'Estados Unidos', text: 'Yuma', text2: 'Arizona, AZ, Yuma Marine Corps Air Station' },
-
+				
 		{ id: 'LYS', country: 'França', text: 'Lyon', text2: 'RH, Satolas' },
 		{ id: 'AGF', country: 'França', text: 'Agen', text2: 'Agen La Garenne Aerodrome' },
 		{ id: 'AJA', country: 'França', text: 'Ajaccio', text2: 'Campo Dell\'Oro' },
@@ -683,6 +700,7 @@
 		{ id: 'CER', country: 'França', text: 'Cherbourg', text2: 'Maupertus' },
 		{ id: 'CFE', country: 'França', text: 'Clermont Ferrand', text2: 'Aulnat' },
 		{ id: 'FSC', country: 'França', text: 'Figari', text2: 'Sud Corse' },
+		{ id: 'FDF', country: 'França', text: 'Fort de France', text2: 'Martinique Aimé Césaire' },
 		{ id: 'GNB', country: 'França', text: 'Grenoble', text2: 'Saint Geoirs' },
 		{ id: 'LRH', country: 'França', text: 'La Rochelle', text2: 'Laieu' },
 		{ id: 'LAI', country: 'França', text: 'Lannion', text2: 'Lannion Côte de Granit' },
@@ -711,19 +729,24 @@
 		{ id: 'TLS', country: 'França', text: 'Tolosa', text2: 'Blagnac' },
 		{ id: 'TLN', country: 'França', text: 'Toulon/Hyeres', text2: 'La Palyvestre' },
 		{ id: 'TUF', country: 'França', text: 'Tours', text2: 'Saint-Symphorien' },
-
+		
 		{ id: 'VDE', country: 'Espanha', text: 'Valverde', text2: '' },
 		{ id: 'ALC', country: 'Espanha', text: 'Alicante', text2: 'VC, El Altet' },
 		{ id: 'LEI', country: 'Espanha', text: 'Almeria', text2: 'AN, Almería' },
 		{ id: 'ACE', country: 'Espanha', text: 'Arrecife', text2: 'Lanzarote' },
 		{ id: 'BJZ', country: 'Espanha', text: 'Badajoz', text2: 'EX, Talavera La Real' },
 		{ id: 'BIO', country: 'Espanha', text: 'Bilbao', text2: 'Sondica' },
+		{ id: 'RGS', country: 'Espanha', text: 'Burgos', text2: '' },
 		{ id: 'FUE', country: 'Espanha', text: 'Fuerteventura/Puerto del Rosario', text2: 'El Matorral' },
 		{ id: 'GRX', country: 'Espanha', text: 'Granada', text2: 'AN, Granada Jaen' },
+		{ id: 'LPA', country: 'Espanha', text: 'Gran Canaria', text2: 'Las Palmas' },
 		{ id: 'XRY', country: 'Espanha', text: 'Jerez De La Frontera', text2: 'AN, Jerez' },
 		{ id: 'LCG', country: 'Espanha', text: 'La Corunha', text2: 'GA, Wayne Municipal' },
+		{ id: 'ILD', country: 'Espanha', text: 'Lérida', text2: 'Lleida-Alguaire' },
+		{ id: 'LEN', country: 'Espanha', text: 'Leon', text2: 'La Virgen del Camino' },
 		{ id: 'AGP', country: 'Espanha', text: 'Malaga', text2: 'AN, Pablo Ruiz Picasso' },
 		{ id: 'MAH', country: 'Espanha', text: 'Menorca', text2: 'Mahon' },
+		{ id: 'MLN', country: 'Espanha', text: 'Melilha', text2: 'Melilla' },
 		{ id: 'MJV', country: 'Espanha', text: 'Murcia', text2: 'MU, San Javier' },
 		{ id: 'OVD', country: 'Espanha', text: 'Oviedo Aviles', text2: 'Asturias' },
 		{ id: 'PMI', country: 'Espanha', text: 'Palma De Mallorca', text2: 'Son Sant Joan ' },
@@ -742,24 +765,6 @@
 		{ id: 'VGO', country: 'Espanha', text: 'Vigo', text2: 'PO, Vigo Peinador' },
 		{ id: 'VIT', country: 'Espanha', text: 'Vitoria Spain', text2: 'Vitoria Foronda' },
 		{ id: 'ZAZ', country: 'Espanha', text: 'Zaragoza', text2: 'Zaragoza' },
-
-		{ id: 'MAN', country: 'Inglaterra', text: 'Manchester', text2: 'Ringway' },
-		{ id: 'BHX', country: 'Inglaterra', text: 'Birmingham', text2: 'Birmingham' },
-		{ id: 'BOH', country: 'Inglaterra', text: 'Bournemouth', text2: 'Bournemouth' },
-		{ id: 'BRS', country: 'Inglaterra', text: 'Bristol', text2: 'Lulsgate' },
-		{ id: 'DND', country: 'Inglaterra', text: 'Dundee', text2: 'Dundee' },
-		{ id: 'EXT', country: 'Inglaterra', text: 'Exeter', text2: 'Exeter' },
-		{ id: 'LBA', country: 'Inglaterra', text: 'Leeds', text2: 'Leeds Bradford' },
-		{ id: 'LPL', country: 'Inglaterra', text: 'Liverpool', text2: 'Speke' },
-		{ id: 'LCY', country: 'Inglaterra', text: 'Londres', text2: 'City' },
-		{ id: 'LGW', country: 'Inglaterra', text: 'Londres', text2: 'Gatwick' },
-		{ id: 'LHR', country: 'Inglaterra', text: 'Londres', text2: 'Heathrow' },
-		{ id: 'STN', country: 'Inglaterra', text: 'Londres', text2: 'Stansted' },
-		{ id: 'NCL', country: 'Inglaterra', text: 'Newcastle', text2: 'Newcastle' },
-		{ id: 'NWI', country: 'Inglaterra', text: 'Norvico', text2: 'Norwich' },
-		{ id: 'SOU', country: 'Inglaterra', text: 'Southampton', text2: 'Eastleigh' },
-		{ id: 'SYY', country: 'Inglaterra', text: 'Stornway', text2: 'Stornoway' },
-		{ id: 'MME', country: 'Inglaterra', text: 'Tees Side', text2: 'Durham Tees Valley' },
 
 		{ id: 'ANF', country: 'Chile', text: 'Antofagasta', text2: 'Cerro Moreno' },
 		{ id: 'ARI', country: 'Chile', text: 'Arica', text2: 'Chacalluta' },
@@ -815,9 +820,7 @@
 		{ id: 'SCN', country: 'Alemanha', text: 'Saarbruecken', text2: '' },
 		{ id: 'STR', country: 'Alemanha', text: 'Stuttgart', text2: 'Echterdingen' },
 		{ id: 'GWT', country: 'Alemanha', text: 'Westerland', text2: 'Sylt' },
-
-		{ id: 'ALG', country: 'Algéria', text: 'Algiers', text2: 'Houari Boumediene' },
-
+		
 		{ id: 'CAB', country: 'Angóla', text: 'Cabinda', text2: 'Cabinda' },
 		{ id: 'DUE', country: 'Angóla', text: 'Dundo', text2: 'Dundo' },
 		{ id: 'NOV', country: 'Angóla', text: 'Huambo', text2: '' },
@@ -843,11 +846,20 @@
 		{ id: 'SXM', country: 'Antilhas Holandesas', text: 'Saint Maarten', text2: 'Princes Juliana' },
 		{ id: 'EUX', country: 'Antilhas Holandesas', text: 'St. Eustathius', text2: 'F.D. Roosevelt' },
 
-		{ id: 'MED', country: 'Arabia Saudita', text: 'Medina', text2: '' },
-		{ id: 'RUH', country: 'Arabia Saudita', text: 'Riyadh', text2: 'King Khalid' },
+		{ id: 'AHB', country: 'Arábia Saudita', text: 'Abha', text2: 'Asir' },
+		{ id: 'DMM', country: 'Arábia Saudita', text: 'Dammam', text2: 'Rei Fahd' },
+		{ id: 'ELQ', country: 'Arábia Saudita', text: 'Gassim', text2: 'Prince Nayef Bin Abdulaziz' },
+		{ id: 'HOF', country: 'Arábia Saudita', text: 'Hofuf', text2: 'Al-Ahsa' },
+		{ id: 'JED', country: 'Arábia Saudita', text: 'Jeddah', text2: 'Rei Abdulaziz' },
+		{ id: 'MED', country: 'Arábia Saudita', text: 'Medina', text2: '' },
+		{ id: 'RUH', country: 'Arábia Saudita', text: 'Riyadh', text2: 'King Khalid' },
+		{ id: 'TIF', country: 'Arábia Saudita', text: 'Taif', text2: '' },
 
 		{ id: 'EVN', country: 'Armênia', text: 'Yerevan', text2: 'Zapadny' },
 
+		{ id: 'ALG', country: 'Argélia', text: 'Algiers', text2: 'Houari Boumediene, Algeria' },
+		{ id: 'ORN', country: 'Argélia', text: 'Orã', text2: 'Es Senia, Algeria' },
+		
 		{ id: 'ADL', country: 'Austrália', text: 'Adelaide', text2: 'SA, International' },
 		{ id: 'ABX', country: 'Austrália', text: 'Albury', text2: 'NS, Albury' },
 		{ id: 'ASP', country: 'Austrália', text: 'Alice Springs', text2: 'NT, Alice Springs' },
@@ -903,16 +915,19 @@
 		{ id: 'KLU', country: 'Áustria', text: 'Klagenfurt', text2: 'Woerthersee' },
 		{ id: 'LNZ', country: 'Áustria', text: 'Linz', text2: 'Horsching' },
 		{ id: 'SZG', country: 'Áustria', text: 'Salzburgo', text2: 'Salzburg' },
+		
+		{ id: 'GYD', country: 'Azerbaijão', text: 'Baku', text2: 'Heydar Aliyev' },
 
 		{ id: 'ASD', country: 'Bahamas', text: 'Andros Town', text2: 'International' },
 		{ id: 'BIM', country: 'Bahamas', text: 'Bimini', text2: '' },
 		{ id: 'GHB', country: 'Bahamas', text: 'Governors Harbour', text2: 'Governors Harbour' },
+		{ id: 'FPO', country: 'Bahamas', text: 'Freeport', text2: 'Grand Bahama' },
 		{ id: 'MHH', country: 'Bahamas', text: 'Marsh Harbour', text2: 'Marsh Harbour' },
 		{ id: 'NAS', country: 'Bahamas', text: 'Nassau', text2: 'NP,' },
 		{ id: 'ELH', country: 'Bahamas', text: 'North Eleuthera', text2: 'North Eleuthera' },
 		{ id: 'TBI', country: 'Bahamas', text: 'The Bight', text2: 'The Bight' },
 		{ id: 'TCB', country: 'Bahamas', text: 'Treasure Cay', text2: 'Treasure Cay' },
-
+		
 		{ id: 'BAH', country: 'Bahrein', text: 'Bahrein', text2: 'Muharraq International' },
 
 		{ id: 'CGP', country: 'Bangladesh', text: 'Chittagong', text2: 'Patenga' },
@@ -957,16 +972,21 @@
 		{ id: 'BJM', country: 'Burundi', text: 'Bujumbura', text2: 'International' },
 
 		{ id: 'RAI', country: 'Cabo Verde', text: 'Praia', text2: 'Praia' },
+		{ id: 'BVC', country: 'Cabo Verde', text: 'Boa Vista', text2: 'Aristides Pereira' },
+		{ id: 'VXE', country: 'Cabo Verde', text: 'São Vicente', text2: 'São Pedro' },
 		{ id: 'SID', country: 'Cabo Verde', text: 'Sal', text2: 'Amilcar Cabral' },
 
 		{ id: 'DLA', country: 'Camarões', text: 'Douala', text2: 'Douala' },
 		{ id: 'NSI', country: 'Camarões', text: 'Yaounde', text2: 'Nsimalen International' },
-		{ id: 'YAO', country: 'Camarões', text: 'Yaounde', text2: 'Nsimalen International' },
+		{ id: 'YAO', country: 'Camarões', text: 'Yaounde', text2: 'Yaoundé Ville' },
 
+		{ id: 'YMQ', country: 'Canadá', text: 'Montreal', text2: 'QC, todos os aeroportos' },
 		{ id: 'YUL', country: 'Canadá', text: 'Montreal', text2: 'QC, Dorval' },
 		{ id: 'YOW', country: 'Canadá', text: 'Ottawa', text2: 'ON, Macdonald-Cartier' },
 		{ id: 'YQB', country: 'Canadá', text: 'Quebec', text2: 'QC, Quebec' },
 		{ id: 'YYC', country: 'Canadá', text: 'Calgary', text2: 'AB, Calgary' },
+		{ id: 'YHZ', country: 'Canadá', text: 'Halifax', text2: 'Enfield, Nova Scotia, NS' },
+		{ id: 'YXU', country: 'Canadá', text: 'London', text2: 'Ontario, ON' },
 		{ id: 'YBG', country: 'Canadá', text: 'Bagotville', text2: 'QC, Bagotville' },
 		{ id: 'YBC', country: 'Canadá', text: 'Baie-Comeau', text2: 'QC, Baie-Comeau' },
 		{ id: 'ZBF', country: 'Canadá', text: 'Bathurst', text2: 'NB, Bathurst' },
@@ -979,6 +999,7 @@
 		{ id: 'YQQ', country: 'Canadá', text: 'Comox', text2: 'BC, Comox' },
 		{ id: 'YXC', country: 'Canadá', text: 'Cranbrook', text2: 'BC, Cranbrook' },
 		{ id: 'YDF', country: 'Canadá', text: 'Deer Lake', text2: 'ON, Deer Lake' },
+		{ id: 'YEA', country: 'Canadá', text: 'Edmonton', text2: 'AB, todos os aeroportos' },
 		{ id: 'YEG', country: 'Canadá', text: 'Edmonton', text2: 'AB, Edmonton' },
 		{ id: 'YMM', country: 'Canadá', text: 'Fort McMurray', text2: 'AB, Fort McMurray' },
 		{ id: 'YXJ', country: 'Canadá', text: 'Fort St. John', text2: 'BC, Fort St. John' },
@@ -1027,6 +1048,7 @@
 
 		{ id: 'NDJ', country: 'Chade', text: 'N\'Djamena', text2: 'N Djamena' },
 
+		{ id: 'BJS', country: 'China', text: 'Pequim', text2: 'todos os aeroportos' },
 		{ id: 'SHA', country: 'China', text: 'Xangai', text2: 'Hongqiao' },
 		{ id: 'CTU', country: 'China', text: 'Chengdu', text2: 'Chengdu Shuangliu' },
 		{ id: 'SZX', country: 'China', text: 'Zhenzhen', text2: 'Shenzhen Bao\'an' },
@@ -1142,6 +1164,7 @@
 		{ id: 'ABJ', country: 'Costa do Marfim', text: 'Abidjan', text2: 'Felix Houphouet Boigny' },
 
 		{ id: 'SJO', country: 'Costa Rica', text: 'San Jose', text2: 'SJ, Juan Santamaria International' },
+		{ id: 'LIR', country: 'Costa Rica', text: 'Liberia', text2: 'Daniel Oduber Quirós' },
 
 		{ id: 'DBV', country: 'Croácia', text: 'Dubrovnik', text2: 'Dubrovnik' },
 		{ id: 'PUY', country: 'Croácia', text: 'Pula', text2: 'Pula' },
@@ -1153,6 +1176,7 @@
 		{ id: 'PTP', country: 'Cuba', text: 'Colonia', text2: 'Le Raizet' },
 		{ id: 'QKL', country: 'Cuba', text: 'Colonia', text2: 'Railway Station' },
 		{ id: 'HOG', country: 'Cuba', text: 'Holguin', text2: 'Holguin Frank Pais' },
+		{ id: 'SNU', country: 'Cuba', text: 'Santa Clara', text2: 'Abel Santamaría' },
 		{ id: 'VRA', country: 'Cuba', text: 'Varadero', text2: 'Juan Gualberto Gómez' },
 
 		{ id: 'CPH', country: 'Dinamarca', text: 'Copenhagen', text2: 'Kastrup' },
@@ -1175,6 +1199,9 @@
 
 		{ id: 'SAL', country: 'El Salvador', text: 'San Salvador', text2: 'Internacional' },
 
+		{ id: 'DWC', country: 'Emirados Árabes', text: 'Dubai', tex2: 'Al Maktoum' },
+		{ id: 'XNB', country: 'Emirados Arabes', text: 'Dubai', tex2: '' },
+		{ id: 'RKT', country: 'Emirados Árabes', text: 'Ras Al Khaimah', tex2: '' },
 		{ id: 'SHJ', country: 'Emirados Árabes', text: 'Sharjah', text2: 'Sharjah' },
 
 		{ id: 'UIO', country: 'Equador', text: 'Quito', text2: 'PC, Mariscal Sucre' },
@@ -1182,11 +1209,6 @@
 		{ id: 'GYE', country: 'Equador', text: 'Guayaquil', text2: 'Simon Bolivar' },
 
 		{ id: 'ASM', country: 'Eritrea', text: 'Asmara', text2: 'Yohannes IV' },
-
-		{ id: 'PIK', country: 'Escócia', text: 'Glasgow', text2: 'Glasgow Prestwick' },
-		{ id: 'ABZ', country: 'Escócia', text: 'Aberdeen', text2: 'Aberdeen' },
-		{ id: 'GLA', country: 'Escócia', text: 'Glasgow', text2: 'Abbotsichn' },
-		{ id: 'INV', country: 'Escócia', text: 'Inverness', text2: 'Inverness' },
 
 		{ id: 'BTS', country: 'Eslováquia', text: 'Bratislava', text2: 'M. R. Stefanik' },
 		{ id: 'KSC', country: 'Eslováquia', text: 'Kosice', text2: 'Barca' },
@@ -1262,6 +1284,8 @@
 		{ id: 'BSG', country: 'Guine', text: 'Bata', text2: 'Bata' },
 		{ id: 'CKY', country: 'Guine', text: 'Conakry', text2: 'G\'bessia' },
 		{ id: 'SSG', country: 'Guine', text: 'Malabo', text2: 'Malabo ' },
+		
+		{ id: 'OXB', country: 'Guiné-Bissau', text: 'Bissau', text2: 'Osvaldo Vieira' },
 
 		{ id: 'PAP', country: 'Haiti', text: 'Porto Principe', text2: 'Port au Prince' },
 
@@ -1281,9 +1305,6 @@
 
 		{ id: 'GGT', country: 'Ilhas Cayman', text: 'George Town', text2: 'George Town' },
 		{ id: 'GCM', country: 'Ilhas Cayman', text: 'Grand Cayman', text2: 'Owen Roberts' },
-
-		{ id: 'GCI', country: 'Ilhas Channel', text: 'Guernsey', text2: 'Guernsey' },
-		{ id: 'JER', country: 'Ilhas Channel', text: 'Jersey', text2: 'Jersey' },
 
 		{ id: 'RAR', country: 'Ilhas Cook', text: 'Avarua', text2: 'Rarotonga' },
 
@@ -1355,12 +1376,17 @@
 		{ id: 'UPG', country: 'Indonésia', text: 'Ujung Pandang', text2: 'Hasanuddin' },
 		{ id: 'JOG', country: 'Indonésia', text: 'Yogyakarta', text2: 'Adisucipto' },
 
-		{ id: 'TBZ', country: 'Irã', text: 'Tabriz', text2: 'Tabriz' },
 		{ id: 'MHD', country: 'Irã', text: 'Mashad', text2: '' },
+		{ id: 'SYZ', country: 'Irã', text: 'Shiraz', text2: 'Fars' },
+		{ id: 'TBZ', country: 'Irã', text: 'Tabriz', text2: 'Tabriz' },
 		{ id: 'IKA', country: 'Irã', text: 'Theran', text2: '' },
 		{ id: 'THR', country: 'Irã', text: 'Theran', text2: 'Mehrabad/Qualeh Morgeh' },
 
 		{ id: 'BGW', country: 'Iraque', text: 'Bagda', text2: 'Baghdad, Al Muthana' },
+		{ id: 'BSR', country: 'Iraque', text: 'Basra', text2: '' },
+		{ id: 'EBL', country: 'Iraque', text: 'Erbil', text2: '' },
+		{ id: 'ISU', country: 'Iraque', text: 'Sulaymaniyah', text2: '' },
+		{ id: 'NJF', country: 'Iraque', text: 'Najaf', text2: 'Al Najaf' },
 
 		{ id: 'ORK', country: 'Irlanda', text: 'Cork', text2: 'Cork' },
 		{ id: 'SNN', country: 'Irlanda', text: 'Shannon', text2: 'Shannon' },
@@ -1369,6 +1395,7 @@
 
 		{ id: 'ETH', country: 'Israel', text: 'Elat', text2: 'Hozman' },
 
+		{ id: 'ROM', country: 'Itália', text: 'Roma', text2: 'todos os aeroportos' },
 		{ id: 'PSA', country: 'Itália', text: 'Pisa', text2: 'Galilei, San Giusto' },
 		{ id: 'FLR', country: 'Itália', text: 'Florença', text2: 'FI, Peretola' },
 		{ id: 'GOA', country: 'Itália', text: 'Genova', text2: 'GE, Cristoforo Colombo, Seatri' },
@@ -1497,6 +1524,7 @@
 		{ id: 'BEY', country: 'Líbano', text: 'Beirut', text2: 'BA, International' },
 
 		{ id: 'ROB', country: 'Libéria', text: 'Monrovia', text2: 'Roberts Field' },
+		{ id: 'MLW', country: 'Libéria', text: 'Monrovia', text2: 'James Spriggs Payne' },
 
 		{ id: 'BEN', country: 'Libia', text: 'Benghazi', text2: 'Benina' },
 		{ id: 'TIP', country: 'Libia', text: 'Tripoli', text2: 'Idris' },
@@ -1560,6 +1588,7 @@
 		{ id: 'CME', country: 'México', text: 'Ciudad del Carmen', text2: 'Ciudad del Carmen' },
 		{ id: 'CLQ', country: 'México', text: 'Colima', text2: 'CL, Licenciado Miguel de la Madrid' },
 		{ id: 'CUL', country: 'México', text: 'Culiacan', text2: 'Sinaloa' },
+		{ id: 'DGO', country: 'México', text: 'Durango', text2: 'General Guadalupe Victoria' },
 		{ id: 'GDL', country: 'México', text: 'Guadalajara', text2: 'JA, Miguel Hidalgo y Costilla' },
 		{ id: 'GYM', country: 'México', text: 'Guaymas', text2: 'General Jose Maria Yanez' },
 		{ id: 'GUB', country: 'México', text: 'Guerrero Negro', text2: 'Guerrero Negro' },
@@ -1567,6 +1596,7 @@
 		{ id: 'HUX', country: 'México', text: 'Huatulco', text2: 'Bahias de Huatulco' },
 		{ id: 'ZIH', country: 'México', text: 'Ixtapa Zihuatanejo', text2: 'GR, Ixtapa Zihuatanejo' },
 		{ id: 'JAL', country: 'México', text: 'Jalapa', text2: '' },
+		{ id: 'LAP', country: 'México', text: 'La Paz', text2: 'Manuel Márquez de León' },
 		{ id: 'LZC', country: 'México', text: 'Lazaro Cardenas', text2: 'Lázaro Cárdenas' },
 		{ id: 'BJX', country: 'México', text: 'Leon', text2: 'Guanajuato' },
 		{ id: 'LTO', country: 'México', text: 'Loreto', text2: 'Loreto' },
@@ -1677,20 +1707,23 @@
 		{ id: 'WHK', country: 'Nova Zelândia', text: 'Whakatane', text2: 'Whakatane' },
 		{ id: 'WRE', country: 'Nova Zelândia', text: 'Whangarei', text2: 'Whangarei' },
 
-		{ id: 'MCT', country: 'Oma', text: 'Mascate', text2: 'Seeb' },
-
-		{ id: 'CWL', country: 'Pais de Gales', text: 'Cardiff', text2: 'Rhoose' },
+		{ id: 'MCT', country: 'Omã', text: 'Mascate', text2: 'Seeb, Oman' },
+		{ id: 'SLL', country: 'Omã', text: 'Salalah', text2: 'Oman' },
 
 		{ id: 'ROR', country: 'Palau', text: 'Koror', text2: 'Babelthuap/Koror' },
 
-		{ id: 'PTY', country: 'Panamá', text: 'Cidade do Panama', text2: 'PN, General Omar Torrijos Herrara' },
+		{ id: 'PTY', country: 'Panamá', text: 'Cidade do Panamá', text2: 'PN, General Omar Torrijos Herrara' },
+		{ id: 'DAV', country: 'Panamá', text: 'David', text2: 'Enrique Malek' },
 
 		{ id: 'POM', country: 'Papua Nova Guiné', text: 'Port Moresby', text2: 'Jacksons ' },
 
+		{ id: 'LYP', country: 'Paquistão', text: 'Faisalabad', text2: '' },
 		{ id: 'ISB', country: 'Paquistão', text: 'Islamabad', text2: 'Rawalp' },
 		{ id: 'KHI', country: 'Paquistão', text: 'Karachi', text2: 'Quaid-e-Azam International' },
 		{ id: 'LHE', country: 'Paquistão', text: 'Lahore', text2: 'Allama Iqbal' },
+		{ id: 'MUX', country: 'Paquistão', text: 'Multan', text2: '' },
 		{ id: 'PEW', country: 'Paquistão', text: 'Peshawar', text2: 'Peshawar' },
+		{ id: 'SKT', country: 'Paquistão', text: 'Sialkot', text2: '' },
 
 		{ id: 'ASU', country: 'Paraguai', text: 'Asuncion', text2: 'Presidente Stroessner' },
 		{ id: 'AGT', country: 'Paraguai', text: 'Cidade Del Este', text2: 'Guarani' },
@@ -1727,12 +1760,58 @@
 		{ id: 'FAO', country: 'Portugal', text: 'Faro', text2: 'Faro ' },
 		{ id: 'HOR', country: 'Portugal', text: 'Horta', text2: '' },
 		{ id: 'FNC', country: 'Portugal', text: 'Madeira', text2: 'Madeira' },
+		{ id: 'PIX', country: 'Portugal', text: 'Pico', text2: 'Madalena do Pico' },
 		{ id: 'PDL', country: 'Portugal', text: 'Ponta Delgada', text2: 'João Paulo II' },
-
+		{ id: 'PXO', country: 'Portugal', text: 'Porto Santo', text2: 'Madeira' },
+		{ id: 'TER', country: 'Portugal', text: 'Terceira', text2: 'Praia da Vitória' },
+		
 		{ id: 'DOH', country: 'Qatar', text: 'Doha', text2: 'Doha' },
 
 		{ id: 'NBO', country: 'Quênia', text: 'Nairobi', text2: 'Jomo Kenyatta' },
 
+		{ id: 'LHR', country: 'Reino Unido', text: 'Londres', text2: 'Heathrow', state: 'Inglaterra' },
+		{ id: 'LGW', country: 'Reino Unido', text: 'Londres', text2: 'Gatwick', state: 'Inglaterra' },
+		{ id: 'MAN', country: 'Reino Unido', text: 'Manchester', text2: 'Ringway', state: 'Inglaterra' },
+		{ id: 'STN', country: 'Reino Unido', text: 'Londres', text2: 'Stansted', state: 'Inglaterra' },
+		{ id: 'LTN', country: 'Reino Unido', text: 'Londres', text2: 'Luton', state: 'Inglaterra' },
+		{ id: 'EDI', country: 'Reino Unido', text: 'Edimburgo', text2: 'Edinburgh', state: 'Escócia' },
+		{ id: 'BHX', country: 'Reino Unido', text: 'Birmingham', text2: 'Birmingham', state: 'Inglaterra' },
+		{ id: 'GLA', country: 'Reino Unido', text: 'Glasgow', text2: 'Port-adhair E. Ghlaschu', state: 'Escócia' },
+		{ id: 'BRS', country: 'Reino Unido', text: 'Bristol', text2: 'Lulsgate', state: 'Inglaterra' },
+		{ id: 'NCL', country: 'Reino Unido', text: 'Newcastle', text2: 'Woolsington', state: 'Inglaterra' },
+		{ id: 'EMA', country: 'Reino Unido', text: 'East Midlands', text2: 'Castle Donington', state: 'Inglaterra' },
+		{ id: 'BFS', country: 'Reino Unido', text: 'Belfast', text2: 'Aldergrove', state: 'Irlanda do Norte' },
+		{ id: 'LPL', country: 'Reino Unido', text: 'Liverpool', text2: 'John Lennon, Speke', state: 'Inglaterra' },
+		{ id: 'ABZ', country: 'Reino Unido', text: 'Aberdeen', text2: 'Aberdeen', state: 'Escócia' },
+		{ id: 'LCY', country: 'Reino Unido', text: 'Londres', text2: 'City', state: 'Inglaterra' },
+		{ id: 'LBA', country: 'Reino Unido', text: 'Leeds', text2: 'Leeds Bradford', state: 'Inglaterra' },
+		{ id: 'BHD', country: 'Reino Unido', text: 'Belfast', text2: 'George Best Belfast', state: 'Irlanda do Norte' },
+		{ id: 'SOU', country: 'Reino Unido', text: 'Southampton', text2: 'Eastleigh', state: 'Inglaterra' },
+		{ id: 'JER', country: 'Reino Unido', text: 'Jersey', text2: 'Jersey, Channel Islands', state: 'Ilhas do Canal' },
+		{ id: 'SEN', country: 'Reino Unido', text: 'Londres', text2: 'Southend, Rochford', state: 'Inglaterra' },
+		{ id: 'CWL', country: 'Reino Unido', text: 'Cardiff', text2: 'Rhoose, Wales', state: 'País de Gales' },
+		{ id: 'PIK', country: 'Reino Unido', text: 'Glasgow', text2: 'Glasgow Prestwick', state: 'Escócia' },
+		{ id: 'GCI', country: 'Reino Unido', text: 'Guernsey', text2: 'Forest, Channel Islands', state: 'Ilhas do Canal' },
+		{ id: 'EXT', country: 'Reino Unido', text: 'Exeter', text2: 'Devon', state: 'Inglaterra' },
+		{ id: 'IOM', country: 'Reino Unido', text: 'Isle of Man', text2: 'Ronaldsway', state: 'Ilha de Man' },
+		{ id: 'DSA', country: 'Reino Unido', text: 'Robin Hood', text2: 'Doncaster Sheffield', state: 'Inglaterra' },
+		{ id: 'BOH', country: 'Reino Unido', text: 'Bournemouth', text2: 'Bournemouth', state: 'Inglaterra' },
+		{ id: 'INV', country: 'Reino Unido', text: 'Inverness', text2: 'Dalcross', state: 'Escócia' },
+		{ id: 'NWI', country: 'Reino Unido', text: 'Norwich', text2: 'Norvico, Norfolk', state: 'Inglaterra' },
+		{ id: 'LDY', country: 'Reino Unido', text: 'City of Derry', text2: 'Londonderry Eglinton', state: 'Irlanda do Norte' },
+		{ id: 'SCS', country: 'Reino Unido', text: 'Scatsta', text2: 'Skaste Lukuhave', state: 'Escócia' },
+		{ id: 'LSI', country: 'Reino Unido', text: 'Sumburgh', text2: 'Sambarug Lukuhave', state: 'Escócia' },
+		{ id: 'HUY', country: 'Reino Unido', text: 'Humberside', text2: 'Kirmington', state: 'Inglaterra' },
+		{ id: 'BLK', country: 'Reino Unido', text: 'Blackpool', text2: 'Lancashire', state: 'Inglaterra' },
+		{ id: 'NQY', country: 'Reino Unido', text: 'Newquay Cornwall', text2: 'Ayrborth T. Kernow', state: 'Inglaterra' },
+		{ id: 'KOI', country: 'Reino Unido', text: 'Kirkwall', text2: 'Orkney Islands', state: 'Escócia' },
+		{ id: 'MME', country: 'Reino Unido', text: 'Teesside', text2: 'Durham Tees Valley', state: 'Inglaterra' },
+		{ id: 'SYY', country: 'Reino Unido', text: 'Stornway', text2: 'Port-Adhair Steòrnabhagh', state: 'Escócia' },
+		{ id: 'ISC', country: 'Reino Unido', text: 'St Mary\'s', text2: 'Isles of Scilly', state: 'Inglaterra' },
+		{ id: 'ACI', country: 'Reino Unido', text: 'Alderney', text2: 'St Anne, Channel Islands', state: 'Ilhas do Canal' },
+		{ id: 'DND', country: 'Reino Unido', text: 'Dundee', text2: 'Port-adhair Dhùn Dèagh', state: 'Escócia' },
+		//{ id: 'MSE', country: 'Reino Unido', text: 'Manston', text2: '', state: 'Inglaterra' }, //closed
+		
 		{ id: 'BGF', country: 'República Centro Africana', text: 'Bangui', text2: 'M\'Poko' },
 
 		{ id: 'LRM', country: 'República Dominicana', text: 'La Romana', text2: 'RO, La Romana' },
@@ -1758,6 +1837,8 @@
 		{ id: 'SBZ', country: 'Romênia', text: 'Sibiu', text2: 'Sibiu' },
 		{ id: 'SCV', country: 'Romênia', text: 'Suceava', text2: 'Suceava' },
 		{ id: 'TSR', country: 'Romênia', text: 'Timisoara', text2: 'Giarmata' },
+
+		{ id: 'KGL', country: 'Ruanda', text: 'Kigali', text2: 'Gregoire Kayibanda' },
 
 		{ id: 'DME', country: 'Rússia', text: 'Moscou', text2: 'Domodedovo, Moscow' },
 		{ id: 'SVO', country: 'Rússia', text: 'Moscou', text2: 'Sheremetyevo, Moscow' },
@@ -1884,6 +1965,7 @@
 
 		{ id: 'ASB', country: 'Turcomenistão', text: 'Ashgabat', text2: 'Ashgabat' },
 
+		{ id: 'SAW', country: 'Turquia', text: 'Istambul', text2: 'Sabiha Gökçen' },
 		{ id: 'ADA', country: 'Turquia', text: 'Adana', text2: 'Adana Sakirpasa' },
 		{ id: 'ESB', country: 'Turquia', text: 'Ankara', text2: 'Esenboga' },
 		{ id: 'ANK', country: 'Turquia', text: 'Ankara', text2: 'Etimesgut' },
@@ -2243,6 +2325,9 @@
 		if (airport.state && airport.state !== diacriticState)
 			airport.d_state = diacriticState;
 
+		if (window.airportsById[airport.id] !== undefined)
+			throw 'Repeated airport';
+		
 		window.airportsById[airport.id] = airport;
 	}
 })();

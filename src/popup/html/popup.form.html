@@ -1,7 +1,7 @@
 <div class="col-xs-12">
 	<form name="form" class="form-horizontal">
 		<div class="form-group" ng-class="{ 'has-error': form.origins.$dirty && vm.model.origins.length === 0 }">
-			<label for="origins" class="col-xs-2 control-label" tooltip="{{ ::tooltips.origins }}">{{ ::labels.origins }}</label>
+			<label for="origins" class="col-xs-2 control-label" uib-tooltip="{{ ::tooltips.origins }}">{{ ::labels.origins }}</label>
 			<div class="col-xs-10">
 				<ui-select multiple ng-model="vm.model.origins" id="origins" name="origins" autofocus required focus-on="focusOrigins" on-select="vm.broadcast('focusOrigins')">
 					<ui-select-match placeholder="{{ ::placeholders.origins }}">
@@ -19,7 +19,7 @@
 		</div>
 
 		<div class="form-group" ng-class="{ 'has-error': form.destinations.$dirty && (vm.model.destinations.length === 0 || (vm.model.origins.length === 1 && vm.model.destinations.length === 1 && vm.model.origins[0] === vm.model.destinations[0])) }">
-			<label for="destinations" class="col-xs-2 control-label" tooltip="{{ ::tooltips.destinations }}">{{ ::labels.destinations }}</label>
+			<label for="destinations" class="col-xs-2 control-label" uib-tooltip="{{ ::tooltips.destinations }}">{{ ::labels.destinations }}</label>
 			<div class="col-xs-10">
 				<ui-select multiple ng-model="vm.model.destinations" id="destinations" name="destinations" required focus-on="focusDestinations" on-select="vm.broadcast('focusDestinations')">
 					<ui-select-match placeholder="{{ ::placeholders.destinations }}">
@@ -44,7 +44,7 @@
 		<div class="form-group" ng-include="'popup.returns.html'"></div>
 
 		<div class="form-group">
-			<label for="site" class="col-xs-2 control-label" tooltip="{{ ::tooltips.site }}">{{ ::labels.site }}</label>
+			<label for="site" class="col-xs-2 control-label" uib-tooltip="{{ ::tooltips.site }}">{{ ::labels.site }}</label>
 			<div class="col-xs-10 form-single-select">
 				<ui-select ng-model="vm.model.site" id="site" name="site" required>
 					<ui-select-match placeholder="{{ ::placeholders.site }}">{{ $select.selected.text }}</ui-select-match>
@@ -56,7 +56,7 @@
 		</div>
 
 		<div class="form-group" ng-show="vm.savedSearches.length > 1">
-			<label for="savedSearch" class="col-xs-2 control-label" tooltip="{{ ::tooltips.history }}">{{ ::labels.history }}</label>
+			<label for="savedSearch" class="col-xs-2 control-label" uib-tooltip="{{ ::tooltips.history }}">{{ ::labels.history }}</label>
 			<div class="col-xs-10">
 				<ui-select ng-model="vm.model.savedSearch" id="savedSearch" name="savedSearch" on-select="vm.updateForm($select.selected, $model)">
 					<ui-select-match placeholder="{{ ::placeholders.history }}">{{ $select.selected | savedSearch }}</ui-select-match>
@@ -127,13 +127,13 @@
 		<div>
 			<a href="" class="btn btn-primary btn-sm pull-right" ng-click="vm.start()" ng-disabled="form.$invalid" style="text-transform:uppercase">{{ ::labels.start }}</a>
 			<a href="" class="btn btn-default btn-sm pull-right" ng-click="vm.stop()" ng-disabled="vm.initialNumberOfFlights <= vm.gridOptions.data.length" style="text-transform:uppercase;margin:0 5px 0 0;">{{ ::labels.stop }}</a>
-			<a href="http://novo.vakinha.com.br/vaquinha/passagens-mais-baratas-pra-todos" class="pull-right form-icon" tooltip="{{ ::tooltips.donation }}" tooltip-placement="top">
+			<a href="http://novo.vakinha.com.br/vaquinha/passagens-mais-baratas-pra-todos" class="pull-right form-icon" uib-tooltip="{{ ::tooltips.donation }}" tooltip-placement="top">
 				<i class="mdi-editor-attach-money"></i>
 			</a>
-			<a href="" class="pull-right form-icon" ng-click="vm.deleteHistory()" tooltip="{{ ::tooltips.deleteHistory }}" tooltip-placement="top">
+			<a href="" class="pull-right form-icon" ng-click="vm.deleteHistory()" uib-tooltip="{{ ::tooltips.deleteHistory }}" tooltip-placement="top">
 				<i class="mdi-action-delete"></i>
 			</a>
-			<a href="" class="pull-right form-icon" tooltip-html="tooltips.main" tooltip-placement="top">
+			<a href="" class="pull-right form-icon" uib-tooltip-html="tooltips.main" tooltip-placement="top">
 				<i class="mdi-action-info-outline"></i>
 			</a>
 		</div>
