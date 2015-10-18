@@ -1,0 +1,62 @@
+<!-- links to show optional config -->
+<div class="form-group">
+	<div class="col-xs-10 col-xs-offset-2">
+		<label class="pull-right small secondary">
+			<input type="checkbox" ng-model="vm.showSendEmailLowFares" ng-checked="vm.showSendEmailLowFares" />
+			<span class="checkbox-material"><span class="check"></span></span> {{ ::labels.sendEmailLowFares }}
+		</label>
+		<label class="pull-right small secondary">
+			<input type="checkbox" ng-model="vm.showPassengers" ng-checked="vm.showPassengers" />
+			<span class="checkbox-material"><span class="check"></span></span> {{ ::labels.changePassengers }}
+		</label>
+	</div>
+</div>
+
+<!-- send email -->
+<div class="form-group" ng-show="vm.showSendEmailLowFares" ng-class="{ 'has-error': form.email.$dirty && form.email.$invalid }">
+	<label for="email" class="col-xs-2 control-label">{{ ::labels.email }}</label>
+	<div class="col-xs-10" ng-show="vm.showSendEmailLowFares">
+		<input type="email" ng-model="vm.model.email" id="email" name="email" class="form-control" placeholder="{{ ::placeholders.email }}" ngMinlength="10" ngMaxlength="100" />
+	</div>
+</div>
+
+<div class="form-group" ng-show="vm.showSendEmailLowFares" ng-class="{ 'has-error': form.priceEmail.$dirty && form.priceEmail.$invalid }">
+	<label for="priceEmail" class="col-xs-2 control-label">{{ ::labels.priceEmail }}</label>
+	<div class="col-xs-10">
+		<input type="number" ng-model="vm.model.priceEmail" id="priceEmail" name="priceEmail" class="form-control" placeholder="{{ ::placeholders.priceEmail }}" min="1" max="1000000" ngMaxlength="4" />
+	</div>
+	<div class="col-xs-10 col-xs-offset-2" ng-if="vm.showSendEmailLowFares && form.email.$dirty && !form.email.$invalid && form.priceEmail.$dirty && !form.priceEmail.$invalid && vm.model.email && vm.model.priceEmail">
+		<label class="small secondary" ng-bind-html="messages.sendEmailLowFares | replace : 'EMAIL' : vm.model.email | replace : 'PRICE_EMAIL' : vm.model.priceEmail">
+		</label>
+	</div>
+</div>
+
+<!-- passengers -->
+<div class="form-group" ng-show="vm.showPassengers" ng-class="{ 'has-error': vm.model.adults == 0 && vm.model.children == 0 && vm.model.infants == 0 }">
+	<label for="adults" class="col-xs-2 control-label">{{ ::labels.adults }}</label>
+	<div class="col-xs-2 form-single-select">
+		<ui-select ng-model="vm.model.adults" id="adults" name="adults">
+			<ui-select-match placeholder="{{ ::vm.adults }}">{{ $select.selected }}</ui-select-match>
+
+			<ui-select-choices repeat="item in [0, 1, 2, 3, 4, 5]">{{ item }}</ui-select-choices>
+		</ui-select>
+	</div>
+
+	<label for="children" class="col-xs-2 control-label">{{ ::labels.children }}</label>
+	<div class="col-xs-2 form-single-select">
+		<ui-select ng-model="vm.model.children" id="children" name="children">
+			<ui-select-match placeholder="{{ ::vm.children }}">{{ $select.selected }}</ui-select-match>
+
+			<ui-select-choices repeat="item in [0, 1, 2, 3, 4, 5]">{{ item }}</ui-select-choices>
+		</ui-select>
+	</div>
+
+	<label for="infants" class="col-xs-2 control-label">{{ ::labels.infants }}</label>
+	<div class="col-xs-2 form-single-select">
+		<ui-select ng-model="vm.model.infants" id="infants" name="infants">
+			<ui-select-match placeholder="{{ ::vm.infants }}">{{ $select.selected }}</ui-select-match>
+
+			<ui-select-choices repeat="item in [0, 1, 2, 3, 4, 5]">{{ item }}</ui-select-choices>
+		</ui-select>
+	</div>
+</div>

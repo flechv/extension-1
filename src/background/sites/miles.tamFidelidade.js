@@ -198,7 +198,7 @@
 		return self;
 	}
 
-	TamFidelidade.prototype = new RequestManager('TamFidelidade', 'Multiplus - Milhas Tam', 2000, 5);
+	TamFidelidade.prototype = new RequestManager('TamFidelidade', 'Multiplus - Milhas Tam', 2000, 5, 5);
 	TamFidelidade.prototype.constructor = TamFidelidade;
 	TamFidelidade.prototype.parent = RequestManager.prototype;
 

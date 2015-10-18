@@ -23,15 +23,14 @@
         });
 
         var today = new Date();
-
-        angular.extend(uibDatepickerConfig, {
+		var oneYearFromNow = today.setFullYear(today.getFullYear() + 1);
+		
+		angular.extend(uibDatepickerConfig, {
             showWeeks: false,
-            datepickerPopup: 'dd/MM/yyyy',
-            //'format-day-header': 'E',
             minMode: 'day',
             maxMode: 'month',
             minDate: new Date(),
-            //maxDate: new Date(),
+            maxDate: oneYearFromNow,
         });
     }
 })();

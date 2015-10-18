@@ -1,0 +1,39 @@
+<!-- origin airports -->
+<div class="form-group" ng-class="{ 'has-error': form.origins.$dirty && vm.model.origins.length === 0 }">
+	<label for="origins" class="col-xs-2 control-label" uib-tooltip="{{ ::tooltips.origins }}">{{ ::labels.origins }}</label>
+	<div class="col-xs-10">
+		<ui-select multiple ng-model="vm.model.origins" id="origins" name="origins" autofocus required focus-on="focusOrigins" on-select="vm.broadcast('focusOrigins')">
+			<ui-select-match placeholder="{{ ::placeholders.origins }}">
+				{{ $item | airport : vm.airportsById }}
+			</ui-select-match>
+			
+			<ui-select-choices repeat="item.id as item in vm.airports | filter : $select.search | limitTo : 30" group-by="'country'">
+				<span ng-bind-html="item.text | highlight: $select.search"></span>
+				<small class="ui-select-small">
+					<span ng-bind-html="item.text2 | highlight: $select.search"></span>
+					(<span ng-bind-html="item.id | highlight: $select.search"></span>)
+				</small>
+			</ui-select-choices>
+		</ui-select>
+	</div>
+</div>
+
+<!-- destination airports -->
+<div class="form-group" ng-class="{ 'has-error': form.destinations.$dirty && (vm.model.destinations.length === 0 || (vm.model.origins.length === 1 && vm.model.destinations.length === 1 && vm.model.origins[0] === vm.model.destinations[0])) }">
+	<label for="destinations" class="col-xs-2 control-label" uib-tooltip="{{ ::tooltips.destinations }}">{{ ::labels.destinations }}</label>
+	<div class="col-xs-10">
+		<ui-select multiple ng-model="vm.model.destinations" id="destinations" name="destinations" required focus-on="focusDestinations" on-select="vm.broadcast('focusDestinations')">
+			<ui-select-match placeholder="{{ ::placeholders.destinations }}">
+				{{ $item | airport : vm.airportsById }}
+			</ui-select-match>
+			
+			<ui-select-choices repeat="item.id as item in vm.airports | filter : $select.search | limitTo : 30" group-by="'country'">
+				<span ng-bind-html="item.text | highlight: $select.search"></span>
+				<small class="ui-select-small">
+					<span ng-bind-html="item.text2 | highlight: $select.search"></span>
+					(<span ng-bind-html="item.id | highlight: $select.search"></span>)
+				</small>
+			</ui-select-choices>
+		</ui-select>
+	</div>
+</div>

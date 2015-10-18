@@ -135,7 +135,7 @@
 		return self;
 	}
 
-	TudoAzul.prototype = new RequestManager('TudoAzul', 'Tudo Azul - Milhas Azul', 1000, 4);
+	TudoAzul.prototype = new RequestManager('TudoAzul', 'Tudo Azul - Milhas Azul', 1000, 4, 6);
 	TudoAzul.prototype.constructor = TudoAzul;
 	TudoAzul.prototype.parent = RequestManager.prototype;
 

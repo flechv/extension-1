@@ -3,7 +3,7 @@
 
 	window.APP_NAME = 'genghis';
 	window.BG = (function (SM, PQ, RM) {
-		var GAP_TIME = 300,
+		var GAP_TIME = 1000,
 			REPEAT_SEARCH_DELAY = 6 * 60 * 60 * 1000, //6 HOURS
 			sendEmailTimeout,
 			repeatSearchTimeout;

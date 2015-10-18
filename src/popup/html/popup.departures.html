@@ -1,9 +1,0 @@
-<label for="departures" class="col-xs-2 control-label" uib-tooltip-html="tooltips.departures">{{ ::labels.departures }}</label>
-<div class="col-xs-10">
-	<uib-datepicker multi-select="vm.model.departures" ng-model="vm.activeDeparture" init-date="vm.initDateDeparture" select-range="{{ vm.departuresRange }}" id="departures" name="departures" class="datepicker"></uib-datepicker>
-	<span class="btn btn-default btn-sm pull-left resetDate" ng-click="vm.model.departures = []" uib-tooltip="{{ ::tooltips.resetDates }}">{{ ::labels.resetDates }}</span>
-	<label class="pull-right small secondary" uib-tooltip="{{ ::tooltips.range }}" tooltip-placement="left">
-		<input type="checkbox" ng-model="vm.departuresRange" />
-		<span class="checkbox-material"><span class="check"></span></span> {{ ::labels.range }}
-	</label>
-</div>

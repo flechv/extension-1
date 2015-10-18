@@ -88,6 +88,7 @@
 					loadingPlural: get('messagesLoadingPlural'),
 					foundFlightsSingular: get('messagesFoundFlightsSingular'),
 					foundFlightsPlural: get('messagesFoundFlightsPlural'),
+					returnsBeforeDepartures: get('messagesReturnsBeforeDepartures')
 				}
 			};
 		})());

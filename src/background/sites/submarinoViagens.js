@@ -451,7 +451,7 @@
 
 	// unfortunately we can only request once per session
 	// TODO: see if it's possible to manage multiple sessions
-	SubmarinoViagens.prototype = new RequestManager('SubmarinoViagens', 'Submarino Viagens', 1000, 1);
+	SubmarinoViagens.prototype = new RequestManager('SubmarinoViagens', 'Submarino Viagens', 1000, 1, 3);
 	SubmarinoViagens.prototype.constructor = SubmarinoViagens;
 	SubmarinoViagens.prototype.parent = RequestManager.prototype;
 

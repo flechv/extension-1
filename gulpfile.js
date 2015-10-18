@@ -80,7 +80,9 @@ gulp.task('background', function () {
 		}))
 		//.pipe(sourcemaps.init())
 		.pipe(concat(distPaths.background))
-		.pipe(uglify())
+		.pipe(uglify().on('error', function (err) {
+			console.log(err);
+		}))
 		//.pipe(sourcemaps.write())
 		.pipe(gulp.dest(distPaths.dest))
 });
@@ -106,7 +108,9 @@ gulp.task('popup:js', function () {
 			console.log(err);
 		}))
 		.pipe(concat(distPaths.scripts))
-		.pipe(uglify())
+		.pipe(uglify().on('error', function (err) {
+			console.log(err);
+		}))
 		//.pipe(sourcemaps.write())
 		.pipe(gulp.dest(distPaths.dest))
 });

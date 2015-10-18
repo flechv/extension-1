@@ -391,6 +391,9 @@
 			else if (model.departures.length === 0)
 				vm.messageError = c.messages.selectAtLeastOneDeparture;
 
+			else if (model.returns.length > 0 && Math.max.apply(null, model.returns) < Math.min.apply(null, model.departures))
+				vm.messageError = c.messages.returnsBeforeDepartures;
+
 			else if (model.adults === 0 && model.children === 0 && model.infants === 0)
 				vm.messageError = c.messages.selectAtLeastOnePassenger;
 
@@ -399,18 +402,30 @@
 
 		function setupDatepickers() {
 			$scope.$watchCollection('vm.model.departures', function (newVal, oldVal) {
-				if (newVal && newVal.length > 0)
-					vm.minDeparture = Math.min.apply(null, newVal);
-				else
-					vm.minDeparture = new Date().setHours(0, 0, 0, 0);
+				var today = new Date();
+				var minDeparture = (newVal && newVal.length > 0)
+					? new Date(Math.min.apply(null, newVal))
+					: today;
 
-				vm.initDateDeparture = new Date(vm.minDeparture);
+				vm.initDateDeparture = minDeparture;
 
 				if (vm.model.returns && vm.model.returns.length > 0) {
-					vm.initDateReturn = new Date(Math.min.apply(null, vm.model.returns));
+					if (!vm.initDateReturn) {
+						vm.initDateReturn = new Date(Math.min.apply(null, vm.model.returns));
+					}
 				} else {
-					vm.initDateReturn = new Date(vm.minDeparture);
+					var previousReturn = vm.initDateReturn || today;
+
+					if (minDeparture.getFullYear() != previousReturn.getFullYear() ||
+						minDeparture.getMonth() != previousReturn.getMonth()) {
+						vm.initDateReturn = new Date(minDeparture.getFullYear(), minDeparture.getMonth(), 1);
+					} else {
+						vm.initDateReturn = previousReturn;
+					}
 				}
+
+				if (vm.initDateReturn < today)
+					vm.initDateReturn = today;
 			});
 		}
 

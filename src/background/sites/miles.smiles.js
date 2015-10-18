@@ -305,7 +305,7 @@
 		return self;
 	}
 
-	Smiles.prototype = new RequestManager('Smiles', 'Smiles - Milhas Gol', 2000, 5);
+	Smiles.prototype = new RequestManager('Smiles', 'Smiles - Milhas Gol', 2000, 5, 4);
 	Smiles.prototype.constructor = Smiles;
 	Smiles.prototype.parent = RequestManager.prototype;
 

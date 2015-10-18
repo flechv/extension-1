@@ -1,0 +1,13 @@
+<!-- sites -->
+<div class="form-group">
+	<label for="site" class="col-xs-2 control-label" uib-tooltip="{{ ::tooltips.site }}">{{ ::labels.site }}</label>
+	<div class="col-xs-10 form-single-select">
+		<ui-select ng-model="vm.model.site" id="site" name="site" required>
+			<ui-select-match placeholder="{{ ::placeholders.site }}">{{ $select.selected.text }}</ui-select-match>
+
+			<ui-select-choices repeat="item.id as item in vm.sites | filter: $select.search">
+				<div ng-bind-html="item.text | highlight: $select.search"></div>
+			</ui-select-choices>
+		</ui-select>
+	</div>
+</div>

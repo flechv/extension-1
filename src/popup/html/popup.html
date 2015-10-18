@@ -7,7 +7,19 @@
         <link rel="stylesheet" href="app.css" />
 	</head>
 	<body ng-app="app" ng-csp="" ng-controller="Controller as vm">
-        <div ng-include="'popup.form.html'" id="popup-form" ng-show="vm.showForm" class="row"></div>
+        <div id="popup-form" ng-show="vm.showForm" class="row">
+			<div class="col-xs-12">
+				<form name="form" class="form-horizontal">
+					<div ng-include="'popup.airports.html'"></div>
+					<div ng-include="'popup.dates.html'"></div>
+					<div ng-include="'popup.sites.html'"></div>
+					<div ng-include="'popup.history.html'"></div>
+					<div ng-include="'popup.optional.html'"></div>
+					<div ng-include="'popup.buttons.html'"></div>
+				</form>
+			</div>
+		</div>
+		
 		<div ng-include="'popup.info.html'" id="popup-info" class="row"></div>
         <div ng-include="'popup.results.html'" ng-if="vm.gridOptions.data.length > 0" class="row"></div>
 

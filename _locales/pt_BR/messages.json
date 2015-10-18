@@ -203,6 +203,9 @@
 	"messagesFoundFlightsPlural": {
 		"message": "NUMBER_OF_FLIGHTS datas encontradas"
 	},
+	"messagesReturnsBeforeDepartures": {
+		"message": "Selecione uma data de volta depois da data de ida"
+	},
 	"labelResetDates": {
 		"message": "Limpar"
 	},

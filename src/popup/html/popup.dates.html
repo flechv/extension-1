@@ -1,0 +1,44 @@
+<!-- departure dates -->
+<div class="form-group">
+	<label for="departures" class="col-xs-2 control-label" uib-tooltip-html="tooltips.departures">{{ ::labels.departures }}</label>
+	<div class="col-xs-10">
+		<uib-datepicker multi-select="vm.model.departures" ng-model="vm.activeDeparture" init-date="vm.initDateDeparture" select-range="{{ vm.departuresRange }}" id="departures" name="departures" class="datepicker"></uib-datepicker>
+
+		<span class="btn btn-default btn-sm pull-left resetDate" ng-click="vm.model.departures = []" uib-tooltip="{{ ::tooltips.resetDates }}">{{ ::labels.resetDates }}</span>
+		<label class="pull-right small secondary" uib-tooltip="{{ ::tooltips.range }}" tooltip-placement="left">
+			<input type="checkbox" ng-model="vm.departuresRange" />
+			<span class="checkbox-material"><span class="check"></span></span> {{ ::labels.range }}
+		</label>
+	</div>
+</div>
+
+<div class="form-group">
+	<uib-tabset vertical="true" type="pills">
+		
+		<!-- return dates -->
+		<uib-tab heading="{{ ::labels.returns }}" uib-tooltip="{{ ::tooltips.returns }}" active="vm.showReturns">
+			<div class="col-xs-10">
+				<uib-datepicker multi-select="vm.model.returns" ng-model="vm.activeReturn" init-date="vm.initDateReturn" select-range="{{ vm.returnsRange }}" id="returns" name="returns" class="datepicker"></uib-datepicker>
+
+				<span class="btn btn-default btn-sm pull-left resetDate" ng-click="vm.model.returns = []" uib-tooltip="{{ ::tooltips.resetDates }}">{{ ::labels.resetDates }}</span>
+				<label class="pull-right small secondary" uib-tooltip="{{ ::tooltips.range }}" tooltip-placement="left">
+					<input type="checkbox" ng-model="vm.returnsRange" />
+					<span class="checkbox-material"><span class="check"></span></span> {{ ::labels.range }}
+				</label>
+			</div>
+		</uib-tab>
+
+		<!-- duration -->
+		<uib-tab heading="{{ ::labels.qtyDays }}" uib-tooltip="{{ ::tooltips.qtyDays }}" active="vm.showQtyDays" select="vm.broadcast('focusQtyDays')">
+			<div class="col-xs-10" style="margin-top: 28px;">
+				<ui-select multiple ng-model="vm.model.qtyDays" focus-on="focusQtyDays" on-select="vm.broadcast('focusQtyDays')" id="qtyDays" name="qtyDays" required>
+					<ui-select-match placeholder="{{ ::placeholders.qtyDays }}">{{ $item.text }}</ui-select-match>
+
+					<ui-select-choices repeat="item.id as item in vm.days | filter: $select.search">
+						<div ng-bind-html="item.text | highlight: $select.search"></div>
+					</ui-select-choices>
+				</ui-select>
+			</div>
+		</uib-tab>
+	</uib-tabset>
+</div>
