@@ -296,6 +296,8 @@
 
 			setupDatepickers();
 			setupUiGrid();
+			
+			$scope.$on('on-error', deleteHistory);
 		}
 
 		function start() {

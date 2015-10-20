@@ -42,7 +42,11 @@ var paths = {
     ],
 	scripts: [
         'src/popup/app.module.js',
-        'src/popup/app.[^module]*.js',
+        'src/popup/app.constants.js',
+        'src/popup/app.config.js',
+        'src/popup/app.run.js',
+        'src/popup/app.controller.js',
+        'src/popup/app.exception.js',
         'src/popup/filters/**/*.js',
     ],
 	less: 'src/popup/app.less',

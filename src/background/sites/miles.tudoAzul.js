@@ -12,7 +12,6 @@
 		self.sendRequest = function (request, successCallback, failCallback, time) {
 			self.parent.sendRequest({
 				request: request,
-				method: 'POST',
 				url: getServiceUrl(request),
 				headers: {
 					'Content-type': 'application/x-www-form-urlencoded'
