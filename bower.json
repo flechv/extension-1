@@ -25,6 +25,7 @@
     "bootstrap": "~3.3.5",
     "gm.datepickerMultiSelect": "gm.datepicker-multi-select#~1.0.8",
     "ui-select": "angular-ui-select#~0.13.2",
-    "angular": "~1.4.7"
+    "angular": "~1.4.7",
+    "ngInfiniteScroll": "~1.2.1"
   }
 }

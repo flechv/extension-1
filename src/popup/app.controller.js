@@ -11,6 +11,11 @@
 	function Controller($scope, $filter, i18nService, c, gridConst, gridGroupConst) {
 		var vm = this;
 
+		var backgroundPage = getBackgroundPage();
+		vm.airports = backgroundPage.airports;
+		vm.airportsById = backgroundPage.airportsById;
+		vm.airlines = backgroundPage.airlines;
+
 		vm.model = {
 			origins: [],
 			destinations: [],
@@ -23,206 +28,6 @@
 			adults: 1,
 			children: 0,
 			infants: 0
-		};
-
-		vm.gridOptions = {
-			data: [],
-			enableFiltering: false,
-			enableGroupHeaderSelection: true,
-			enableGridMenu: true,
-			treeRowHeaderAlwaysVisible: false,
-			enableHorizontalScrollbar: gridConst.scrollbars.NEVER,
-			horizontalScrollThreshold: 6,
-			maxVisibleColumnCount: 10,
-			minRowsToShow: 30,
-			virtualizationThreshold: 30,
-			// see more on: http://ui-grid.info/docs/#/tutorial/216_expandable_grid
-			expandableRowTemplate: 'expandableRowTemplate.html',
-			expandableRowHeight: 130,
-
-			// see more on: http://ui-grid.info/docs/#/api/ui.grid.class:GridOptions.columnDef
-			columnDefs: [
-				{
-					name: 'key',
-					field: 'key',
-					type: 'string',
-					displayName: c.grid.originDestination,
-					headerTooltip: c.grid.originDestinationTooltip,
-					width: '*',
-					minWidth: 80,
-					/*
-					grouping: {
-						groupPriority: 0
-					},
-					*/
-					cellTooltip: true,
-					cellTemplate: 'groupingTemplate.html',
-					customTreeAggregationFinalizerFn: function (aggregation) {
-						aggregation.rendered = aggregation.groupVal;
-					},
-					groupingShowAggregationMenu: false,
-					enableHiding: false
-				},
-				{
-					name: 'departure',
-					field: 'departure',
-					type: 'number',
-					displayName: c.grid.departure,
-					headerTooltip: c.grid.departureTooltip,
-					width: '*',
-					cellTooltip: true,
-					cellTemplate: 'groupingTemplate.html',
-					cellFilter: 'toDate',
-					customTreeAggregationFinalizerFn: function (aggregation) {
-						aggregation.rendered = aggregation.groupVal;
-					},
-					groupingShowAggregationMenu: false,
-					enableHiding: false
-				},
-				{
-					name: 'return',
-					field: 'return',
-					type: 'number',
-					displayName: c.grid['return'],
-					headerTooltip: c.grid.returnTooltip,
-					width: '*',
-					cellTooltip: true,
-					cellTemplate: 'groupingTemplate.html',
-					cellFilter: 'toDate',
-					customTreeAggregationFinalizerFn: function (aggregation) {
-						aggregation.rendered = aggregation.groupVal;
-					},
-					groupingShowAggregationMenu: false,
-					enableHiding: true
-				},
-				{
-					name: 'prices0',
-					field: 'prices[0]',
-					type: 'number',
-					displayName: c.grid.nonStop,
-					headerTooltip: c.grid.nonStopTooltip,
-					width: '*',
-					cellTooltip: true,
-					cellFilter: 'toPrice:this',
-					cellTemplate: 'priceTemplate.html',
-					treeAggregationType: gridGroupConst.aggregation.MIN,
-					customTreeAggregationFinalizerFn: function (aggregation) {
-						aggregation.rendered = aggregation.value;
-					},
-					enableColumnMenu: false,
-					enableHiding: true
-				},
-				{
-					name: 'prices1',
-					field: 'prices[1]',
-					type: 'number',
-					displayName: c.grid.oneStop,
-					headerTooltip: c.grid.oneStopTooltip,
-					width: '*',
-					cellTooltip: true,
-					cellFilter: 'toPrice:this',
-					cellTemplate: 'priceTemplate.html',
-					treeAggregationType: gridGroupConst.aggregation.MIN,
-					customTreeAggregationFinalizerFn: function (aggregation) {
-						aggregation.rendered = aggregation.value;
-					},
-					enableColumnMenu: false,
-					enableHiding: true
-				},
-				{
-					name: 'prices2',
-					field: 'prices[2]',
-					type: 'number',
-					displayName: c.grid.twoStops,
-					headerTooltip: c.grid.twoStopsTooltip,
-					width: '*',
-					cellTooltip: true,
-					cellFilter: 'toPrice:this',
-					cellTemplate: 'priceTemplate.html',
-					treeAggregationType: gridGroupConst.aggregation.MIN,
-					customTreeAggregationFinalizerFn: function (aggregation) {
-						aggregation.rendered = aggregation.value;
-					},
-					enableColumnMenu: false,
-					enableHiding: true
-				}
-			],
-
-			//see more on: http://ui-grid.info/docs/#/api/ui.grid.exporter.api:GridOptions
-			exporterCsvFilename: 'genghis.csv',
-			//exporterCsvColumnSeparator: ';',
-			exporterFieldCallback: function (grid, row, col, value) {
-				switch (col.name) {
-				case 'departure':
-				case 'return':
-					return $filter('toDate')(value);
-
-				case 'prices0':
-				case 'prices1':
-				case 'prices2':
-					return $filter('toPrice')(value);
-
-				default:
-					return value;
-				}
-			},
-			exporterMenuPdf: false,
-			exporterCsvLinkElement: angular.element(document.querySelectorAll(".custom-csv-link-location")),
-			onRegisterApi: function (gridApi) {
-				vm.gridApi = gridApi;
-			}
-		};
-
-		vm.subGridOptions = {
-			data: [],
-			columnDefs: [
-				{
-					name: 'company',
-					field: 'company',
-					type: 'string',
-					displayName: c.grid.company,
-					headerTooltip: c.grid.companyTooltip,
-					width: '*',
-					cellTooltip: true,
-					enableHiding: false
-				},
-				{
-					name: 'prices0',
-					field: 'prices[0]',
-					type: 'number',
-					displayName: c.grid.nonStop,
-					headerTooltip: c.grid.nonStopTooltip,
-					width: '*',
-					cellTooltip: true,
-					cellFilter: 'toPrice:this',
-					cellTemplate: 'priceTemplate.html',
-					enableColumnMenu: false
-				},
-				{
-					name: 'prices1',
-					field: 'prices[1]',
-					type: 'number',
-					displayName: c.grid.oneStop,
-					headerTooltip: c.grid.oneStopTooltip,
-					width: '*',
-					cellTooltip: true,
-					cellFilter: 'toPrice:this',
-					cellTemplate: 'priceTemplate.html',
-					enableColumnMenu: false
-				},
-				{
-					name: 'prices2',
-					field: 'prices[2]',
-					type: 'number',
-					displayName: c.grid.twoStops,
-					headerTooltip: c.grid.twoStopsTooltip,
-					width: '*',
-					cellTooltip: true,
-					cellFilter: 'toPrice:this',
-					cellTemplate: 'priceTemplate.html',
-					enableColumnMenu: false
-				}
-			]
 		};
 
 		vm.showForm = true;
@@ -242,20 +47,13 @@
 		vm.broadcast = broadcast;
 		vm.updateResults = updateResults;
 
-		activate();
+		activate(backgroundPage.BG);
 
 		/////////////
 
-		function activate() {
-			var backgroundPage = getBackgroundPage(),
-				bg = backgroundPage.BG,
-				i;
-			
+		function activate(bg) {
+			bg = bg || getBackgroundPage().BG,
 			bg.hideBadge();
-
-			vm.airports = backgroundPage.airports;
-			vm.airportsById = backgroundPage.airportsById;
-			vm.airlines = backgroundPage.airlines;
 
 			vm.days = [{
 				id: -1,
@@ -268,7 +66,7 @@
 				text: '1 ' + c.days.singular
             }];
 
-			for (i = 2; i <= 120; i++) {
+			for (var i = 2; i <= 120; i++) {
 				vm.days.push({
 					id: i,
 					text: i + ' ' + c.days.plural
@@ -280,23 +78,24 @@
 			vm.savedSearches = bg.getRequests();
 			if (vm.savedSearches && vm.savedSearches.length > 0) {
 				var recentSearch = vm.savedSearches[0];
-				
+
 				// saved data from old version, different format, so clear all storage
 				if (!recentSearch.site) // we had field store instead of site
-					deleteHistory();
+					deleteHistory(bg);
 				else
 					updateForm(recentSearch);
-			}
-			else {
+			} else {
 				updateForm();
 			}
+
+			setupInfiniteScroll();
+			setupDatepickers();
+			setupUiGridLang();
+			setupUIGrids();
 			
 			vm.initialNumberOfFlights = bg.getInitialNumberOfFlights() || 0;
 			updateResults(bg.getResults());
 
-			setupDatepickers();
-			setupUiGrid();
-			
 			$scope.$on('on-error', deleteHistory);
 		}
 
@@ -307,17 +106,19 @@
 			vm.showForm = false;
 			vm.gridOptions.data = [];
 
-			vm.initialNumberOfFlights = getBg().initServer(model);
+			vm.initialNumberOfFlights = getBackgroundPage().BG.initServer(model);
 		}
 
-		function stop() {
-			getBg().stopServer();
+		function stop(bg) {
+			bg = bg || getBackgroundPage().BG;
+			bg.stopServer();
 		}
 
-		function deleteHistory() {
-			getBg().deleteHistory();
+		function deleteHistory(bg) {
+			bg = bg || getBackgroundPage().BG;
+			bg.deleteHistory();
 
-			stop();
+			stop(bg);
 			updateForm();
 
 			vm.savedSearches = [];
@@ -332,8 +133,12 @@
 
 			var today = new Date().setHours(0, 0, 0, 0);
 			vm.model = {
-				origins: request.origins || [],
-				destinations: request.destinations || [],
+				origins: (request.origins || []).filter(function (a) { 
+					return !!a;
+				}),
+				destinations: (request.destinations || []).filter(function (a) {
+					return !!a;
+				}),
 				departures: (request.departures || []).filter(function (d) {
 					return d >= today;
 				}),
@@ -405,9 +210,7 @@
 		function setupDatepickers() {
 			$scope.$watchCollection('vm.model.departures', function (newVal, oldVal) {
 				var today = new Date();
-				var minDeparture = (newVal && newVal.length > 0)
-					? new Date(Math.min.apply(null, newVal))
-					: today;
+				var minDeparture = (newVal && newVal.length > 0) ? new Date(Math.min.apply(null, newVal)) : today;
 
 				vm.initDateDeparture = minDeparture;
 
@@ -431,37 +234,252 @@
 			});
 		}
 
-		function getBg() {
-			return getBackgroundPage().BG;
-		}
-
 		function getBackgroundPage() {
 			return chrome.extension.getBackgroundPage();
 		}
 		
-		function setupUiGrid() {
+		function setupInfiniteScroll() {
+			vm.infiniteScroll = {
+				distance: 0.5,
+				numToAdd: 20,
+				currentItems: 20,
+				currentItems1: 20
+			};
+			
+			vm.addMoreItems = function() {
+				vm.infiniteScroll.currentItems += vm.infiniteScroll.numToAdd;
+			};
+			
+			vm.addMoreItems1 = function() {
+				vm.infiniteScroll.currentItems1 += vm.infiniteScroll.numToAdd;
+			};
+		}
+
+		function setupUiGridLang() {
 			var userLang = chrome.i18n.getUILanguage().toLowerCase();
 			var availableLangs = i18nService.getAllLangs();
-			
+
 			var lang, regionLang;
-			for (var i = 0 ; i < availableLangs.length; i++) {
+			for (var i = 0; i < availableLangs.length; i++) {
 				if (availableLangs[i] === userLang) {
 					lang = userLang;
 					break;
 				}
-				
+
 				if (getRegion(availableLangs[i]) === getRegion(userLang)) {
 					regionLang = availableLangs[i];
 				}
 			}
-			
+
 			lang = lang || regionLang || 'en';
 			i18nService.setCurrentLang(lang);
 		}
-		
+
 		// example: 'en_US' or 'en-GB' return 'en'
 		function getRegion(lang) {
 			return !lang ? '' : lang.split(/[_-]/)[0];
+		}
+
+		function setupUIGrids() {
+			vm.gridOptions = {
+				data: [],
+				enableFiltering: false,
+				enableGroupHeaderSelection: true,
+				enableGridMenu: true,
+				treeRowHeaderAlwaysVisible: false,
+				enableHorizontalScrollbar: gridConst.scrollbars.NEVER,
+				horizontalScrollThreshold: 6,
+				maxVisibleColumnCount: 10,
+				minRowsToShow: 30,
+				virtualizationThreshold: 30,
+				// see more on: http://ui-grid.info/docs/#/tutorial/216_expandable_grid
+				expandableRowTemplate: 'expandableRowTemplate.html',
+				expandableRowHeight: 130,
+
+				// see more on: http://ui-grid.info/docs/#/api/ui.grid.class:GridOptions.columnDef
+				columnDefs: [
+					{
+						name: 'key',
+						field: 'key',
+						type: 'string',
+						displayName: c.grid.originDestination,
+						headerTooltip: c.grid.originDestinationTooltip,
+						width: '*',
+						minWidth: 80,
+						/*
+						grouping: {
+							groupPriority: 0
+						},
+						*/
+						cellTooltip: true,
+						cellTemplate: 'groupingTemplate.html',
+						customTreeAggregationFinalizerFn: function (aggregation) {
+							aggregation.rendered = aggregation.groupVal;
+						},
+						groupingShowAggregationMenu: false,
+						enableHiding: false
+					},
+					{
+						name: 'departure',
+						field: 'departure',
+						type: 'number',
+						displayName: c.grid.departure,
+						headerTooltip: c.grid.departureTooltip,
+						width: '*',
+						cellTooltip: true,
+						cellTemplate: 'groupingTemplate.html',
+						cellFilter: 'toDate',
+						customTreeAggregationFinalizerFn: function (aggregation) {
+							aggregation.rendered = aggregation.groupVal;
+						},
+						groupingShowAggregationMenu: false,
+						enableHiding: false
+					},
+					{
+						name: 'return',
+						field: 'return',
+						type: 'number',
+						displayName: c.grid['return'],
+						headerTooltip: c.grid.returnTooltip,
+						width: '*',
+						cellTooltip: true,
+						cellTemplate: 'groupingTemplate.html',
+						cellFilter: 'toDate',
+						customTreeAggregationFinalizerFn: function (aggregation) {
+							aggregation.rendered = aggregation.groupVal;
+						},
+						groupingShowAggregationMenu: false,
+						enableHiding: true
+					},
+					{
+						name: 'prices0',
+						field: 'prices[0]',
+						type: 'number',
+						displayName: c.grid.nonStop,
+						headerTooltip: c.grid.nonStopTooltip,
+						width: '*',
+						cellTooltip: true,
+						cellFilter: 'toPrice:this',
+						cellTemplate: 'priceTemplate.html',
+						treeAggregationType: gridGroupConst.aggregation.MIN,
+						customTreeAggregationFinalizerFn: function (aggregation) {
+							aggregation.rendered = aggregation.value;
+						},
+						enableColumnMenu: false,
+						enableHiding: true
+					},
+					{
+						name: 'prices1',
+						field: 'prices[1]',
+						type: 'number',
+						displayName: c.grid.oneStop,
+						headerTooltip: c.grid.oneStopTooltip,
+						width: '*',
+						cellTooltip: true,
+						cellFilter: 'toPrice:this',
+						cellTemplate: 'priceTemplate.html',
+						treeAggregationType: gridGroupConst.aggregation.MIN,
+						customTreeAggregationFinalizerFn: function (aggregation) {
+							aggregation.rendered = aggregation.value;
+						},
+						enableColumnMenu: false,
+						enableHiding: true
+					},
+					{
+						name: 'prices2',
+						field: 'prices[2]',
+						type: 'number',
+						displayName: c.grid.twoStops,
+						headerTooltip: c.grid.twoStopsTooltip,
+						width: '*',
+						cellTooltip: true,
+						cellFilter: 'toPrice:this',
+						cellTemplate: 'priceTemplate.html',
+						treeAggregationType: gridGroupConst.aggregation.MIN,
+						customTreeAggregationFinalizerFn: function (aggregation) {
+							aggregation.rendered = aggregation.value;
+						},
+						enableColumnMenu: false,
+						enableHiding: true
+					}
+				],
+
+				//see more on: http://ui-grid.info/docs/#/api/ui.grid.exporter.api:GridOptions
+				exporterCsvFilename: 'genghis.csv',
+				//exporterCsvColumnSeparator: ';',
+				exporterFieldCallback: function (grid, row, col, value) {
+					switch (col.name) {
+					case 'departure':
+					case 'return':
+						return $filter('toDate')(value);
+
+					case 'prices0':
+					case 'prices1':
+					case 'prices2':
+						return $filter('toPrice')(value);
+
+					default:
+						return value;
+					}
+				},
+				exporterMenuPdf: false,
+				exporterCsvLinkElement: angular.element(document.querySelectorAll(".custom-csv-link-location")),
+				onRegisterApi: function (gridApi) {
+					vm.gridApi = gridApi;
+				}
+			};
+
+			vm.subGridOptions = {
+				data: [],
+				columnDefs: [
+					{
+						name: 'company',
+						field: 'company',
+						type: 'string',
+						displayName: c.grid.company,
+						headerTooltip: c.grid.companyTooltip,
+						width: '*',
+						cellTooltip: true,
+						enableHiding: false
+					},
+					{
+						name: 'prices0',
+						field: 'prices[0]',
+						type: 'number',
+						displayName: c.grid.nonStop,
+						headerTooltip: c.grid.nonStopTooltip,
+						width: '*',
+						cellTooltip: true,
+						cellFilter: 'toPrice:this',
+						cellTemplate: 'priceTemplate.html',
+						enableColumnMenu: false
+					},
+					{
+						name: 'prices1',
+						field: 'prices[1]',
+						type: 'number',
+						displayName: c.grid.oneStop,
+						headerTooltip: c.grid.oneStopTooltip,
+						width: '*',
+						cellTooltip: true,
+						cellFilter: 'toPrice:this',
+						cellTemplate: 'priceTemplate.html',
+						enableColumnMenu: false
+					},
+					{
+						name: 'prices2',
+						field: 'prices[2]',
+						type: 'number',
+						displayName: c.grid.twoStops,
+						headerTooltip: c.grid.twoStopsTooltip,
+						width: '*',
+						cellTooltip: true,
+						cellFilter: 'toPrice:this',
+						cellTemplate: 'priceTemplate.html',
+						enableColumnMenu: false
+					}
+				]
+			};
 		}
 	}
 })();

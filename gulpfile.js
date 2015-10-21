@@ -32,13 +32,15 @@ var paths = {
         'src/background/sites/**/*.js'
     ],
 	libs: [
+        'bower_components/jquery/dist/jquery.min.js',
         'bower_components/angular/angular.min.js',
         'bower_components/angular-i18n/angular-locale_pt-br.js',
         'bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js',
         'bower_components/angular-sanitize/angular-sanitize.min.js',
         'bower_components/angular-ui-grid/ui-grid.min.js',
         'bower_components/gm.datepickerMultiselect/dist/gm.datepickerMultiselect.min.js',
-        'bower_components/ui-select/dist/select.min.js',
+	   	'bower_components/ngInfiniteScroll/build/ng-infinite-scroll.min.js',
+      	'src/popup/libs/select.js'
     ],
 	scripts: [
         'src/popup/app.module.js',

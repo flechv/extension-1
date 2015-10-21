@@ -98,7 +98,7 @@
 				if (c.time) c.request.times.push(c.time + ((new Date()) - init));
 				if (self.checkGiveUp(c.request, c.successCallback)) return;
 
-				if (xhr.status === 200) {
+				if (xhr.status === 200 || xhr.status === 201) {
 					try {
 						c.callback(xhr.responseText);
 					} catch (error) {

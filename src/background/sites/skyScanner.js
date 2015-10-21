@@ -12,7 +12,7 @@
 		self.sendRequest = function (request, successCallback, failCallback, time) {
 			self.parent.sendRequest({
 				request: request,
-				method: isSessionSet(response) ? 'GET' : 'POST',
+				method: isSessionSet(request) ? 'GET' : 'POST',
 				url: getServiceUrl(request),
 				headers: {
 					'Content-type': 'application/x-www-form-urlencoded; charset=UTF-8'
@@ -71,14 +71,14 @@
 		};
 
 		var getFormData = function (request) {
-			if (isSessionSet(response)) return;
+			if (isSessionSet(request)) return;
 			
 			var p = [];
 
 			// p.push('FROM_PAGE=SEARCH');
 			p.push('MergeCodeshares=false');
 			p.push('SkipMixedAirport=false');
-			p.push('OriginPlace=' + request.origin);
+			p.push('OriginPlace=' + request.origin + 'A');
 			p.push('DestinationPlace=' + request.destination);
 			p.push('OutboundDate=' + request.departure.toDateFormat('yyyy-MM-dd'));
 			p.push('InboundDate=' + (request.return !== null ? request.return.toDateFormat('yyyy-MM-dd') : ''));
@@ -107,11 +107,11 @@
 			for (var i = 0; i < response.Itineraries.length; i++) {
 				var itinerary = response.Itineraries[i];
 				var outboundLegId = itinerary.OutboundLegId;
-				var outboundLeg = response.OutboundItineraryLegs.filter(function (a) { return a.Id === outboundLegId })[0];
+				var outboundLeg = response.OutboundItineraryLegs.filter(function (a) { return a.Id == outboundLegId })[0];
 				
 				var outboundStops = outboundLeg.StopsCount;
 				var carrierId = outboundLeg.OperatingCarrierIds[0];
-				var carrier = response.Carriers.filter(function (c) { return c.Id === carrierId })[0];
+				var carrier = response.Carriers.filter(function (c) { return c.Id == carrierId })[0];
 				
 				var airline = carrier.Name;
 				if (!!carrier.DisplayCode) {
@@ -124,7 +124,7 @@
 				var inboundLeg = null;
 				var inboundStops = 0;
 				if (!!inboundLegId) {
-					inboundLeg = response.InboundItineraryLegs.filter(function (a) { return a.Id === inboundLegId })[0];
+					inboundLeg = response.InboundItineraryLegs.filter(function (a) { return a.Id == inboundLegId })[0];
 					inboundStops = inboundLeg.StopsCount;
 				}
 				
@@ -136,7 +136,7 @@
 					
 					for (var j = 0; j < quoteIds.length; j++) {
 						var quoteId = quoteIds[j];
-						var quote = response.Quotes.filter(function (a) { return a.Id === quoteId })[0];
+						var quote = response.Quotes.filter(function (a) { return a.Id == quoteId })[0];
 						
 						var price = quote.Price;
 
@@ -160,7 +160,7 @@
 		return self;
 	}
 
-	SkyScanner.prototype = new RequestManager('SkyScanner', 'Sky scanner', 2000, 3);
+	SkyScanner.prototype = new RequestManager('Skyscanner', 'Skyscanner', 2000, 3, 2.5);
 	SkyScanner.prototype.constructor = SkyScanner;
 	SkyScanner.prototype.parent = RequestManager.prototype;
 

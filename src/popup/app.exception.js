@@ -22,7 +22,7 @@
 			  url: 'https://mandrillapp.com/api/1.0/messages/send.json',
 			  data: {
 					// please don't use this key. Sign up for https://mandrill.com/signup/ It's free!
-					key: '9oF6KGko9Eg43LpgM2GCXA',
+					key: 'us96jMh0ZMSqw3fLknlsBA',
 					message: {
 						html: errorMessage,
 						subject: 'App error',

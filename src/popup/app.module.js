@@ -10,6 +10,7 @@
 			'ui.grid.grouping',
 			'ui.grid.expandable',
 			'ui.grid.exporter',
-            'gm.datepickerMultiSelect'
+            'gm.datepickerMultiSelect',
+			'infinite-scroll'
         ]);
 })();
