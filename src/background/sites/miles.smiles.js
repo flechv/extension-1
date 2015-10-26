@@ -1,4 +1,4 @@
-(function (RequestManager) {
+(function (RequestManager, airlinesByCode, APP_NAME) {
 	'use strict';
 
 	function Smiles() {
@@ -35,7 +35,7 @@
 		};
 
 		// private methods
-		var sendRequest = function(request, successCallback, failCallback, forceCongenere, info) {
+		var sendRequest = function(request, successCallback, failCallback, forceCongenere) {
 			self.parent.sendRequest({
 				request: request,
 				url: getServiceUrl(request, forceCongenere),
@@ -45,13 +45,14 @@
 				successCallback: successCallback,
 				failCallback: failCallback,
 				callback: function (responseText) {
-					var response = JSON.parse(responseText);
-					info = info || mapAjaxResponse(request, response, successCallback);
+					var response = !!responseText ? JSON.parse(responseText) : {};
+					
+					request.info = mapAjaxResponse(request, response, successCallback);
 
 					if (response.hasCongenereFligts && !forceCongenere)
-						sendRequest(request, successCallback, failCallback, true, info);
+						sendRequest(request, successCallback, failCallback, true);
 					else
-						successCallback(request, info);
+						successCallback(request, request.info);
 				},
 				formData: getFormData(request, forceCongenere)
 			});
@@ -64,7 +65,7 @@
 			p.push('p_p_lifecycle=2');
 			p.push('p_p_state=normal');
 			p.push('p_p_mode=view');
-			p.push('p_p_resource_id=' + (forceCongenere ? 'getFlightsFromCache' : 'getFlights'));
+			p.push('p_p_resource_id=getFlights');
 			p.push('p_p_cacheability=cacheLevelPage');
 			p.push('p_p_col_id=column-2');
 			p.push('p_p_col_count=2');
@@ -88,7 +89,7 @@
 						originAirport: request.origin,
 						destinationAirport: request.destination,
 						departureDay: request.departure,
-						returnDay: request.return,
+						returnDay: request.return || 0,
 						departureDayFinal: null,
 						returnDayFinal: null,
 						adults: request.adults,
@@ -106,7 +107,11 @@
 			// _smilessearchflightsresultportlet_WAR_smilesflightsportlet_JSONParameters={"getAvailableRequest":{"routes":[{"tripType":"ROUND_TRIP","origin":"RIO","destination":"FOR","originAirport":"RIO","destinationAirport":"FOR","departureDay":1449194400000,"returnDay":1449367200000,"departureDayFinal":null,"returnDayFinal":null,"adults":1,"infants":0,"children":0,"role":null,"currencyCode":"BRL","memberNumber":null,"memberChannel":null}],"forceCongenere":false}}
 		};
 
-		var mapAjaxResponse = function (request, response, callback) {
+		var mapAjaxResponse = function (request, response) {
+			var info = request.info || self.parent.returnDefault();
+			
+			if (!response.legs) return info;
+			
 			var isOneWay = request.return === null;
 
 			var departurePrices = [0, 0, 0];
@@ -128,7 +133,7 @@
 
 					var airline = 'Gol';
 					if (!!flight.carrierCode) {
-						var airlineObj = window.airlinesByCode[flight.carrierCode.toUpperCase()];
+						var airlineObj = airlinesByCode[flight.carrierCode.toUpperCase()];
 						if (!!airlineObj)
 							airline = airlineObj.text;
 					}
@@ -148,7 +153,6 @@
 				}
 			}
 
-			var info = self.parent.returnDefault();
 			self.parent.setTotalPrices(info, departurePrices, returnPrices, isOneWay);
 			self.parent.setAirlinePrices(info, byCompany);
 
@@ -178,9 +182,9 @@
 		return self;
 	}
 
-	Smiles.prototype = new RequestManager('Smiles', 'Smiles - Milhas Gol', 2000, 5, 4);
+	Smiles.prototype = new RequestManager('Smiles', 'Smiles - Milhas Gol', 2000, 5, 5);
 	Smiles.prototype.constructor = Smiles;
 	Smiles.prototype.parent = RequestManager.prototype;
 
 	new Smiles();
-})(window.RequestManager);
+})(window.RequestManager, window.airlinesByCode, window.APP_NAME);

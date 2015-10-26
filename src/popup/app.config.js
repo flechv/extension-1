@@ -5,20 +5,14 @@
         .module('app')
         .config(config);
 
-    config.$inject = ['$uibTooltipProvider', 'uiSelectConfig', 'uibDatepickerConfig'];
+    config.$inject = ['$uibTooltipProvider', 'uibDatepickerConfig', '$mdThemingProvider'];
 
-    function config($uibTooltipProvider, uiSelectConfig, uibDatepickerConfig) {
+    function config($uibTooltipProvider, uibDatepickerConfig, $mdThemingProvider) {
         $uibTooltipProvider.options({
             trigger: 'mouseenter',
             placement: 'right',
             animation: false,
             popupDelay: 150,
-            appendToBody: true
-        });
-
-        angular.extend(uiSelectConfig, {
-            theme: 'bootstrap',
-            resetSearchInput: true,
             appendToBody: true
         });
 
@@ -32,5 +26,11 @@
             minDate: new Date(),
             maxDate: oneYearFromNow,
         });
+		
+		$mdThemingProvider.theme('default')
+			.primaryPalette('light-blue', {
+				'default': '800',
+			})
+			.accentPalette('grey');
     }
 })();

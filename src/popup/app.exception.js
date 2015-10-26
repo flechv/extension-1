@@ -9,9 +9,6 @@
 
 	function factory($injector) {
 		return function (exception, cause) {
-			var $rootScope = $injector.get('$rootScope');
-			$rootScope.$broadcast('on-error');
-			
 			var errorMessage = angular.isString(exception) ? exception : exception.message;
 			if (angular.isDefined(cause))
 				errorMessage += ' (caused by "' + cause + '")';

@@ -1,4 +1,4 @@
-(function (RequestManager) {
+(function (RequestManager, airportsById, APP_NAME) {
 	'use strict';
 
 	function Viajanet() {
@@ -20,7 +20,8 @@
 				successCallback: successCallback,
 				failCallback: failCallback,
 				callback: function (responseText) {
-					var response = JSON.parse(responseText);
+					var response = !!responseText ? JSON.parse(responseText) : {};
+					
 					if (isSessionSet(response)) {
 						request.SearchKey = response.SearchKey;
 						request.SessionId = response.SessionId;
@@ -28,7 +29,8 @@
 					
 					// if not completed, try again. Status === 1 implies completed
 					// if it will give up, but there is some results, show it anyway
-					if (response.Status === 0 && !(self.parent.checkGiveUp(request) && response.PriceMatrix !== undefined))
+					if ((!response.Status || response.Status === 0) &&
+						!(self.parent.checkGiveUp(request) && response.PriceMatrix !== undefined))
 						throw 'Not ready yet. Try again later';
 
 					var info = mapAjaxResponse(request, response);
@@ -64,13 +66,13 @@
 			
 			var pp = [];
 			
-			pp.push('utm_source=' + window.APP_NAME);
+			pp.push('utm_source=' + APP_NAME);
 			pp.push('utm_medium=metasearch');
 			pp.push('utm_content=' + request.origin + '-' + request.destination);
 			
-			var brazil = window.airportsById['SAO'].country;
-			var isInternational = window.airportsById[request.origin].country !== brazil ||
-				window.airportsById[request.destination].country !== brazil;
+			var brazil = airportsById['SAO'].country;
+			var isInternational = airportsById[request.origin].country !== brazil ||
+				airportsById[request.destination].country !== brazil;
 			pp.push('utm_campaign=passagens+' + (isInternational ? 'internacionais' : 'nacionais'));
 
 			return PUBLIC_BASE_URL + p.join('/') + '/others/' + pp.join('&');
@@ -176,4 +178,4 @@
 	Viajanet.prototype.parent = RequestManager.prototype;
 
 	new Viajanet();
-})(window.RequestManager);
+})(window.RequestManager, window.airportsById, window.APP_NAME);

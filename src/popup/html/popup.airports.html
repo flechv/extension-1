@@ -1,41 +1,45 @@
 <!-- origin airports -->
-<div class="form-group" ng-class="{ 'has-error': form.origins.$dirty && vm.model.origins.length === 0 }">
-	<label for="origins" class="col-xs-2 control-label" uib-tooltip="{{ ::tooltips.origins }}">{{ ::labels.origins }}</label>
-	<div class="col-xs-10">
-		<ui-select multiple="true" ng-model="vm.model.origins" id="origins" name="origins" autofocus required focus-on="focusOrigins" on-select="vm.broadcast('focusOrigins')">
-			<ui-select-match placeholder="{{ ::placeholders.origins }}">
-				{{ $item | airport : vm.airportsById }}
-			</ui-select-match>
-			
-			<ui-select-choices repeat="item.id as item in vm.airports | filter : $select.search | limitTo : vm.infiniteScroll.currentItems track by $index" group-by="'country'" infinite-scroll="vm.addMoreItems()"
-    infinite-scroll-distance="vm.infiniteScroll.distance">
-				<span ng-bind-html="item.text | highlight: $select.search"></span>
-				<small class="ui-select-small">
-					<span ng-bind-html="item.text2 | highlight: $select.search"></span>
-					(<span ng-bind-html="item.id | highlight: $select.search"></span>)
-				</small>
-			</ui-select-choices>
-		</ui-select>
-	</div>
+<div layout ng-class="{ 'has-error': form.origins.$dirty && vm.model.origins.length === 0 }">
+	<label for="origins" uib-tooltip="{{ ::tooltips.origins }}" flex="15" class="md-chips-label">
+		{{ ::labels.origins }}
+	</label>
+
+	<md-chips ng-model="vm.model.origins" name="origins" id="origins" md-autocomplete-snap="" md-require-match="true" required flex>
+		<md-autocomplete md-selected-item="vm.selectedOrigin" md-search-text="vm.searchOrigin" md-items="item in vm.airports | filter : vm.searchOrigin" md-item-text="item.id" md-autoselect="true" placeholder="{{ ::placeholders.origins }}">
+			<span md-highlight-text="vm.searchOrigin" md-highlight-flags="i">
+				{{ item.text }}
+			</span>
+			<small md-highlight-text="vm.searchOrigin" md-highlight-flags="i" class="autocomplete-small">
+				 {{ item.text2 }} ({{ item.id }})
+			</small>
+		</md-autocomplete>
+
+		<md-chip-template>
+			<strong>{{ $chip.text }}</strong>
+			<em>({{ $chip.id }})</em>
+		</md-chip-template>
+	</md-chips>
 </div>
 
 <!-- destination airports -->
-<div class="form-group" ng-class="{ 'has-error': form.destinations.$dirty && (vm.model.destinations.length === 0 || (vm.model.origins.length === 1 && vm.model.destinations.length === 1 && vm.model.origins[0] === vm.model.destinations[0])) }">
-	<label for="destinations" class="col-xs-2 control-label" uib-tooltip="{{ ::tooltips.destinations }}">{{ ::labels.destinations }}</label>
-	<div class="col-xs-10">
-		<ui-select multiple="true" ng-model="vm.model.destinations" id="destinations" name="destinations" required focus-on="focusDestinations" on-select="vm.broadcast('focusDestinations')">
-			<ui-select-match placeholder="{{ ::placeholders.destinations }}">
-				{{ $item | airport : vm.airportsById }}
-			</ui-select-match>
-			
-			<ui-select-choices repeat="item.id as item in vm.airports | filter : $select.search | limitTo : vm.infiniteScroll.currentItems1 track by $index" group-by="'country'" infinite-scroll="vm.addMoreItems1()"
-    infinite-scroll-distance="vm.infiniteScroll.distance">
-				<span ng-bind-html="item.text | highlight: $select.search"></span>
-				<small class="ui-select-small">
-					<span ng-bind-html="item.text2 | highlight: $select.search"></span>
-					(<span ng-bind-html="item.id | highlight: $select.search"></span>)
-				</small>
-			</ui-select-choices>
-		</ui-select>
-	</div>
+<div layout ng-class="{ 'has-error': form.destinations.$dirty && (vm.model.destinations.length === 0 || (vm.model.origins.length === 1 && vm.model.destinations.length === 1 && vm.model.origins[0].id === vm.model.destinations[0].id)) }">
+	<label for="destinations" uib-tooltip="{{ ::tooltips.destinations }}" flex="15" class="md-chips-label">
+		{{ ::labels.destinations }}
+	</label>
+
+	<md-chips ng-model="vm.model.destinations" name="destinations" id="destinations" md-autocomplete-snap="" md-require-match="true" required flex>
+		<md-autocomplete md-selected-item="vm.selectedDestination" md-search-text="vm.searchDestination" md-items="item in vm.airports | filter : vm.searchDestination" md-item-text="item.id" md-autoselect="true" placeholder="{{ ::placeholders.destinations }}">
+			<span md-highlight-text="vm.searchDestination" md-highlight-flags="i">
+				{{ item.text }}
+			</span>
+			<small md-highlight-text="vm.searchDestination" md-highlight-flags="i" class="autocomplete-small">
+				 {{ item.text2 }} ({{ item.id }})
+			</small>
+		</md-autocomplete>
+
+		<md-chip-template>
+			<strong>{{ $chip.text }}</strong>
+			<em>({{ $chip.id }})</em>
+		</md-chip-template>
+	</md-chips>
 </div>

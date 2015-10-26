@@ -1,4 +1,4 @@
-(function () {
+(function (airlinesByName, airlinesByCode) {
 	'use strict';
 
 	function RequestManager(id, name, gapTimeServer, maxWaiting, order) {
@@ -23,8 +23,8 @@
 	RequestManager.prototype.checkGiveUp = function (request, callback) {
 		if (request.times.length <= 6) return false;
 
-		//over 3 attempts, give up
-		if (callback !== undefined) callback(request, this.returnDefault());
+		// over 3 attempts, give up
+		if (callback !== undefined) callback(request, request.info || this.returnDefault());
 		return true;
 	};
 
@@ -41,14 +41,23 @@
 
 	RequestManager.prototype.setAirlinePrices = function (info, pricesByCompany) {
 		for (var airline in pricesByCompany) {
-			var prices = pricesByCompany[airline];
-			for (var i = 0; i < prices.length; i++)
-				prices[i] = prices[i] > 0 ? prices[i] : Number.MAX_SAFE_INTEGER;
-
 			// in case of search by miles, we append these labels to show departure and return prices separately
 			var airlineName = airline.replace(this.departureLabel, '').replace(this.returnLabel, '');
 			var internalAirline = airlinesByName[airlineName] || (airlinesByCode[airlineName] || {});
 
+			var i, previousPrices = this.pricesDefault();
+			for (i = 0; i < info.byCompany.length; i++) {
+				if (info.byCompany[i].company === airline) {
+					previousPrices = info.byCompany[i].prices;
+					info.byCompany.splice(i, 1);
+					break;
+				}
+			}
+			
+			var prices = pricesByCompany[airline];
+			for (i = 0; i < prices.length; i++)
+				prices[i] = this.getMinPrice(prices[i], previousPrices[i]);
+			
 			info.byCompany.push({
 				company: airline,
 				code: internalAirline.code || airlineName,
@@ -146,4 +155,4 @@
 	RequestManager.prototype.returnLabel = ' - Volta';
 	
 	window.RequestManager = RequestManager;
-})();
+})(window.airlinesByName, window.airlinesByCode);

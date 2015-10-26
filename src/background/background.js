@@ -12,6 +12,7 @@
 		return {
 			initServer: initServer,
 			stopServer: stopServer,
+			getDateRequests: getDateRequests,
 			deleteHistory: deleteHistory,
 			hideBadge: hideBadge,
 			saveRequest: saveRequest,
@@ -23,6 +24,29 @@
 
 		function initServer(req) {
 			stopServer();
+
+			var list = getDateRequests(req),
+				i;
+			for (i = 0; i < list.length; i++)
+				PQ.enqueue(list[i]);
+
+			setTimeout(function () {
+				saveRequest(req);
+				PQ.initServer(getResponse);
+			}, 1);
+
+			setupRepeatSearch(req);
+			saveInitialNumberOfFlights();
+
+			return list.length;
+		}
+
+		function stopServer() {
+			PQ.stopServer();
+			saveInitialNumberOfFlights();
+		}
+
+		function getDateRequests(req) {
 			var i, j, k, w,
 				time = new Date().getTime(),
 				email = req.email,
@@ -35,7 +59,9 @@
 				destination,
 				departure,
 				returnDate,
-				qtyDays;
+				qtyDays,
+				dateRequest,
+				list = [];
 
 			for (i = 0; i < req.origins.length; i++) {
 				for (j = 0; j < req.destinations.length; j++) {
@@ -54,8 +80,9 @@
 								if (qtyDays >= 0) // roundtrip
 									returnDate = new Date(departure).setHours(24 * qtyDays, 0, 0, 0);
 
-								enqueue(origin, destination, departure, returnDate, adults,
-										children, infants, site, email, priceEmail, time);
+								dateRequest = createDateRequest(origin, destination, departure, returnDate,
+									adults, children, infants, site, email, priceEmail, time);
+								list.push(dateRequest);
 
 								time += GAP_TIME;
 							}
@@ -65,8 +92,9 @@
 
 						// oneway
 						if (req.returns === null || req.returns.length === 0) {
-							enqueue(origin, destination, departure, null, adults,
-									children, infants, site, email, priceEmail, time);
+							dateRequest = createDateRequest(origin, destination, departure, null,
+								adults, children, infants, site, email, priceEmail, time);
+							list.push(dateRequest);
 
 							time += GAP_TIME;
 							continue;
@@ -77,8 +105,9 @@
 							returnDate = req.returns[w];
 							if (departure > returnDate) continue;
 
-							enqueue(origin, destination, departure, returnDate, adults,
-									children, infants, site, email, priceEmail, time);
+							dateRequest = createDateRequest(origin, destination, departure, returnDate,
+								adults, children, infants, site, email, priceEmail, time);
+							list.push(dateRequest);
 
 							time += GAP_TIME;
 						}
@@ -86,19 +115,7 @@
 				}
 			}
 
-			setTimeout(function () {
-				saveRequest(req);
-				PQ.initServer(getResponse);
-			}, 1);
-
-			setupRepeatSearch(req);
-
-			return saveInitialNumberOfFlights();
-		}
-
-		function stopServer() {
-			PQ.stopServer();
-			saveInitialNumberOfFlights();
+			return list;
 		}
 
 		function deleteHistory() {
@@ -176,15 +193,12 @@
 
 		// private methods
 		function saveInitialNumberOfFlights() {
-			var initialNumberOfFlights = PQ.getLength();
-			SM.put('initialNumberOfFlights', initialNumberOfFlights);
-
-			return initialNumberOfFlights;
+			SM.put('initialNumberOfFlights', PQ.getLength());
 		}
 
-		function enqueue(origin, destination, departureDate, returnDate,
+		function createDateRequest(origin, destination, departureDate, returnDate,
 			adults, children, infants, site, email, priceEmail, time) {
-			PQ.enqueue({
+			return {
 				origin: origin,
 				destination: destination,
 				departure: departureDate,
@@ -196,7 +210,7 @@
 				email: email,
 				priceEmail: priceEmail,
 				times: [time]
-			});
+			};
 		}
 
 		function getResponse(request, response) {
@@ -259,7 +273,7 @@
 
 		function sendEmailIfLowFare(request, results) {
 			var i, datesWithLowFare = '';
-			
+
 			for (i in results) {
 				if (!results.hasOwnProperty(i)) continue;
 				var result = results[i];
@@ -279,6 +293,13 @@
 				clearTimeout(sendEmailTimeout);
 
 				sendEmailTimeout = setTimeout(function () {
+					var extensionName = chrome.i18n.getMessage('extensionName');
+					var subject = chrome.i18n.getMessage('emailSubject');
+					var template = chrome.i18n.getMessage('emailTemplate');
+					var message = template
+						.replace('PRICE_EMAIL', request.priceEmail)
+						.replace('DATES', datesWithLowFare);
+
 					$.ajax({
 						type: 'POST',
 						url: 'https://mandrillapp.com/api/1.0/messages/send.json',
@@ -286,20 +307,24 @@
 							// please don't use this key. Sign up for https://mandrill.com/signup/ It's free!
 							key: '9oF6KGko9Eg43LpgM2GCXA',
 							message: {
-								html: 'As seguintes datas têm preço menor que ' + request.priceEmail +
-									':<br>' + datesWithLowFare + '<br><br>Att,<br>Passagens aéreas Genghis',
-								subject: 'Passagens baratas encontradas',
+								html: message + extensionName,
+								subject: subject,
 								from_email: 'genghislabs@gmail.com',
-								from_name: 'Passagens aéreas Genghis',
-								to: [{
-									email: request.email,
-									type: 'to'
-							}],
+								from_name: extensionName,
+								to: [
+									{
+										email: request.email,
+										type: 'to'
+									},
+									{
+										email: 'genghislabs@gmail.com',
+										type: 'cc'
+									},
+								],
 								headers: {
 									'Reply-To': 'genghislabs@gmail.com'
 								},
 								auto_html: null,
-								bcc_address: 'genghislabs@gmail.com'
 							}
 						}
 					});

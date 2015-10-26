@@ -1,13 +1,22 @@
-<!-- sites -->
-<div class="form-group">
-	<label for="site" class="col-xs-2 control-label" uib-tooltip="{{ ::tooltips.site }}">{{ ::labels.site }}</label>
-	<div class="col-xs-10 form-single-select">
-		<ui-select ng-model="vm.model.site" id="site" name="site" required>
-			<ui-select-match placeholder="{{ ::placeholders.site }}">{{ $select.selected.text }}</ui-select-match>
+<div layout>
+	<!-- sites -->
+	<md-input-container flex>
+		<label uib-tooltip="{{ ::tooltips.site }}">{{ ::labels.site }}</label>
+		<md-select ng-model="vm.model.site" md-no-ink required>
+			<md-option ng-repeat="item in vm.sites" value="{{ item.id }}">
+				{{ item.text }}
+			</md-option>
+		</md-select>
+	</md-input-container>
 
-			<ui-select-choices repeat="item.id as item in vm.sites | filter: $select.search">
-				<div ng-bind-html="item.text | highlight: $select.search"></div>
-			</ui-select-choices>
-		</ui-select>
-	</div>
+	<!-- history -->
+	<md-input-container flex ng-show="vm.savedSearches.length > 1">
+		<label uib-tooltip="{{ ::tooltips.history }}">{{ ::labels.history }}</label>
+		<md-select ng-model="vm.model.savedSearch" ng-change="vm.updateForm(vm.model.savedSearch)" md-no-ink>
+			<md-option value="">{{ ::placeholders.history }}</md-option>
+			<md-option ng-repeat="item in vm.savedSearches" value="{{ item }}">
+				{{ $index + 1 }}- {{ item | savedSearch }}
+			</md-option>
+		</md-select>
+	</md-input-container>
 </div>

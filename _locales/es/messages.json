@@ -68,7 +68,7 @@
 	"placeholderHistory": {
 		"message": "Desea repetir una búsqueda antigua ?"
 	},
-	"labelSendEmailLowFares": {
+	"labelSendEmailCheapFlights": {
 		"message": "Avisar cuando el precio baje"
 	},
 	"labelEmail": {
@@ -82,6 +82,12 @@
 	},
 	"placeholderPriceEmail": {
 		"message": "Cuanto es el máximo que desea pagar ?"
+	},
+	"labelResetDates": {
+		"message": "Limpiar"
+	},
+	"tooltipResetDates": {
+		"message": "Limpiar fechas seleccionadas"
 	},
 	"labelChangePassengers": {
 		"message": "Cambiar la cantidad de pasajeros"
@@ -100,6 +106,15 @@
 	},
 	"labelStop": {
 		"message": "Detener"
+	},
+	"labelTabOneWay": {
+		"message": "Solamente ida"
+	},
+	"labelTabRoundTrip": {
+		"message": "Ida e vuelta"
+	},
+	"labelTabQtyDays": {
+		"message": "Duración del viaje"
 	},
 	"tooltipDonation": {
 		"message": "Haga una donación para continuar mejorando esta app!"
@@ -159,7 +174,7 @@
 		"message": "Compañia"
 	},
 	"daysOneWay": {
-		"message": "Solamente vuelos de ida"
+		"message": "Solamente ida"
 	},
 	"daysReturnSameDay": {
 		"message": "Volver el mismo día"
@@ -170,7 +185,7 @@
 	"daysPlural": {
 		"message": "días"
 	},
-	"messagesSendEmailLowFares": {
+	"messagesSendEmailCheapFlights": {
 		"message": "Voy a repetir la busca de tiempo en tiempo y mandará un email a <strong>EMAIL</strong> cuando alla por <strong>PRICE_EMAIL</strong> o menos (millas o dinero)."
 	},
 	"messagesSelectAtLeastOneOrigin": {
@@ -206,10 +221,13 @@
 	"messagesReturnsBeforeDepartures": {
 		"message": "Selecione una fecha de vuelta después de la fecha de salida"
 	},
-	"labelResetDates": {
-		"message": "Limpiar"
+	"messagesMaxDateRequests": {
+		"message": "Selecione hasta MAX_DATE_REQUESTS fechas"
 	},
-	"tooltipResetDates": {
-		"message": "Limpiar fechas seleccionadas"
+	"emailTemplate": {
+		"message": "Las siguientes fechas tienen precio menor que PRICE_EMAIL:<br>DATES<br><br>Atentamente,<br>"
+	},
+	"emailSubject": {
+		"message": "Vuelos baratos encontrados"
 	}
 }

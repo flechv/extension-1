@@ -3,14 +3,12 @@
 
     angular
         .module('app', [
-            'ngSanitize',
+			'ngMaterial',
             'ui.bootstrap',
-            'ui.select',
             'ui.grid',
 			'ui.grid.grouping',
 			'ui.grid.expandable',
 			'ui.grid.exporter',
             'gm.datepickerMultiSelect',
-			'infinite-scroll'
         ]);
 })();

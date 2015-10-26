@@ -1,4 +1,4 @@
-(function (RequestManager) {
+(function (RequestManager, APP_NAME) {
 	'use strict';
 
 	function TamFidelidade() {
@@ -198,9 +198,9 @@
 		return self;
 	}
 
-	TamFidelidade.prototype = new RequestManager('TamFidelidade', 'Multiplus - Milhas Tam', 2000, 5, 5);
+	TamFidelidade.prototype = new RequestManager('TamFidelidade', 'Multiplus - Milhas Tam', 2000, 5, 6);
 	TamFidelidade.prototype.constructor = TamFidelidade;
 	TamFidelidade.prototype.parent = RequestManager.prototype;
 
 	new TamFidelidade();
-})(window.RequestManager);
+})(window.RequestManager, window.APP_NAME);

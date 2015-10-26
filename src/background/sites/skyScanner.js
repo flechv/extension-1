@@ -1,4 +1,4 @@
-(function (RequestManager) {
+(function (RequestManager, airportsById, airlinesByCode, APP_NAME) {
 	'use strict';
 
 	function SkyScanner() {
@@ -21,17 +21,17 @@
 				successCallback: successCallback,
 				failCallback: failCallback,
 				callback: function (responseText) {
-					var response = JSON.parse(responseText);
+					var response = !!responseText ? JSON.parse(responseText) : {};
+					
 					if (isSessionSet(response))
 						request.SessionKey = response.SessionKey;
+
+					request.info = mapAjaxResponse(request, response);
 					
-					// if not completed, try again. results come in Quotes
-					if (response.Quotes.length === 0)
+					if (isIncomplete(response) && !self.parent.checkGiveUp(request))
 						throw 'Not ready yet. Try again later';
 
-					var info = mapAjaxResponse(request, response);
-
-					successCallback(request, info);
+					successCallback(request, request.info);
 				},
 				formData: getFormData(request)
 			});
@@ -56,7 +56,7 @@
 			pp.push('preferdirects=false');
 			pp.push('outboundaltsenabled=false');
 			pp.push('inboundaltsenabled=true');
-			pp.push('rtn=0');
+			pp.push('rtn=' + (request.return !== null ? 1 : 0));
 			pp.push('utm_source=' + APP_NAME);
 
 			return PUBLIC_BASE_URL + p.join('/') + '?' + pp.join('&');
@@ -72,14 +72,23 @@
 
 		var getFormData = function (request) {
 			if (isSessionSet(request)) return;
-			
+
 			var p = [];
 
-			// p.push('FROM_PAGE=SEARCH');
+			var originCode = request.origin;
+			var origin = airportsById[request.origin];
+			if (!!origin && !!origin.cityId)
+				originCode = origin.cityId;
+
+			var destinationCode = request.destination;
+			var destination = airportsById[request.destination];
+			if (!!destination && !!destination.cityId)
+				destinationCode = destination.cityId;
+
 			p.push('MergeCodeshares=false');
 			p.push('SkipMixedAirport=false');
-			p.push('OriginPlace=' + request.origin + 'A');
-			p.push('DestinationPlace=' + request.destination);
+			p.push('OriginPlace=' + originCode);
+			p.push('DestinationPlace=' + destinationCode);
 			p.push('OutboundDate=' + request.departure.toDateFormat('yyyy-MM-dd'));
 			p.push('InboundDate=' + (request.return !== null ? request.return.toDateFormat('yyyy-MM-dd') : ''));
 			p.push('Passengers.Adults=' + request.adults);
@@ -92,8 +101,7 @@
 			p.push('UserInfo.ChannelId=transportfunnel');
 			p.push('JourneyModes=flight');
 			p.push('PriceForPassengerGroup=true');
-			p.push('RequestId=ae7249de-f8ae-4df1-b620-6ae42bddf88e');
-			// p.push('DestinationAlternativePlaces=');
+			p.push('RequestId=' + generateUUID());
 
 			return p.join('&');
 
@@ -101,68 +109,121 @@
 		};
 
 		var mapAjaxResponse = function (request, response) {
-			var info = self.parent.returnDefault();
+			var info = request.info || self.parent.returnDefault();
 			var byCompany = {};
 
-			for (var i = 0; i < response.Itineraries.length; i++) {
+			if (!response || !response.Itineraries || response.Itineraries.length === 0)
+				return info;
+
+			var outboundLegsById = {},
+				inboundLegsById = {},
+				carriersById = {},
+				quotesById = {},
+				i;
+
+			for (i = 0; i < (response.OutboundItineraryLegs || []).length; i++) {
+				var outboundLeg = response.OutboundItineraryLegs[i];
+				outboundLegsById[outboundLeg.Id] = outboundLeg;
+			}
+
+			for (i = 0; i < (response.InboundItineraryLegs || []).length; i++) {
+				var inboundLeg = response.InboundItineraryLegs[i];
+				inboundLegsById[inboundLeg.Id] = inboundLeg;
+			}
+
+			for (i = 0; i < (response.Carriers || []).length; i++) {
+				var carrier = response.Carriers[i];
+				carriersById[carrier.Id] = carrier;
+			}
+
+			for (i = 0; i < (response.Quotes || []).length; i++) {
+				var quote = response.Quotes[i];
+				quotesById[quote.Id] = quote;
+			}
+
+			for (i = 0; i < response.Itineraries.length; i++) {
 				var itinerary = response.Itineraries[i];
-				var outboundLegId = itinerary.OutboundLegId;
-				var outboundLeg = response.OutboundItineraryLegs.filter(function (a) { return a.Id == outboundLegId })[0];
-				
-				var outboundStops = outboundLeg.StopsCount;
+
+				var outboundLeg = outboundLegsById[itinerary.OutboundLegId];
+				if (!outboundLeg || !outboundLeg.OperatingCarrierIds ||
+					outboundLeg.OperatingCarrierIds.length === 0) continue;
+
 				var carrierId = outboundLeg.OperatingCarrierIds[0];
-				var carrier = response.Carriers.filter(function (c) { return c.Id == carrierId })[0];
-				
+				var carrier = carriersById[carrierId];
+				if (!carrier) continue;
+
 				var airline = carrier.Name;
 				if (!!carrier.DisplayCode) {
-					var airlineObj = window.airlinesByCode[carrier.DisplayCode];
+					var airlineObj = airlinesByCode[carrier.DisplayCode];
 					if (!!airlineObj)
-						airline = airlineObj.text;	
+						airline = airlineObj.text;
 				}
-							
-				var inboundLegId = itinerary.InboundLegId;
-				var inboundLeg = null;
+
 				var inboundStops = 0;
-				if (!!inboundLegId) {
-					inboundLeg = response.InboundItineraryLegs.filter(function (a) { return a.Id == inboundLegId })[0];
+				var inboundLeg = inboundLegsById[itinerary.InboundLegId];
+				if (!!inboundLeg)
 					inboundStops = inboundLeg.StopsCount;
+
+				if (!itinerary.PricingOptions || itinerary.PricingOptions.length === 0) continue;
+
+				var quoteIds = itinerary.PricingOptions[0].QuoteIds;
+				if (!quoteIds || quoteIds.length === 0) continue;
+
+				var price = 0;
+				for (var j = 0; j < quoteIds.length; j++) {
+					var quoteId = quoteIds[j];
+					var quote = quotesById[quoteId];
+					if (!quote) continue;
+
+					price += quote.Price || 0;
 				}
-				
-				var stops = Math.max(outboundStops, inboundStops);
+
+				var stops = Math.max(outboundLeg.StopsCount, inboundStops);
 				stops = Math.min(Math.max(stops, 0), 2);
-				
-				if (!!itinerary.PricingOptions && itinerary.PricingOptions.length > 0) {
-					var quoteIds = itinerary.PricingOptions[0].QuoteIds;
-					
-					for (var j = 0; j < quoteIds.length; j++) {
-						var quoteId = quoteIds[j];
-						var quote = response.Quotes.filter(function (a) { return a.Id == quoteId })[0];
-						
-						var price = quote.Price;
 
-						if (!byCompany[airline]) byCompany[airline] = self.parent.pricesDefault();
-						byCompany[airline][stops] = self.parent.getMinPrice(byCompany[airline][stops], price);
+				if (!byCompany[airline]) byCompany[airline] = self.parent.pricesDefault();
+				byCompany[airline][stops] = self.parent.getMinPrice(byCompany[airline][stops], price);
 
-						info.prices[stops] = self.parent.getMinPrice(info.prices[stops], price);
-					}
-				}
+				info.prices[stops] = self.parent.getMinPrice(info.prices[stops], price);
 			}
 
 			self.parent.setAirlinePrices(info, byCompany);
 
 			return info;
 		};
-		
+
 		var isSessionSet = function (data) {
-			return !!data.SessionKey;
+			return !!data && !!data.SessionKey;
+		};
+
+		var isIncomplete = function (response) {
+			if (!response || !response.QuoteRequests || response.QuoteRequests.length === 0)
+				return true;
+			
+			for (var i = 0; i < response.QuoteRequests.length; i++)
+				if (response.QuoteRequests[i].HasLiveUpdateInProgress)
+					return true;
+
+			return false;
+		};
+
+		// see more on http://stackoverflow.com/questions/105034/create-guid-uuid-in-javascript/8809472#8809472
+		function generateUUID() {
+			var d = new Date().getTime();
+			var uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+				var r = (d + Math.random() * 16) % 16 | 0;
+				d = Math.floor(d / 16);
+				return (c == 'x' ? r : (r & 0x3 | 0x8)).toString(16);
+			});
+			return uuid;
 		};
 
 		return self;
 	}
 
-	SkyScanner.prototype = new RequestManager('Skyscanner', 'Skyscanner', 2000, 3, 2.5);
+	SkyScanner.prototype = new RequestManager('Skyscanner', 'Skyscanner', 2000, 4, 3);
 	SkyScanner.prototype.constructor = SkyScanner;
 	SkyScanner.prototype.parent = RequestManager.prototype;
 
-	// new SkyScanner();
-})(window.RequestManager);
+	new SkyScanner();
+})(window.RequestManager, window.airportsById, window.airlinesByCode, window.APP_NAME);

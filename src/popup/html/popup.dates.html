@@ -1,44 +1,63 @@
 <!-- departure dates -->
-<div class="form-group">
-	<label for="departures" class="col-xs-2 control-label" uib-tooltip-html="tooltips.departures">{{ ::labels.departures }}</label>
-	<div class="col-xs-10">
+<div layout>
+	<label for="departures" flex="15" uib-tooltip-html="tooltips.departures">
+		{{ ::labels.departures }}
+	</label>
+	<div flex>
 		<uib-datepicker multi-select="vm.model.departures" ng-model="vm.activeDeparture" init-date="vm.initDateDeparture" select-range="{{ vm.departuresRange }}" id="departures" name="departures" class="datepicker"></uib-datepicker>
 
-		<span class="btn btn-default btn-sm pull-left resetDate" ng-click="vm.model.departures = []" uib-tooltip="{{ ::tooltips.resetDates }}">{{ ::labels.resetDates }}</span>
-		<label class="pull-right small secondary" uib-tooltip="{{ ::tooltips.range }}" tooltip-placement="left">
+		<a href="" class="pull-left secondary" ng-click="vm.model.departures = []" uib-tooltip="{{ ::tooltips.resetDates }}">
+			{{ ::labels.resetDates }}
+		</a>
+		<label class="pull-right secondary" uib-tooltip="{{ ::tooltips.range }}" tooltip-placement="left">
 			<input type="checkbox" ng-model="vm.departuresRange" />
-			<span class="checkbox-material"><span class="check"></span></span> {{ ::labels.range }}
+			{{ ::labels.range }}
 		</label>
 	</div>
 </div>
 
-<div class="form-group">
-	<uib-tabset vertical="true" type="pills">
-		
-		<!-- return dates -->
-		<uib-tab heading="{{ ::labels.returns }}" uib-tooltip="{{ ::tooltips.returns }}" active="vm.showReturns">
-			<div class="col-xs-10">
+<md-tabs md-no-ink md-dynamic-height>
+	<!-- oneway -->
+	<md-tab label="{{ ::labels.tabOneWay }}">
+	</md-tab>
+	
+	<!-- return dates -->
+	<md-tab label="{{ ::labels.tabRoundTrip }}" md-active="vm.showReturns">
+		<div layout style="margin-top:3px">
+			<label for="returns" flex="15" uib-tooltip-html="tooltips.returns">
+				{{ ::labels.returns }}
+			</label>
+			<div flex>
 				<uib-datepicker multi-select="vm.model.returns" ng-model="vm.activeReturn" init-date="vm.initDateReturn" select-range="{{ vm.returnsRange }}" id="returns" name="returns" class="datepicker"></uib-datepicker>
 
-				<span class="btn btn-default btn-sm pull-left resetDate" ng-click="vm.model.returns = []" uib-tooltip="{{ ::tooltips.resetDates }}">{{ ::labels.resetDates }}</span>
-				<label class="pull-right small secondary" uib-tooltip="{{ ::tooltips.range }}" tooltip-placement="left">
+				<a href="" class="pull-left secondary" ng-click="vm.model.returns = []" uib-tooltip="{{ ::tooltips.resetDates }}">
+					{{ ::labels.resetDates }}
+				</a>
+				<label class="pull-right secondary" uib-tooltip="{{ ::tooltips.range }}" tooltip-placement="left">
 					<input type="checkbox" ng-model="vm.returnsRange" />
-					<span class="checkbox-material"><span class="check"></span></span> {{ ::labels.range }}
+					{{ ::labels.range }}
 				</label>
 			</div>
-		</uib-tab>
-
-		<!-- duration -->
-		<uib-tab heading="{{ ::labels.qtyDays }}" uib-tooltip="{{ ::tooltips.qtyDays }}" active="vm.showQtyDays" select="vm.broadcast('focusQtyDays')">
-			<div class="col-xs-10" style="margin-top: 28px;">
-				<ui-select multiple ng-model="vm.model.qtyDays" focus-on="focusQtyDays" on-select="vm.broadcast('focusQtyDays')" id="qtyDays" name="qtyDays" required>
-					<ui-select-match placeholder="{{ ::placeholders.qtyDays }}">{{ $item.text }}</ui-select-match>
-
-					<ui-select-choices repeat="item.id as item in vm.days | filter: $select.search">
-						<div ng-bind-html="item.text | highlight: $select.search"></div>
-					</ui-select-choices>
-				</ui-select>
-			</div>
-		</uib-tab>
-	</uib-tabset>
-</div>
+		</div>
+	</md-tab>
+	
+	<!-- duration -->
+	<md-tab label="{{ ::labels.tabQtyDays }}" md-active="vm.showQtyDays">
+		<div layout style="margin-top:3px">
+			<label for="qtyDays" uib-tooltip="{{ ::tooltips.qtyDays }}" flex="15" class="md-chips-label">
+				{{ ::labels.qtyDays }}
+			</label>
+			
+			<md-chips ng-model="vm.model.qtyDays" md-autocomplete-snap="" md-require-match="true" flex>
+				<md-autocomplete md-selected-item="vm.selectedQtyDay" md-search-text="vm.searchQtyDay" md-items="item in vm.days | filter : vm.searchQtyDay" md-item-text="item.id" md-autoselect="true" md-autofocus="true" md-min-length="0" placeholder="{{ ::placeholders.qtyDays }}">
+					<span md-highlight-text="vm.searchQtyDay" md-highlight-flags="i">
+						{{ item.text }}
+					</span>
+				</md-autocomplete>
+				<md-chip-template>
+					{{ $chip.text }}
+				</md-chip-template>
+			</md-chips>
+		</div>
+	</md-tab>
+</md-tabs>
