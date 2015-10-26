@@ -164,7 +164,7 @@
 				vm.columnDefs[2].visible = !isReturnColumnVisible;
 				
 				if (!!vm.gridApi && !!vm.gridApi.core)
-					vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.COLUMN);
+					vm.gridApi.core.notifyDataChange(gridConst.dataChange.COLUMN);
 			}
 		}
 
