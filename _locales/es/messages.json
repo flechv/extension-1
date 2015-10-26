@@ -1,0 +1,212 @@
+{
+	"extensionName": {
+		"message": "Vuelos Genghis"
+	},
+	"extensionDescription": {
+		"message": "Búsqueda de vuelos hacia varias ciudades en varios días a la vez. Rápido, seguro y lo mejor: gratis!"
+	},
+	"labelOrigins": {
+		"message": "Desde"
+	},
+	"placeholderOrigins": {
+		"message": "¿Desde dónde quieres partir?"
+	},
+	"tooltipOrigins": {
+		"message": "Las ciudades desde donde quieres partir. Partiendo de una ciudad cercana puede ser más barato"
+	},
+	"labelDestinations": {
+		"message": "Hacia"
+	},
+	"placeholderDestinations": {
+		"message": "¿Dónde quieres ir?"
+	},
+	"tooltipDestinations": {
+		"message": "Las ciudades que quieres conocer en este viaje. Selecciona varias y encuentra la más barata"
+	},
+	"labelDepartures": {
+		"message": "Ida"
+	},
+	"tooltipDepartures": {
+		"message": "Los días que puedes partir"
+	},
+	"labelRange": {
+		"message": "Selecciona un rango"
+	},
+	"tooltipRange": {
+		"message": "Escoge los días seleccionando el primero y el último"
+	},
+	"labelReturns": {
+		"message": "Vuelta"
+	},
+	"tooltipReturns": {
+		"message": "El día exacto que quieres volver"
+	},
+	"labelQtyDays": {
+		"message": "Duración"
+	},
+	"placeholderQtyDays": {
+		"message": "¿Cuántos días viajarás?"
+	},
+	"tooltipQtyDays": {
+		"message": "La duración del viaje. En lugar de saber la fecha exacta de regreso, puedes querer pasar cierta cantidad de días viajando"
+	},
+	"labelSite": {
+		"message": "Lugar"
+	},
+	"placeholderSite": {
+		"message": "¿Qué lugar quieres buscar?"
+	},
+	"tooltipSite": {
+		"message": "Selecciona el lugar que deseas buscar"
+	},
+	"labelHistory": {
+		"message": "Historial"
+	},
+	"tooltipHistory": {
+		"message": "Selecciona una de tus recientes búsquedas"
+	},
+	"placeholderHistory": {
+		"message": "¿Quieres repetir una búsqueda reciente?"
+	},
+	"labelSendEmailLowFares": {
+		"message": "Háblame de las tarifas más bajas"
+	},
+	"labelEmail": {
+		"message": "Email"
+	},
+	"placeholderEmail": {
+		"message": "¿Cuál es tu email?"
+	},
+	"labelPriceEmail": {
+		"message": "Precio"
+	},
+	"placeholderPriceEmail": {
+		"message": "¿Cuál es el precio máximo que quieres pagar?"
+	},
+	"labelChangePassengers": {
+		"message": "Cambiar la cantidad de pasajeros"
+	},
+	"labelAdults": {
+		"message": "Adultos"
+	},
+	"labelChildren": {
+		"message": "Menores"
+	},
+	"labelInfants": {
+		"message": "Bebés"
+	},
+	"labelStart": {
+		"message": "Buscar"
+	},
+	"labelStop": {
+		"message": "Detener"
+	},
+	"tooltipDonation": {
+		"message": "Hacer una donación para mejorar esta aplicación!"
+	},
+	"tooltipDeleteHistory": {
+		"message": "Borrar historial"
+	},
+	"tooltipExpandMore": {
+		"message": "Mostrar búsqueda"
+	},
+	"tooltipExpandLess": {
+		"message": "Mostrar solamente resultados encontrados"
+	},
+	"tooltipMain": {
+		"message": "<div style='text-align:left'>Puedes seleccionar: <br/>Una o más ciudades de origen <br/>Una o más ciudades de destino <br/>Una o más días para partir <br/>Duración del viaje o los días para volver <br/>La cantidad de adultos, menores y bebés <br/>El sitio en el cual buscar <br/>Un email para recibir ofertas <br/><br/>Sugerencias? <strong>genghislabs@gmail.com</strong></div>"
+	},
+	"gridOriginDestination": {
+		"message": "Desde-Hacia"
+	},
+	"gridOriginDestinationTooltip": {
+		"message": "Desde-Hacia"
+	},
+	"gridDeparture": {
+		"message": "Ida"
+	},
+	"gridDepartureTooltip": {
+		"message": "Ida"
+	},
+	"gridReturn": {
+		"message": "Vuelta"
+	},
+	"gridReturnTooltip": {
+		"message": "Vuelta"
+	},
+	"gridNonStop": {
+		"message": "Directo"
+	},
+	"gridNonStopTooltip": {
+		"message": "Directo"
+	},
+	"gridOneStop": {
+		"message": "1 parada"
+	},
+	"gridOneStopTooltip": {
+		"message": "1 parada"
+	},
+	"gridTwoStops": {
+		"message": "2 paradas"
+	},
+	"gridTwoStopsTooltip": {
+		"message": "2 o más paradas"
+	},
+	"gridCompany": {
+		"message": "Aerolínea"
+	},
+	"gridCompanyTooltip": {
+		"message": "Aerolínea"
+	},
+	"daysOneWay": {
+		"message": "Sólo vuelo de ida"
+	},
+	"daysReturnSameDay": {
+		"message": "Volver el mismo día"
+	},
+	"daysSingular": {
+		"message": "día"
+	},
+	"daysPlural": {
+		"message": "días"
+	},
+	"messagesSendEmailLowFares": {
+		"message": "Repetiré esta búsqueda con cierta periodicidad y le enviaré un email a <strong>EMAIL</strong> cuando la encuentre por <strong>PRICE_EMAIL</strong> o menos (millas o pesos)."
+	},
+	"messagesSelectAtLeastOneOrigin": {
+		"message": "Selecciona al menos un aeropuerto de origen"
+	},
+	"messagesSelectAtLeastOneDestination": {
+		"message": "Selecciona al menos un aeropuerto de destino"
+	},
+	"messagesSameOriginAndDestination": {
+		"message": "El aeropuerto de origen no puede ser el mismo que el de destino"
+	},
+	"messagesSelectAtLeastOneDeparture": {
+		"message": "Selecciona al menos un día para partir"
+	},
+	"messagesSelectAtLeastOnePassenger": {
+		"message": "Selecciona al menos un pasajero"
+	},
+	"messagesSearchFinished": {
+		"message": "Búsqueda finalizada!"
+	},
+	"messagesLoadingSingular": {
+		"message": "Cargando una fecha ..."
+	},
+	"messagesLoadingPlural": {
+		"message": "Cargando NUMBER_OF_FLIGHTS fechas ..."
+	},
+	"messagesFoundFlightsSingular": {
+		"message": "1 fecha encontrada"
+	},
+	"messagesFoundFlightsPlural": {
+		"message": "NUMBER_OF_FLIGHTS fechas encontradas"
+	},
+	"labelResetDates": {
+		"message": "Reiniciar"
+	},
+	"tooltipResetDates": {
+		"message": "Reiniciar las fechas seleccionadas"
+	}
+}
