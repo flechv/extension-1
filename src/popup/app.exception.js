@@ -9,7 +9,7 @@
 
 	function factory($injector) {
 		return function (exception, cause) {
-			var errorMessage = angular.isString(exception) ? exception : exception.message;
+			var errorMessage = angular.isString(exception) ? exception : exception.stack;
 			if (angular.isDefined(cause))
 				errorMessage += ' (caused by "' + cause + '")';
 			

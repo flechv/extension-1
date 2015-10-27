@@ -5,10 +5,10 @@
 		.module('app')
 		.controller('Controller', Controller);
 
-	Controller.$inject = ['$scope', '$filter', 'i18nService',
+	Controller.$inject = ['$scope', '$timeout', '$filter', 'i18nService',
 						  'constants', 'uiGridConstants', 'uiGridGroupingConstants'];
 
-	function Controller($scope, $filter, i18nService, c, gridConst, gridGroupConst) {
+	function Controller($scope, $timeout, $filter, i18nService, c, gridConst, gridGroupConst) {
 		var vm = this;
 
 		vm.model = {
@@ -27,7 +27,7 @@
 
 		vm.showForm = true;
 		vm.showQtyDays = false;
-		vm.showReturns = true;
+		vm.showReturns = false;
 		vm.showSendEmailCheapFlights = false;
 		vm.showPassengers = false;
 		vm.messageError = '';
@@ -35,13 +35,17 @@
 		vm.days = [];
 		vm.sites = [];
 
+		vm.airports = [];
+		vm.airportsById = [];
+		vm.airlines = [];
+
 		vm.start = start;
 		vm.stop = stop;
 		vm.deleteHistory = deleteHistory;
 		vm.updateResults = updateResults;
 		vm.updateForm = updateForm;
 
-		activate();
+		$timeout(activate, 100);
 
 		/////////////
 

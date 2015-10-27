@@ -173,7 +173,7 @@
 		return self;
 	}
 
-	Viajanet.prototype = new RequestManager('Viajanet', 'Viajanet', 1000, 3, 1);
+	Viajanet.prototype = new RequestManager('Viajanet', 'Viajanet', 1000, 4, 1);
 	Viajanet.prototype.constructor = Viajanet;
 	Viajanet.prototype.parent = RequestManager.prototype;
 
