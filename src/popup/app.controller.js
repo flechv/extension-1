@@ -45,9 +45,7 @@
 		vm.updateResults = updateResults;
 		vm.updateForm = updateForm;
 
-		setupUiGridLang();
-		setupUiGrids();
-		$timeout(activate, 100);
+		activate();
 
 		/////////////
 
@@ -56,8 +54,8 @@
 				bg = backgroundPage.BG,
 				i;
 				
-			// if background is not loaded yet for some reason, try it later
-			if (!bg) $timeout(activate, 100);
+			// if background is not loaded yet for some reason, we can do nothing
+			if (!bg) return;
 			
 			bg.hideBadge();
 
@@ -104,6 +102,8 @@
 				updateForm();
 			}
 
+			setupUiGridLang();
+			setupUiGrids();
 			setupDatepickers();
 			
 			vm.initialNumberOfFlights = bg.getInitialNumberOfFlights() || 0;
@@ -206,8 +206,10 @@
 				infants: request.infants || 0
 			};
 
-			vm.showQtyDays = vm.model.qtyDays.length > 0;
-			vm.showReturns = !vm.showQtyDays && vm.model.returns.length > 0;
+			$timeout(function () {
+				vm.showQtyDays = vm.model.qtyDays.length > 0;
+				vm.showReturns = !vm.showQtyDays && vm.model.returns.length > 0;
+			}, 100);
 			vm.showSendEmailCheapFlights = vm.model.email !== null && vm.model.priceEmail !== null;
 			vm.showPassengers = vm.model.adults !== 1 || vm.model.children !== 0 || vm.model.infants !== 0;
 		}
