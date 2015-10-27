@@ -45,6 +45,8 @@
 		vm.updateResults = updateResults;
 		vm.updateForm = updateForm;
 
+		setupUiGridLang();
+		setupUiGrids();
 		$timeout(activate, 100);
 
 		/////////////
@@ -53,6 +55,10 @@
 			var backgroundPage = getBackgroundPage(),
 				bg = backgroundPage.BG,
 				i;
+				
+			// if background is not loaded yet for some reason, try it later
+			if (!bg) $timeout(activate, 100);
+			
 			bg.hideBadge();
 
 			vm.airports = backgroundPage.airports;
@@ -99,8 +105,6 @@
 			}
 
 			setupDatepickers();
-			setupUiGridLang();
-			setupUIGrids();
 			
 			vm.initialNumberOfFlights = bg.getInitialNumberOfFlights() || 0;
 			updateResults(bg.getResults());
@@ -296,7 +300,7 @@
 			return !lang ? '' : lang.split(/[_-]/)[0];
 		}
 
-		function setupUIGrids() {
+		function setupUiGrids() {
 			vm.columnDefs = [
 				{
 					name: 'key',
