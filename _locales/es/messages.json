@@ -3,91 +3,91 @@
 		"message": "Pasajes aéreos Genghis"
 	},
 	"extensionDescription": {
-		"message": "Búsqueda de vuelos hacia varias ciudades en varios días a la vez. Rápido, seguro y lo mejor: gratis!"
+		"message": "Encuentre pasajes para varias ciudades en varios días, todo en un único paso. Rápido, seguro y lo mejor: Gratis!"
 	},
 	"labelOrigins": {
-		"message": "Desde"
+		"message": "Origen"
 	},
 	"placeholderOrigins": {
-		"message": "¿Desde dónde quieres partir?"
+		"message": "¿Desde dónde prefiere salir?"
 	},
 	"tooltipOrigins": {
-		"message": "Las ciudades desde donde quieres partir. Partiendo de una ciudad cercana puede ser más barato"
+		"message": "Las ciudades desde dónde puede partir. Salir de una ciudad cercana puede ser mas económico"
 	},
 	"labelDestinations": {
-		"message": "Hacia"
+		"message": "Destino"
 	},
 	"placeholderDestinations": {
-		"message": "¿Dónde quieres ir?"
+		"message": "¿A dónde quiere ir?"
 	},
 	"tooltipDestinations": {
-		"message": "Las ciudades que quieres conocer en este viaje. Selecciona varias y encuentra la más barata"
+		"message": "Las ciudades que usted desea conocer en este viaje. Seleccione varias y encuentre la mas económica"
 	},
 	"labelDepartures": {
-		"message": "Idas"
+		"message": "Ida"
 	},
 	"tooltipDepartures": {
-		"message": "Los días que puedes partir"
+		"message": "Los días en que usted puede partir"
 	},
 	"labelRange": {
-		"message": "Selecciona un rango"
+		"message": "Seleccionar un rango"
 	},
 	"tooltipRange": {
-		"message": "Escoge los días seleccionando el primero y el último"
+		"message": "Escoja un rango de días seguidos seleccionando el primero y el último"
 	},
 	"labelReturns": {
-		"message": "Vueltas"
+		"message": "Vuelta"
 	},
 	"tooltipReturns": {
-		"message": "Los días exactos que quieres volver"
+		"message": "Los días exactos en que usted quiere volver"
 	},
 	"labelQtyDays": {
 		"message": "Duración"
 	},
 	"placeholderQtyDays": {
-		"message": "¿Cuántos días viajarás?"
+		"message": "¿Cuántos días de viaje?"
 	},
 	"tooltipQtyDays": {
-		"message": "La duración del viaje. En lugar de saber la fecha exacta de regreso, puedes querer pasar cierta cantidad de días viajando"
+		"message": "La duración del viaje. En vez de indicar los días exactos da regreso, usted puede querer pasar cierta cantidad de días viajando"
 	},
 	"labelSite": {
 		"message": "Sitio"
 	},
 	"placeholderSite": {
-		"message": "¿Qué sitio quieres buscar?"
+		"message": "¿En qué sitio web desea buscar?"
 	},
 	"tooltipSite": {
-		"message": "Selecciona el lugar que deseas buscar"
+		"message": "Escoja en cuál sitio web desea buscar"
 	},
 	"labelHistory": {
 		"message": "Historial"
 	},
 	"tooltipHistory": {
-		"message": "Selecciona una de tus recientes búsquedas"
+		"message": "Escoja una de sus búsquedas recientes"
 	},
 	"placeholderHistory": {
-		"message": "¿Quieres repetir una búsqueda reciente?"
+		"message": "¿Desea repetir una búsqueda reciente?"
 	},
 	"labelSendEmailCheapFlights": {
-		"message": "Avísame de las tarifas más bajas"
+		"message": "Avisarme cuando el precio baje"
 	},
 	"labelEmail": {
 		"message": "Email"
 	},
 	"placeholderEmail": {
-		"message": "¿Cuál es tu email?"
+		"message": "¿Cuál es su email?"
 	},
 	"labelPriceEmail": {
 		"message": "Precio"
 	},
 	"placeholderPriceEmail": {
-		"message": "¿Cuál es el precio máximo que quieres pagar?"
+		"message": "¿Cuánto es el máximo precio que desea pagar?"
 	},
 	"labelResetDates": {
-		"message": "Reiniciar"
+		"message": "Limpiar"
 	},
 	"tooltipResetDates": {
-		"message": "Reiniciar las fechas seleccionadas"
+		"message": "Limpiar fechas seleccionadas"
 	},
 	"labelChangePassengers": {
 		"message": "Cambiar la cantidad de pasajeros"
@@ -111,13 +111,13 @@
 		"message": "Sólo ida"
 	},
 	"labelTabRoundTrip": {
-		"message": "Ida e Vuelta"
+		"message": "Ida y vuelta"
 	},
 	"labelTabQtyDays": {
 		"message": "Duración del viaje"
 	},
 	"tooltipDonation": {
-		"message": "Hacer una donación para mejorar esta aplicación!"
+		"message": "Haga una donación para continuar mejorando esta app!"
 	},
 	"tooltipDeleteHistory": {
 		"message": "Borrar historial"
@@ -126,10 +126,10 @@
 		"message": "Mostrar búsqueda"
 	},
 	"tooltipExpandLess": {
-		"message": "Mostrar solamente resultados encontrados"
+		"message": "Mostrar únicamente resultados encontrados"
 	},
 	"tooltipMain": {
-		"message": "<div style='text-align:left'>Puedes seleccionar: <br/>Una o más ciudades de origen <br/>Una o más ciudades de destino <br/>Uno o más días para partir <br/>Duración del viaje o los días para volver <br/>La cantidad de adultos, menores y bebés <br/>El sitio en el cual buscar <br/>Un email para recibir ofertas <br/><br/>Sugerencias? <strong>genghislabs@gmail.com</strong></div>"
+		"message": "<div style='text-align:left'>Usted puede selecionar: <br/>Una o más ciudades de origen <br/>Una o más ciudades de destino <br/>Uno o más días de partida <br/>Duración del viaje o días de regreso <br/>La cantidad de adultos, menores y bebés <br/>El sitio en que desea consultar <br/>Un email para recibir alertas de bajos precios <br/><br/>Sugerencias? <strong>genghislabs@gmail.com</strong></div>"
 	},
 	"gridOriginDestination": {
 		"message": "Desde-Hacia"
@@ -144,28 +144,28 @@
 		"message": "Ida"
 	},
 	"gridReturn": {
-		"message": "Vuelta"
+		"message": "Vta."
 	},
 	"gridReturnTooltip": {
 		"message": "Vuelta"
 	},
 	"gridNonStop": {
-		"message": "Directo"
+		"message": "Dir."
 	},
 	"gridNonStopTooltip": {
 		"message": "Directo"
 	},
 	"gridOneStop": {
-		"message": "1 par."
+		"message": "1 esc."
 	},
 	"gridOneStopTooltip": {
-		"message": "1 parada"
+		"message": "1 escala"
 	},
 	"gridTwoStops": {
-		"message": "2 par."
+		"message": "2 esc."
 	},
 	"gridTwoStopsTooltip": {
-		"message": "2 o más paradas"
+		"message": "2 o más escalas"
 	},
 	"gridCompany": {
 		"message": "Aerolínea"
@@ -174,7 +174,7 @@
 		"message": "Aerolínea"
 	},
 	"daysOneWay": {
-		"message": "Sólo vuelo de ida"
+		"message": "Sólo ida"
 	},
 	"daysReturnSameDay": {
 		"message": "Volver el mismo día"
@@ -186,28 +186,28 @@
 		"message": "días"
 	},
 	"messagesSendEmailCheapFlights": {
-		"message": "Repetiré esta búsqueda con cierta periodicidad y le enviaré un email a <strong>EMAIL</strong> cuando la encuentre por <strong>PRICE_EMAIL</strong> o menos (millas o pesos)."
+		"message": "Voy a repetir la busca periódicamente y mandaré un email a <strong>EMAIL</strong> cuando la encuentre por <strong>PRICE_EMAIL</strong> o menos (millas o dinero)."
 	},
 	"messagesSelectAtLeastOneOrigin": {
-		"message": "Selecciona al menos un aeropuerto de origen"
+		"message": "Selecione al menos un aeropuerto de origen"
 	},
 	"messagesSelectAtLeastOneDestination": {
-		"message": "Selecciona al menos un aeropuerto de destino"
+		"message": "Selecione al menos un aeropuerto de destino"
 	},
 	"messagesSameOriginAndDestination": {
-		"message": "El aeropuerto de origen no puede ser el mismo que el de destino"
+		"message": "El aeropuerto de origen no puede ser igual al de destino"
 	},
 	"messagesSelectAtLeastOneDeparture": {
-		"message": "Selecciona al menos un día para partir"
+		"message": "Selecione por lo menos una fecha de salida"
 	},
 	"messagesSelectAtLeastOnePassenger": {
-		"message": "Selecciona al menos un pasajero"
+		"message": "Selecione por lo menos un pasajero"
 	},
 	"messagesSearchFinished": {
 		"message": "Búsqueda finalizada!"
 	},
 	"messagesLoadingSingular": {
-		"message": "Cargando una fecha ..."
+		"message": "Cargando 1 fecha ..."
 	},
 	"messagesLoadingPlural": {
 		"message": "Cargando NUMBER_OF_FLIGHTS fechas ..."
@@ -218,11 +218,14 @@
 	"messagesFoundFlightsPlural": {
 		"message": "NUMBER_OF_FLIGHTS fechas encontradas"
 	},
+	"messagesReturnsBeforeDepartures": {
+		"message": "Selecione una fecha de vuelta posterior a la fecha de salida"
+	},
 	"messagesMaxDateRequests": {
-		"message": "Selecciona hasta MAX_DATE_REQUESTS fechas"
+		"message": "Selecione hasta MAX_DATE_REQUESTS fechas"
 	},
 	"emailTemplate": {
-		"message": "Las siguientes fechas tienen precio menor que PRICE_EMAIL:<br>DATES<br><br>Atentamente,<br>"
+		"message": "Las siguientes fechas tienen un precio menor que PRICE_EMAIL:<br>DATES<br><br>Atentamente,<br>"
 	},
 	"emailSubject": {
 		"message": "Vuelos baratos encontrados"

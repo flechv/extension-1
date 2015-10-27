@@ -40,7 +40,7 @@ var paths = {
         'bower_components/angular-material/angular-material.min.js',
         'bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js',
         'bower_components/angular-ui-grid/ui-grid.min.js',
-        'bower_components/gm.datepickerMultiselect/dist/gm.datepickerMultiselect.min.js'
+        'bower_components/gm.datepickerMultiSelect/dist/gm.datepickerMultiSelect.min.js'
     ],
 	scripts: [
         'src/popup/app.module.js',
