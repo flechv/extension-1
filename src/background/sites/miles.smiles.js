@@ -21,8 +21,8 @@
 			p.push('tripType=' + (request.return === null ? 2 : 1));
 			p.push('originAirport=' + request.origin);
 			p.push('destinationAirport=' + request.destination);
-			p.push('departureDay=' + (request.departure / 1000));
-			p.push('returnDay=' + (request.return / 1000));
+			p.push('departureDay=' + (request.departure / 100000));
+			p.push('returnDay=' + (request.return / 100000));
 
 			p.push('adults=' + request.adults);
 			p.push('children=' + request.children);
